@@ -1,0 +1,71 @@
+#root {
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+:root {
+  --header-height: 30px;
+  --sidebar-width: 50px;
+  --chat-height: 60px;
+}
+
+.header-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  border-bottom: 1px solid #d9d9d9;
+  background: #fff;
+  z-index: 30;
+}
+
+.sidebar {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  bottom: var(--chat-height);
+  width: var(--sidebar-width);
+  padding: 0.75rem 0.5rem;
+  border-right: 1px solid #d9d9d9;
+  background: #f7f7f7;
+  overflow: auto;
+  z-index: 20;
+}
+
+.main-view {
+  min-height: 100vh;
+  padding: calc(var(--header-height) + 1rem) 1rem calc(var(--chat-height) + 1rem)
+    calc(var(--sidebar-width) + 1rem);
+  box-sizing: border-box;
+}
+
+.chat-interface {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  min-height: var(--chat-height);
+  padding: 0.75rem 1rem;
+  border-top: 1px solid #d9d9d9;
+  background: #fff;
+  z-index: 25;
+}
+
+.chat-input-shell {
+  width: 100%;
+}
+
+.chat-input {
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+}

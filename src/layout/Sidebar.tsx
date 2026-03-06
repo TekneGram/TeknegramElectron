@@ -1,15 +1,12 @@
-
+import '@/styles/layout.css';
 
 const Sidebar = () => {
-
-    return(
-        <>
-            <aside className="sidebar">
-                <div>
-                    <p>Sidebar</p>
-                </div>
-            </aside>
-        </>
+    return (
+        <aside className="sidebar">
+            <div>
+                <p>Sidebar</p>
+            </div>
+        </aside>
     );
 };
 

@@ -1,14 +1,13 @@
 
-const MainView = () => {
+import '@/styles/layout.css';
 
+const MainView = () => {
     return (
-        <>
-            <section className="main-view">
-                <div>
-                    <p>The main view</p>
-                </div>
-            </section>
-        </>
+        <section className="main-view">
+            <div>
+                <p>The main view</p>
+            </div>
+        </section>
     );
 };
 
