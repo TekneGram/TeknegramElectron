@@ -1,0 +1,10 @@
+  1. Add one IPC channel registry file (electron/ipc/registerHandlers.ts) so main.ts stays clean.
+  2. Add input validation per request (zod/manual) before service calls.
+  3. Add correlation ID propagation into all service logs (not just IPC wrapper).
+  4. Define a stable error code list and keep user-facing messages mapped in frontend adapter.
+  5. Add a simple test for invokeRequest error mapping and one safeHandle unit test.
+  6. Add timeouts/retry policy for long C++ jobs.
+  7. Add cancellation support plan (job id + cancel channel) before async feature growth.
+  8. Add minimal telemetry counters (request success/failure per channel) in backend logs.
+  9. Add schema migration naming convention now (001_*.sql, 002_*.sql, etc.) and enforce it.
+  10. Add lint/typecheck/build pre-commit or CI gate before scale.

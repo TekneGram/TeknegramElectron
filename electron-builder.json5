@@ -1,0 +1,57 @@
+// @see - https://www.electron.build/configuration/configuration
+{
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "YourAppID",
+  "asar": true,
+  "productName": "YourAppName",
+  "directories": {
+    "output": "release/${version}"
+  },
+  "files": [
+    "dist",
+    "dist-electron"
+  ],
+  "extraResources": [
+    { "from": "electron/assets/seed/app.sqlite", "to": "seed/app.sqlite" },
+    { "from": "electron/assets/models", "to": "models" },
+    { "from": "electron/db/migration", "to": "db-migration" }
+  ],
+  "mac": {
+    "target": [
+      "dmg"
+    ],
+    "artifactName": "${productName}-Mac-${version}-Installer.${ext}",
+    "extraResources": [
+      { "from": "electron/bin/executables/mac", "to": "bin/executables/mac" },
+    ]
+  },
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      }
+    ],
+    "artifactName": "${productName}-Windows-${version}-Setup.${ext}",
+    "extraResources": [
+      { "from": "electron/bin/executables/windows", "to": "bin/executables/windows" },
+    ]
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "deleteAppDataOnUninstall": false
+  },
+  "linux": {
+    "target": [
+      "AppImage"
+    ],
+    "artifactName": "${productName}-Linux-${version}.${ext}",
+    "extraResources": [
+      { "from": "electron/bin/executables/linux", "to": "bin/executables/linux" },
+    ]
+  }
+}

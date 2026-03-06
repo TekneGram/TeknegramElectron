@@ -1,0 +1,47 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-electron
+dist-ssr
+*.local
+.env
+.env.*
+!.env.example
+release/
+
+# Electron runtime/package assets
+electron/assets/
+electron/bin/
+
+# Native heavyweight/generated artifacts
+native/**/models/
+native/**/executables/
+native/**/udpipe/
+native/**/corpus_build_pipeline
+native/corpus_pipeline
+native/**/*.exe
+native/**/*.out
+native/**/*.bin
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# .env
+.env.example
+.env
