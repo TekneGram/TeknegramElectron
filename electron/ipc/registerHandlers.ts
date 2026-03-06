@@ -1,12 +1,14 @@
 import { safeHandle } from "./safeHandle";
 // import { validateOrThrow } from "./validate";
-// import { runFeatureTemplate } from "../services/featureServiceTemplate";
+import { listProjects, type ProjectListItem } from "@electron/services/projects/listProjects";
 
 export function registerHandlers(): void {
-    // Minimal starter channel used as a health check.
-    safeHandle<undefined, { nowIso: string }>("system:ping", async () => {
-        return { nowIso: new Date().toISOString() };
-    });
+    safeHandle<null, ProjectListItem[]>(
+        "projects:list",
+        async (_event, _args, ctx) => {
+            return listProjects(ctx);
+        }
+    );
 
     /**
      * Example feature channel template:
