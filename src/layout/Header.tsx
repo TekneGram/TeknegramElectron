@@ -1,11 +1,12 @@
 import ThemeToggle from '@/features/ThemeToggle/ThemeToggle';
+import ProjectsTinyView from '@/features/ProjectsTinyView/ProjectsTinyView';
 import '@/styles/layout.css';
 
 const Header = () => {
     return (
         <section className="header-bar">
             <div className="header-title">
-                <p>Header</p>
+                <ProjectsTinyView />
             </div>
             <div className="header-actions">
                 <ThemeToggle />
