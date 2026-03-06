@@ -1,8 +1,14 @@
+import ChatInput from "./ChatInterface/ChatInput";
 
 const ChatInterface = () => {
 
     return(
-        <>ChatInterface</>
+        <>
+            <section className="chat-interface">
+                <ChatInput />
+            </section>
+        
+        </>
     )
 }
 

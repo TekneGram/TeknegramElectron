@@ -3,8 +3,14 @@
 const Sidebar = () => {
 
     return(
-        <>Sidebar</>
-    )
-}
+        <>
+            <aside className="sidebar">
+                <div>
+                    <p>Sidebar</p>
+                </div>
+            </aside>
+        </>
+    );
+};
 
 export default Sidebar;

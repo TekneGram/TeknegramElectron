@@ -1,9 +1,15 @@
 
 const MainView = () => {
 
-    return(
-        <>Main View</>
-    )
-}
+    return (
+        <>
+            <section className="main-view">
+                <div>
+                    <p>The main view</p>
+                </div>
+            </section>
+        </>
+    );
+};
 
 export default MainView;

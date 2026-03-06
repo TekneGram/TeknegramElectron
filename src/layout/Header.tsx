@@ -2,7 +2,13 @@
 const Header = () => {
 
     return(
-        <>Header</>
+        <>
+            <section className="header-bar">
+                <div>
+                    <p>Header</p>
+                </div>
+            </section>
+        </>
     )
 }
 
