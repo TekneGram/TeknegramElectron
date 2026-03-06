@@ -1,7 +1,42 @@
-
+import TeknegramIcon from './MainView/TeknegramIcon';
 import '@/styles/layout.css';
+import { useListProjectsQuery } from '@/features/ProjectsTinyView/hooks/useProjectsQuery';
 
 const MainView = () => {
+
+    const { data, isLoading, isError } = useListProjectsQuery();
+
+    if (isLoading) {
+        return(<p>Loading!</p>);
+    }
+
+    if (isError) {
+        return(<p>Something went badly wrong!</p>);
+    }
+
+    if (data === undefined || data.length === 0) {
+        return(
+            <section className="main-view-welcome">
+                <div className="main-view-welcome-card">
+                    <div className="title">
+                        <h1>Teknegram</h1>
+                    </div>
+                    <div className="welcome-message">
+                        <p>Advanced Corpus Linguistics Search and Analytics</p>
+                        <p>Start a new project to build a corpus and explore your data.</p>
+                    </div>
+                    <div className="logo-area">
+                        <TeknegramIcon />
+                    </div>
+                    <div className="welcome-actions">
+                        <button className="main-view-welcome-button">Start New Project</button>
+                    </div>
+                </div>
+            </section>
+            
+        );
+    }
+
     return (
         <section className="main-view">
             <div>
