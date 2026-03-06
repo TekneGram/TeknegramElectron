@@ -1,27 +1,23 @@
 import { useThemeContext } from "@/app/providers/useTheme";
 
+import "./ThemeToggle.css";
+
 const ThemeToggle = () => {
-    const { themePreference, resolvedTheme, setTheme } = useThemeContext();
+    const { resolvedTheme, setTheme } = useThemeContext();
 
     function toggleTheme() {
-        console.log(themePreference);
-        if (resolvedTheme === "light") {
-            setTheme("dark");
-        } else {
-            setTheme("light");
-        }
+        resolvedTheme === "light" ? setTheme("dark") : setTheme("light");
     }
 
     return (
         <>
-            <div>
-                <button
-                    className = "theme-toggle"
-                    onClick = {toggleTheme}
-                >
-                    Toggle
-                </button>
-            </div>
+            <button
+                className = "theme-toggle"
+                onClick = {toggleTheme}
+                aria-label = "theme-toggle"
+            >
+                Toggle
+            </button>
         </>
     );
 };
