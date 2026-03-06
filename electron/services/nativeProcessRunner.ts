@@ -1,69 +1,71 @@
-import { spawn, ChildProcessWithoutNullStreams } from "child_process";
+import { spawn, type ChildProcessWithoutNullStreams } from "child_process";
 import fs from "node:fs";
-import { getExecutablePath, getGeneratedOutputDir } from "../runtime/runtimePaths";
-import { type AppError } from "../core/appError";
+import { getExecutablePath } from "../runtime/runtimePaths";
+import type { AppError } from "../core/appError";
 
-type BuildResourceParams = {
-    mode: "build";
-    executable: string;
-    resourceId: string;
-    inputPath: string;
-    configPath?: string;
-    inputJson?: string;
+export type NativeProgressMessage = {
+    type: "progress";
+    message: string;
+    percent?: number;
 };
 
-type AnalyzeResourceParams = {
-    mode: "analyze",
-    executable: string;
-    resourceId: string;
-    inputJson?: string;
+export type NativeResultMessage<T = unknown> = {
+    type: "result";
+    data: T;
 };
 
-export type NativeRunParams = BuildResourceParams | AnalyzeResourceParams;
+export type NativeErrorMessage = {
+    type: "error";
+    message: string;
+    code?: string;
+    details?: string;
+};
 
-export type NativeRunResult = {
+export type NativeJsonMessage<T = unknown> =
+    | NativeProgressMessage
+    | NativeResultMessage<T>
+    | NativeErrorMessage;
+
+export type NativeRunParams = {
+    executable: string;
+    argv?: string[];
+    inputJson?: string;
+    expectJsonLines?: boolean;
+    onProgress?: (message: NativeProgressMessage) => void;
+};
+
+export type NativeRunResult<T = unknown> = {
     stdout: string;
     stderr: string;
     exitCode: number;
-}
+    messages: NativeJsonMessage<T>[];
+    result?: T;
+};
 
-export type NativeRunCallback = (error: AppError | null, result: NativeRunResult | null) => void;
+export type NativeRunCallback<T = unknown> = (
+    error: AppError | null,
+    result: NativeRunResult<T> | null
+) => void;
 
-class NativeProcessRunner {
+class NativeProcessRunner<T = unknown> {
     private nativeProcess!: ChildProcessWithoutNullStreams;
+    private readonly params: NativeRunParams;
     private processOutput = "";
     private processErrorOutput = "";
-    private generatedOutputDir = "";
-    private executablePath = "";
+    private stdoutBuffer = "";
+    private jsonMessages: NativeJsonMessage<T>[] = [];
+    private finalResult: T | undefined;
 
-    constructor(params: NativeRunParams, callback: NativeRunCallback) {
+    constructor(params: NativeRunParams, callback: NativeRunCallback<T>) {
+        this.params = params;
+
         try {
-            this.executablePath = getExecutablePath(params.executable);
-            this.generatedOutputDir = getGeneratedOutputDir(params.resourceId);
-
-            fs.mkdirSync(this.generatedOutputDir, { recursive: true });
-
-            if (!fs.existsSync(this.executablePath)) {
-                throw new Error(`Executable not found: ${this.executablePath}`);
+            const executablePath = getExecutablePath(params.executable);
+            if (!fs.existsSync(executablePath)) {
+                throw new Error(`Executable not found: ${executablePath}`);
             }
 
-            let args: string[] = [];
-            if (params.mode === "build") {
-                if (!fs.existsSync(params.inputPath)) {
-                    throw new Error(`Input path not found: ${params.inputPath}`);
-                }
-                args = [params.inputPath, params.resourceId, this.generatedOutputDir];
-                if (params.configPath) args.push(params.configPath);
-            } else {
-                args = [
-                    "--output-dir",
-                    this.generatedOutputDir,
-                    "--resource-id",
-                    params.resourceId
-                ];
-            }
-
-            this.nativeProcess = spawn(this.executablePath, args, {
+            this.nativeProcess = spawn(executablePath, params.argv ?? [], {
                 stdio: ["pipe", "pipe", "pipe"],
                 windowsHide: true,
                 env: process.env,
@@ -87,8 +89,8 @@ class NativeProcessRunner {
         }
     }
 
-    runProcess(jsonData: string, callback: NativeRunCallback): void {
-        this.writeDataToProcess(jsonData);
+    runProcess(jsonData: string | undefined, callback: NativeRunCallback<T>): void {
+        this.writeDataToProcess(jsonData ?? this.params.inputJson);
         this.collectOutput(callback);
     }
 
@@ -100,14 +102,24 @@ class NativeProcessRunner {
         return this.processErrorOutput;
     }
 
-    private writeDataToProcess(jsonData: string): void {
-        this.nativeProcess.stdin.write(jsonData + "\n", "utf8");
+    private writeDataToProcess(jsonData?: string): void {
+        if (jsonData !== undefined) {
+            this.nativeProcess.stdin.write(jsonData + "\n", "utf8");
+        }
         this.nativeProcess.stdin.end();
     }
 
-    private collectOutput(callback: NativeRunCallback): void {
+    private collectOutput(callback: NativeRunCallback<T>): void {
         this.nativeProcess.stdout.on("data", (data: Buffer) => {
-            this.processOutput += data.toString("utf8");
+            const chunk = data.toString("utf8");
+            this.processOutput += chunk;
+
+            if (!this.params.expectJsonLines) {
+                return;
+            }
+
+            this.stdoutBuffer += chunk;
+            this.consumeJsonLines();
         });
 
         this.nativeProcess.stderr.on("data", (data: Buffer) => {
@@ -117,21 +129,76 @@ class NativeProcessRunner {
         this.nativeProcess.on("close", (code: number | null) => {
             const exitCode = code ?? -1;
 
-            if (exitCode === 0) {
-                callback(null, {
-                    stdout: this.processOutput,
-                    stderr: this.processErrorOutput,
-                    exitCode,
-                });
-            } else {
+            if (this.params.expectJsonLines) {
+                this.consumeJsonLines(true);
+            }
+
+            if (exitCode !== 0) {
                 callback({
                     code: "CPP_PROCESS_NON_ZERO_EXIT",
                     message: "Native process failed",
                     details: this.processErrorOutput || `Exit code: ${exitCode}`,
                     retryable: false,
                 }, null);
+                return;
             }
+
+            if (this.params.expectJsonLines && this.finalResult === undefined) {
+                callback({
+                    code: "CPP_PROCESS_NON_ZERO_EXIT",
+                    message: "Native process completed without a result message",
+                    details: this.processOutput,
+                    retryable: false,
+                }, null);
+                return;
+            }
+
+            callback(null, {
+                stdout: this.processOutput,
+                stderr: this.processErrorOutput,
+                exitCode,
+                messages: this.jsonMessages,
+                result: this.finalResult,
+            });
         });
+    }
+
+    private consumeJsonLines(flushRemainder = false): void {
+        let newlineIndex = this.stdoutBuffer.indexOf("\n");
+        while (newlineIndex !== -1) {
+            const line = this.stdoutBuffer.slice(0, newlineIndex).trim();
+            this.stdoutBuffer = this.stdoutBuffer.slice(newlineIndex + 1);
+            this.consumeJsonLine(line);
+            newlineIndex = this.stdoutBuffer.indexOf("\n");
+        }
+
+        if (flushRemainder) {
+            const line = this.stdoutBuffer.trim();
+            this.stdoutBuffer = "";
+            this.consumeJsonLine(line);
+        }
+    }
+
+    private consumeJsonLine(line: string): void {
+        if (!line) {
+            return;
+        }
+
+        try {
+            const parsed = JSON.parse(line) as NativeJsonMessage<T>;
+            this.jsonMessages.push(parsed);
+
+            if (parsed.type === "progress") {
+                this.params.onProgress?.(parsed);
+                return;
+            }
+
+            if (parsed.type === "result") {
+                this.finalResult = parsed.data;
+            }
+        } catch {
+            // Preserve raw stdout for diagnostics; ignore non-JSON lines.
+        }
     }
 }
 
