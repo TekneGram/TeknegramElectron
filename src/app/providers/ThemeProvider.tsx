@@ -1,13 +1,7 @@
-import { createContext, type ReactNode, useState, useEffect } from 'react';
+import { type ReactNode, useState, useEffect } from 'react';
 import type { ThemePreference, ResolvedTheme } from "@/app/types/theme";
+import { ThemeContext, type ThemeContextValue } from './theme-context';
 
-type ThemeContextValue = {
-    themePreference: ThemePreference;
-    resolvedTheme: ResolvedTheme;
-    setTheme: (theme: ThemePreference) => void;
-};
-
-export const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 function getSystemTheme(): ResolvedTheme {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {

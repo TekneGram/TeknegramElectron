@@ -5,6 +5,8 @@
   margin: 0;
   padding: 0;
   text-align: left;
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 :root {
@@ -22,8 +24,9 @@
   display: flex;
   align-items: center;
   padding: 0 1rem;
-  border-bottom: 1px solid #d9d9d9;
-  background: #fff;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
   z-index: 30;
 }
 
@@ -34,8 +37,9 @@
   bottom: var(--chat-height);
   width: var(--sidebar-width);
   padding: 0.75rem 0.5rem;
-  border-right: 1px solid #d9d9d9;
-  background: #f7f7f7;
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+  border-right: 1px solid var(--color-border);
   overflow: auto;
   z-index: 20;
 }
@@ -45,6 +49,8 @@
   padding: calc(var(--header-height) + 1rem) 1rem calc(var(--chat-height) + 1rem)
     calc(var(--sidebar-width) + 1rem);
   box-sizing: border-box;
+  background: var(--color-bg);
+  color: var(--color-text);
 }
 
 .chat-interface {
@@ -54,8 +60,9 @@
   bottom: 0;
   min-height: var(--chat-height);
   padding: 0.75rem 1rem;
-  border-top: 1px solid #d9d9d9;
-  background: #fff;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-top: 1px solid var(--color-border);
   z-index: 25;
 }
 
@@ -68,4 +75,7 @@
   min-height: 100%;
   box-sizing: border-box;
   resize: vertical;
+  background: var(--color-input-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-input-border);
 }
