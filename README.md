@@ -1,17 +1,53 @@
-# Electron React Native Starter
-
-Reusable starter for Electron + React + native process integration with:
-- request-scoped IPC error handling
-- thin bridge + frontend ports/adapters
-- runtime path separation for dev vs packaged builds
-- SQLite bootstrap/migrations
-- packaging-ready structure with `electron-builder`
+# Teknegram
+A corpus linguistics tool
 
 ## Quick Start
-1. `npm install`
-2. Copy `.env.example` to `.env` and fill values as needed.
-3. Run `npm run dev`
-4. Run `npm run build`
+1. Clone the repo with submodules:
+   `git clone --recurse-submodules <parent-repo-url>`
+2. If you already cloned without submodules, initialize them:
+   `git submodule update --init --recursive`
+3. `npm install`
+4. Copy `.env.example` to `.env` and fill values as needed.
+5. Run `npm run dev`
+6. Run `npm run build`
+
+## Submodule Workflow
+
+This repo tracks the native C++ project in `native/corpus_builder` as a Git submodule. That means there are two repositories involved when you change native code:
+- the parent Electron app repo
+- the `native/corpus_builder` repo
+
+### Clone
+- Recommended:
+  `git clone --recurse-submodules https://github.com:TekneGram/TeknegramElectron.git
+- If the repo is already cloned:
+  `git submodule update --init --recursive`
+
+### Pull Latest Changes
+- Update the parent repo:
+  `git pull`
+- Update submodules to the commits referenced by the parent repo:
+  `git submodule update --init --recursive`
+
+### Commit And Push Native C++ Changes
+1. Commit and push inside the submodule first:
+   `git -C native/corpus_builder status`
+   `git -C native/corpus_builder add .`
+   `git -C native/corpus_builder commit -m "Describe native change"`
+   `git -C native/corpus_builder push`
+2. Commit the updated submodule pointer in the parent repo:
+   `git add native/corpus_builder`
+   `git commit -m "Update corpus_builder submodule"`
+   `git push`
+
+### Commit And Push Parent-Repo-Only Changes
+If you only changed Electron/React code and did not change files inside `native/corpus_builder`, use the normal parent repo workflow:
+`git add .`
+`git commit -m "Describe app change"`
+`git push`
+
+### Important Note
+If you push the parent repo without first pushing the new `native/corpus_builder` commit, other clones may fail to fetch the referenced submodule commit.
 
 ## Architecture Summary
 
