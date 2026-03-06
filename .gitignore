@@ -27,9 +27,6 @@ native/**/executables/
 native/**/udpipe/
 native/**/corpus_build_pipeline
 native/corpus_pipeline
-native/**/*.exe
-native/**/*.out
-native/**/*.bin
 
 # Editor directories and files
 .vscode/*
@@ -41,7 +38,3 @@ native/**/*.bin
 *.njsproj
 *.sln
 *.sw?
-
-# .env
-.env.example
-.env
