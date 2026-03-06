@@ -4,7 +4,7 @@ const Sidebar = () => {
     return (
         <aside className="sidebar">
             <div>
-                <p>Sidebar</p>
+                <p>Side</p>
             </div>
         </aside>
     );
