@@ -1,4 +1,6 @@
 import { useThemeContext } from "@/app/providers/useTheme";
+import SunIcon from "./SunIcon";
+import MoonIcon from "./MoonIcon";
 
 import "./ThemeToggle.css";
 
@@ -16,7 +18,7 @@ const ThemeToggle = () => {
                 onClick = {toggleTheme}
                 aria-label = "theme-toggle"
             >
-                Toggle
+                {resolvedTheme === "light" ? <MoonIcon /> : <SunIcon /> }
             </button>
         </>
     );
