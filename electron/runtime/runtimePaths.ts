@@ -18,7 +18,7 @@ function getPlatformDir(): PlatformDir {
     throw new Error(`Unsupported platform: ${process.platform}`);
 }
 
-function sanitizeResourceId(value: string): string {
+function sanitizeResource(value: string): string {
     const trimmed = value.trim();
     if (!trimmed) {
         throw new Error("Resource id cannot be empty.");
@@ -46,6 +46,7 @@ export function getRuntimeDbPath(): string {
         : path.join(process.cwd(), "electron", "db", "dev-app.sqlite")
 }
 
+// Use this for logs
 export function getGeneratedDataRoot(): string {
     return app.isPackaged
         ? path.join(app.getPath("userData"), "generated-data")
@@ -53,7 +54,25 @@ export function getGeneratedDataRoot(): string {
 }
 
 export function getGeneratedOutputDir(resourceId: string): string {
-    return path.join(getGeneratedDataRoot(), sanitizeResourceId(resourceId));
+    return path.join(getGeneratedDataRoot(), sanitizeResource(resourceId));
+}
+
+// Use this for corpus binaries
+export function getCorpusBinariesRoot(): string {
+    return app.isPackaged
+        ? path.join(app.getPath("userData"), "corpus-binaries")
+        : path.join(process.cwd(), "electron", "bin", "corpus-binaries");
+}
+
+export function getCorpusBinariesDir(corpus_name: string): string {
+    return path.join(getCorpusBinariesRoot(), sanitizeResource(corpus_name))
+}
+
+// udpipe model
+export function getUdpipeModelPath(): string {
+    return app.isPackaged
+        ? path.join(process.resourcesPath, "models", "english-partut-ud-2.5-191206.udpipe")
+        : path.join(process.cwd(), "electron", "assets", "models", "english-partut-ud-2.5-191206.udpipe");
 }
 
 export function getSeedDbPath(): string {

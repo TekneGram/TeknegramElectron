@@ -2,7 +2,11 @@ import { useState } from "react";
 import { useListProjectsQuery } from "./hooks/useProjectsQuery";
 import "./projectsTinyView.css";
 
-const ProjectsTinyView = () => {
+interface ProjectsTinyViewProps {
+    onOpenModal: () => void;
+}
+
+const ProjectsTinyView: React.FC<ProjectsTinyViewProps>  = ({ onOpenModal }) => {
     
     const { data, isLoading, isError } = useListProjectsQuery();
     const [selectedProjectId, setSelectedProjectId] = useState<string>("");
@@ -16,7 +20,7 @@ const ProjectsTinyView = () => {
     }
 
     if (data === undefined || data.length === 0) {
-        return (<button className="projects-tinyview-new">+ New Project</button>);
+        return (<button className="projects-tinyview-new" onClick={onOpenModal}>+ New Project</button>);
     }
 
     return(

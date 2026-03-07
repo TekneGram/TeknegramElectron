@@ -1,10 +1,142 @@
-  1. Add one IPC channel registry file (electron/ipc/registerHandlers.ts) so main.ts stays clean.
-  2. Add input validation per request (zod/manual) before service calls.
-  3. Add correlation ID propagation into all service logs (not just IPC wrapper).
-  4. Define a stable error code list and keep user-facing messages mapped in frontend adapter.
-  5. Add a simple test for invokeRequest error mapping and one safeHandle unit test.
-  6. Add timeouts/retry policy for long C++ jobs.
-  7. Add cancellation support plan (job id + cancel channel) before async feature growth.
-  8. Add minimal telemetry counters (request success/failure per channel) in backend logs.
-  9. Add schema migration naming convention now (001_*.sql, 002_*.sql, etc.) and enforce it.
-  10. Add lint/typecheck/build pre-commit or CI gate before scale.
+Todo list for wiring CreateProjectModal end to end:
+
+  1. Create a feature-level submit service for the modal.
+     File:
+
+  - src/features/CreateProjectModal/services/createProjectModal.service.ts
+    Purpose:
+  - call projectsAdapter.createProject(...)
+  - unwrap AppResult
+  - trigger notifications on failure/success
+  - return created project data
+
+  2. Add a local form-state hook for the modal.
+     File:
+
+  - src/features/CreateProjectModal/useCreateProjectForm.ts
+    Purpose:
+  - manage projectName
+  - manage corpusName
+  - manage folderPath
+  - manage optional semanticsRulesPath
+  - manage submitting/loading/error state
+
+  3. Build the modal form UI.
+     Files:
+
+  - src/features/CreateProjectModal/CreateProjectModal.tsx
+  - src/features/CreateProjectModal/CreateProjectModal.css
+    Fields:
+  - project name input
+  - corpus name input
+  - corpus folder picker / drop target
+  - semantic rules file picker
+  - submit button
+  - cancel/close button
+
+  4. Add a backend folder picker IPC command.
+     Electron files:
+
+  - electron/ipc/registerHandlers.ts
+  - likely a small service such as electron/services/system/pickFolder.ts
+    Purpose:
+  - open native directory dialog
+  - return selected folder path or null
+
+  5. Add a backend file picker IPC command for semantic rules.
+     Electron files:
+
+  - electron/ipc/registerHandlers.ts
+  - likely a small service such as electron/services/system/pickSemanticRulesFile.ts
+    Purpose:
+  - open native file dialog
+  - restrict to .tsv if possible
+  - return selected file path or null
+
+  6. Expose picker contracts in IPC contracts.
+     Files:
+
+  - electron/ipc/contracts/system.contracts.ts
+    Purpose:
+  - define request/response types for folder picking and file picking
+
+  7. Add validation schemas for picker requests if needed.
+     Files:
+
+  - electron/ipc/validationSchemas/system.schemas.ts
+    Purpose:
+  - validate any picker options payloads if you pass them through IPC
+
+  8. Add frontend ports for the picker operations.
+     File:
+
+  - src/app/ports/system.ports.ts
+    Purpose:
+  - define methods like:
+      - pickCorpusFolder()
+      - pickSemanticsRulesFile()
+
+  9. Add frontend adapters for the picker operations.
+     File:
+
+  - src/app/adapters/system.adapters.ts
+    Purpose:
+  - call the IPC channels
+  - return AppResult<string | null> or similar
+
+  10. Wire picker buttons into the modal.
+     In CreateProjectModal.tsx:
+
+  - “Select folder” button calls folder picker adapter/service
+  - “Select semantic rules file” button calls file picker adapter/service
+  - selected paths populate form state
+
+  11. Add drag-and-drop support for the corpus folder.
+     In the modal UI:
+
+  - allow dropping a folder if Electron/browser path access supports it
+  - use dropped folder path to populate folderPath
+    Note:
+  - folder picker via native dialog is easier and more reliable as the first implementation
+  - drag-and-drop can be added second
+
+  12. Connect modal submit to the project create adapter.
+     In feature service/hook:
+
+  - build CreateProjectRequest
+  - call projectsAdapter.createProject(...)
+  - close modal on success
+  - show error toast on failure
+
+  13. Refresh project list after successful create.
+     Use React Query invalidation:
+
+  - invalidate ["projects"]
+    Files likely involved:
+  - modal service or modal submit hook
+    Purpose:
+  - header and main view refresh automatically
+
+  14. Decide how to handle loading state in the modal.
+     UI behavior:
+
+  - disable inputs while submitting
+  - disable close if you want strict flow, or allow close while work continues
+  - show spinner / progress placeholder
+
+  15. Add progress handling later.
+     After basic submission works:
+
+  - backend returns or manages job/progress state
+  - modal shows progress bar and status text while C++ runs
+  - query invalidation happens on success
+
+  Recommended implementation order:
+
+  1. modal form state
+  2. folder picker IPC + frontend adapter
+  3. semantic rules file picker IPC + frontend adapter
+  4. modal submit service using projectsAdapter.createProject(...)
+  5. query invalidation on success
+  6. drag-and-drop
+  7. progress bar / job status

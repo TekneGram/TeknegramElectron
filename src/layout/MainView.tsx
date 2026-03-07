@@ -1,8 +1,15 @@
 import TeknegramIcon from './MainView/TeknegramIcon';
 import '@/styles/layout.css';
 import { useListProjectsQuery } from '@/features/ProjectsTinyView/hooks/useProjectsQuery';
+import CreateProjectModal from '@/features/CreateProjectModal/CreateProjectModal';
 
-const MainView = () => {
+interface MainViewProps {
+    modalIsOpen: boolean;
+    onOpenModal: () => void;
+    onCloseModal: () => void;
+}
+
+const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsOpen }) => {
 
     const { data, isLoading, isError } = useListProjectsQuery();
 
@@ -29,9 +36,18 @@ const MainView = () => {
                         <TeknegramIcon />
                     </div>
                     <div className="welcome-actions">
-                        <button className="main-view-welcome-button">Start New Project</button>
+                        <button 
+                            className="main-view-welcome-button"
+                            onClick={onOpenModal}
+                        >
+                            Start New Project
+                        </button>
                     </div>
                 </div>
+                {
+                    modalIsOpen ? <CreateProjectModal onClose={onCloseModal} /> : <></>
+                }
+        
             </section>
             
         );
@@ -42,6 +58,11 @@ const MainView = () => {
             <div>
                 <p>The main view</p>
             </div>
+            {
+                modalIsOpen
+                    ? <div onClick={onCloseModal}>HELLO!</div>
+                    : <></>
+            }
         </section>
     );
 };

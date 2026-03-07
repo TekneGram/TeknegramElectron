@@ -1,0 +1,83 @@
+.create-project-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    background: color-mix(in srgb, var(--color-bg) 35%, black 35%);
+    backdrop-filter: blur(6px);
+    z-index: 100;
+}
+
+.create-project-modal-panel {
+    width: min(640px, 100%);
+    position: relative;
+    border: 1px solid var(--color-border);
+    border-radius: 24px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    padding: 1.5rem;
+    box-shadow: 0 24px 60px color-mix(in srgb, var(--color-text) 16%, transparent);
+}
+
+.create-project-modal-panel::before {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: 23px;
+    border: 1px solid color-mix(in srgb, white 18%, transparent);
+    pointer-events: none;
+}
+
+.create-project-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+}
+
+.create-project-modal-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    line-height: 1;
+    letter-spacing: -0.03em;
+}
+
+.create-project-modal-subtitle {
+    margin: 0.45rem 0 0;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+}
+
+.create-project-modal-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 84px;
+    height: 32px;
+    padding: 0 0.85rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background-color: var(--color-surface-muted);
+    color: var(--color-text);
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 160ms ease,
+      border-color 160ms ease,
+      transform 160ms ease;
+}
+
+.create-project-modal-close:hover {
+    background-color: var(--color-surface);
+    border-color: color-mix(in srgb, var(--color-border) 75%, var(--color-accent));
+    transform: translateY(-1px);
+}
+
+.create-project-modal-close:active {
+    background-color: var(--color-surface-muted);
+    transform: translateY(0);
+}
