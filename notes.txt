@@ -1,10 +1,37 @@
-  1. Add one IPC channel registry file (electron/ipc/registerHandlers.ts) so main.ts stays clean.
-  2. Add input validation per request (zod/manual) before service calls.
-  3. Add correlation ID propagation into all service logs (not just IPC wrapper).
-  4. Define a stable error code list and keep user-facing messages mapped in frontend adapter.
-  5. Add a simple test for invokeRequest error mapping and one safeHandle unit test.
-  6. Add timeouts/retry policy for long C++ jobs.
-  7. Add cancellation support plan (job id + cancel channel) before async feature growth.
-  8. Add minimal telemetry counters (request success/failure per channel) in backend logs.
-  9. Add schema migration naming convention now (001_*.sql, 002_*.sql, etc.) and enforce it.
-  10. Add lint/typecheck/build pre-commit or CI gate before scale.
+  - electron/db/repositories/projectRepositories.ts
+    Add insert/query functions for projects, corpora, and corpus_files_path, plus a transaction-friendly shape if it is
+    not there already.
+  - electron/services/projects/createProject.ts
+    Main backend use case: validate request, decide output paths/UUIDs, run the native process with JSON input, and only
+    then insert database records.
+  - electron/ipc/registerHandlers.ts
+    Register a new IPC channel such as projects:create.
+  - src/app/ports/projects.ports.ts
+    Add the frontend contract type for creating a project and the response type.
+  - src/app/adapters/projects.adapters.ts
+    Add the adapter method that invokes projects:create.
+  - electron/runtime/runtimePaths.ts
+    Possibly add a helper for corpus output directories if the existing generated-data path helpers are not quite enough.
+  - electron/services/nativeProcessRunner.ts
+    Probably no new refactor needed now, but this is where the create service will plug in the JSON request and receive
+    progress callbacks.
+
+  If you want progress tracking in the same pass, also touch:
+
+  - electron/services/projects/createProjectJobs.ts
+    In-memory job store for status/progress.
+  - electron/services/projects/getCreateProjectStatus.ts
+    Read current status for polling.
+
+  Then a second IPC channel:
+
+  - electron/ipc/registerHandlers.ts
+    Add projects:create-status.
+
+  Recommended order:
+
+  1. repository inserts
+  2. createProject.ts service
+  3. projects:create IPC
+  4. frontend port + adapter
+  5. only then add job/progress polling

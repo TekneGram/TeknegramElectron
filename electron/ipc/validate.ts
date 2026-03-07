@@ -12,8 +12,7 @@ export function validateOrThrow<T>(schema: ZodType<T>, input: unknown): T {
 
     if (!result.success) {
         const details = formatValidationIssues(result.error.issues);
-
-            throw new AppException("VALIDATION_INVALID_PAYLOAD", "Invalid request payload", details, false);
+        throw new AppException("VALIDATION_INVALID_PAYLOAD", "Invalid request payload", details, false);
     }
 
     return result.data;

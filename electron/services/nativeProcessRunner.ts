@@ -1,7 +1,14 @@
+/**
+ * LEGACY CODE
+ * This was used earlier and was based on consuming with callbacks
+ * Newer version is a factory approach allowing async await
+ */
+
 import { spawn, type ChildProcessWithoutNullStreams } from "child_process";
 import fs from "node:fs";
 import { getExecutablePath } from "../runtime/runtimePaths";
 import type { AppError } from "../core/appError";
+import { raiseAppError } from "@electron/core/appException";
 
 export type NativeProgressMessage = {
     type: "progress";
@@ -56,37 +63,19 @@ class NativeProcessRunner<T = unknown> {
     private jsonMessages: NativeJsonMessage<T>[] = [];
     private finalResult: T | undefined;
 
-    constructor(params: NativeRunParams, callback: NativeRunCallback<T>) {
+    constructor(params: NativeRunParams) {
         this.params = params;
 
-        try {
-            const executablePath = getExecutablePath(params.executable);
-            if (!fs.existsSync(executablePath)) {
-                throw new Error(`Executable not found: ${executablePath}`);
-            }
-
-            this.nativeProcess = spawn(executablePath, params.argv ?? [], {
-                stdio: ["pipe", "pipe", "pipe"],
-                windowsHide: true,
-                env: process.env,
-            });
-
-            this.nativeProcess.on("error", (err: Error) => {
-                callback({
-                    code: "CPP_PROCESS_SPAWN_FAILED",
-                    message: err.message || "Failed to start native process",
-                    details: err.stack,
-                    retryable: false,
-                }, null);
-            });
-        } catch (err) {
-            callback({
-                code: "CPP_PROCESS_SPAWN_FAILED",
-                message: (err as Error).message || "Failed to start native process",
-                details: err instanceof Error ? err.stack : undefined,
-                retryable: false,
-            }, null);
+        const executablePath = getExecutablePath(params.executable);
+        if (!fs.existsSync(executablePath)) {
+            raiseAppError("FS_NOT_FOUND", "The executable path does not exist as specified");
         }
+
+        this.nativeProcess = spawn(executablePath, params.argv ?? [], {
+            stdio: ["pipe", "pipe", "pipe"],
+            windowsHide: true,
+            env: process.env,
+        });
     }
 
     runProcess(jsonData: string | undefined, callback: NativeRunCallback<T>): void {
