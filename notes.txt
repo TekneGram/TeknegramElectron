@@ -1,37 +1,142 @@
-  - electron/db/repositories/projectRepositories.ts
-    Add insert/query functions for projects, corpora, and corpus_files_path, plus a transaction-friendly shape if it is
-    not there already. DONE
-  - electron/services/projects/createProject.ts
-    Main backend use case: validate request, decide output paths/UUIDs, run the native process with JSON input, and only
-    then insert database records. DONE
+Todo list for wiring CreateProjectModal end to end:
+
+  1. Create a feature-level submit service for the modal.
+     File:
+
+  - src/features/CreateProjectModal/services/createProjectModal.service.ts
+    Purpose:
+  - call projectsAdapter.createProject(...)
+  - unwrap AppResult
+  - trigger notifications on failure/success
+  - return created project data
+
+  2. Add a local form-state hook for the modal.
+     File:
+
+  - src/features/CreateProjectModal/useCreateProjectForm.ts
+    Purpose:
+  - manage projectName
+  - manage corpusName
+  - manage folderPath
+  - manage optional semanticsRulesPath
+  - manage submitting/loading/error state
+
+  3. Build the modal form UI.
+     Files:
+
+  - src/features/CreateProjectModal/CreateProjectModal.tsx
+  - src/features/CreateProjectModal/CreateProjectModal.css
+    Fields:
+  - project name input
+  - corpus name input
+  - corpus folder picker / drop target
+  - semantic rules file picker
+  - submit button
+  - cancel/close button
+
+  4. Add a backend folder picker IPC command.
+     Electron files:
+
   - electron/ipc/registerHandlers.ts
-    Register a new IPC channel such as projects:create. DONE
-  - src/app/ports/projects.ports.ts
-    Add the frontend contract type for creating a project and the response type. DONE
-  - src/app/adapters/projects.adapters.ts
-    Add the adapter method that invokes projects:create. DONE
-  - electron/runtime/runtimePaths.ts
-    Possibly add a helper for corpus output directories if the existing generated-data path helpers are not quite enough. DONE
-  - electron/services/nativeProcessRunner.ts
-    Probably no new refactor needed now, but this is where the create service will plug in the JSON request and receive
-    progress callbacks. DONE
+  - likely a small service such as electron/services/system/pickFolder.ts
+    Purpose:
+  - open native directory dialog
+  - return selected folder path or null
 
-  If you want progress tracking in the same pass, also touch:
-
-  - electron/services/projects/createProjectJobs.ts
-    In-memory job store for status/progress.
-  - electron/services/projects/getCreateProjectStatus.ts
-    Read current status for polling.
-
-  Then a second IPC channel:
+  5. Add a backend file picker IPC command for semantic rules.
+     Electron files:
 
   - electron/ipc/registerHandlers.ts
-    Add projects:create-status.
+  - likely a small service such as electron/services/system/pickSemanticRulesFile.ts
+    Purpose:
+  - open native file dialog
+  - restrict to .tsv if possible
+  - return selected file path or null
 
-  Recommended order:
+  6. Expose picker contracts in IPC contracts.
+     Files:
 
-  1. repository inserts
-  2. createProject.ts service
-  3. projects:create IPC
-  4. frontend port + adapter
-  5. only then add job/progress polling
+  - electron/ipc/contracts/system.contracts.ts
+    Purpose:
+  - define request/response types for folder picking and file picking
+
+  7. Add validation schemas for picker requests if needed.
+     Files:
+
+  - electron/ipc/validationSchemas/system.schemas.ts
+    Purpose:
+  - validate any picker options payloads if you pass them through IPC
+
+  8. Add frontend ports for the picker operations.
+     File:
+
+  - src/app/ports/system.ports.ts
+    Purpose:
+  - define methods like:
+      - pickCorpusFolder()
+      - pickSemanticsRulesFile()
+
+  9. Add frontend adapters for the picker operations.
+     File:
+
+  - src/app/adapters/system.adapters.ts
+    Purpose:
+  - call the IPC channels
+  - return AppResult<string | null> or similar
+
+  10. Wire picker buttons into the modal.
+     In CreateProjectModal.tsx:
+
+  - “Select folder” button calls folder picker adapter/service
+  - “Select semantic rules file” button calls file picker adapter/service
+  - selected paths populate form state
+
+  11. Add drag-and-drop support for the corpus folder.
+     In the modal UI:
+
+  - allow dropping a folder if Electron/browser path access supports it
+  - use dropped folder path to populate folderPath
+    Note:
+  - folder picker via native dialog is easier and more reliable as the first implementation
+  - drag-and-drop can be added second
+
+  12. Connect modal submit to the project create adapter.
+     In feature service/hook:
+
+  - build CreateProjectRequest
+  - call projectsAdapter.createProject(...)
+  - close modal on success
+  - show error toast on failure
+
+  13. Refresh project list after successful create.
+     Use React Query invalidation:
+
+  - invalidate ["projects"]
+    Files likely involved:
+  - modal service or modal submit hook
+    Purpose:
+  - header and main view refresh automatically
+
+  14. Decide how to handle loading state in the modal.
+     UI behavior:
+
+  - disable inputs while submitting
+  - disable close if you want strict flow, or allow close while work continues
+  - show spinner / progress placeholder
+
+  15. Add progress handling later.
+     After basic submission works:
+
+  - backend returns or manages job/progress state
+  - modal shows progress bar and status text while C++ runs
+  - query invalidation happens on success
+
+  Recommended implementation order:
+
+  1. modal form state
+  2. folder picker IPC + frontend adapter
+  3. semantic rules file picker IPC + frontend adapter
+  4. modal submit service using projectsAdapter.createProject(...)
+  5. query invalidation on success
+  6. drag-and-drop
+  7. progress bar / job status
