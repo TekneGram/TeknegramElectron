@@ -154,7 +154,7 @@ function requireNonEmptyString(value: string, fieldName: string): string {
 
     if(!trimmed) {
         raiseAppError("VALIDATION_MISSING_FIELD", `${fieldName} cannot be empty`)
-    };
+    }
 
     return trimmed;
 }

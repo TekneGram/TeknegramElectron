@@ -47,7 +47,7 @@ export function insertProject(db: SqliteDatabase, row: NewProjectRow): void {
         `,
         [row.uuid, row.project_name, row.created_at]
     );
-};
+}
 
 export function insertCorpus(db: SqliteDatabase, row: NewCorpusRow): void {
     executeRun(
