@@ -1,18 +1,12 @@
 import './App.css';
-import ChatInterface from '@/layout/ChatInterface';
-import Header from '@/layout/Header';
-import MainView from '@/layout/MainView';
-import Sidebar from '@/layout/Sidebar';
+import WindowPane from './layout/WindowPane';
 
 function App() {
   
 
   return (
     <>
-      <Header />
-      <Sidebar />
-      <MainView />
-      <ChatInterface />
+      <WindowPane />
     </>
   )
 }

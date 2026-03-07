@@ -1,20 +1,20 @@
   - electron/db/repositories/projectRepositories.ts
     Add insert/query functions for projects, corpora, and corpus_files_path, plus a transaction-friendly shape if it is
-    not there already.
+    not there already. DONE
   - electron/services/projects/createProject.ts
     Main backend use case: validate request, decide output paths/UUIDs, run the native process with JSON input, and only
-    then insert database records.
+    then insert database records. DONE
   - electron/ipc/registerHandlers.ts
-    Register a new IPC channel such as projects:create.
+    Register a new IPC channel such as projects:create. DONE
   - src/app/ports/projects.ports.ts
-    Add the frontend contract type for creating a project and the response type.
+    Add the frontend contract type for creating a project and the response type. DONE
   - src/app/adapters/projects.adapters.ts
-    Add the adapter method that invokes projects:create.
+    Add the adapter method that invokes projects:create. DONE
   - electron/runtime/runtimePaths.ts
-    Possibly add a helper for corpus output directories if the existing generated-data path helpers are not quite enough.
+    Possibly add a helper for corpus output directories if the existing generated-data path helpers are not quite enough. DONE
   - electron/services/nativeProcessRunner.ts
     Probably no new refactor needed now, but this is where the create service will plug in the JSON request and receive
-    progress callbacks.
+    progress callbacks. DONE
 
   If you want progress tracking in the same pass, also touch:
 

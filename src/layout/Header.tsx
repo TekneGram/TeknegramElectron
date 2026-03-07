@@ -2,11 +2,17 @@ import ThemeToggle from '@/features/ThemeToggle/ThemeToggle';
 import ProjectsTinyView from '@/features/ProjectsTinyView/ProjectsTinyView';
 import '@/styles/layout.css';
 
-const Header = () => {
+interface HeaderProps {
+    onOpenModal: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onOpenModal }) => {
     return (
         <section className="header-bar">
             <div className="header-title">
-                <ProjectsTinyView />
+                <ProjectsTinyView 
+                    onOpenModal={onOpenModal}
+                />
             </div>
             <div className="header-actions">
                 <ThemeToggle />
