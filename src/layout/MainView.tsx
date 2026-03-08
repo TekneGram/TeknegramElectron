@@ -2,6 +2,7 @@ import TeknegramIcon from './MainView/TeknegramIcon';
 import '@/styles/layout.css';
 import { useListProjectsQuery } from '@/features/ProjectsTinyView/hooks/useProjectsQuery';
 import CreateProjectModal from '@/features/CreateProjectModal/CreateProjectModal';
+import { useState } from 'react';
 
 interface MainViewProps {
     modalIsOpen: boolean;
@@ -12,6 +13,12 @@ interface MainViewProps {
 const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsOpen }) => {
 
     const { data, isLoading, isError } = useListProjectsQuery();
+    const [transitionScreen, setTransitionScreen] = useState<boolean>(false);
+
+    function handleSuccessfulCreation() {
+        onCloseModal(); // Close the modal
+        setTransitionScreen(true);
+    }
 
     if (isLoading) {
         return(<p>Loading!</p>);
@@ -45,7 +52,10 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
                     </div>
                 </div>
                 {
-                    modalIsOpen ? <CreateProjectModal onClose={onCloseModal} /> : <></>
+                    modalIsOpen ? <CreateProjectModal onClose={onCloseModal} onSuccessfulCreation={handleSuccessfulCreation} /> : <></>
+                }
+                {
+                    transitionScreen ? <p>Transitioning</p> : <></>
                 }
         
             </section>
