@@ -22,14 +22,14 @@
     align-items: center;
     justify-content: center;
     min-width: 132px;
-    height: 36px;
+    height: var(--control-height-md);
     padding: 0 1rem;
     border: 1px solid var(--color-border);
-    border-radius: 999px;
-    background-color: var(--color-surface-muted);
+    border-radius: var(--radius-pill);
+    background-color: var(--color-control-surface);
     color: var(--color-text);
     font: inherit;
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     cursor: pointer;
     transition:
         background-color 160ms ease,
@@ -39,18 +39,18 @@
 }
 
 .corpus-folder-picker-button:hover:not(:disabled) {
-    background-color: var(--color-surface);
-    border-color: color-mix(in srgb, var(--color-border) 75%, var(--color-accent));
+    background-color: var(--color-control-hover-surface);
+    border-color: var(--color-control-hover-border);
     transform: translateY(-1px);
 }
 
 .corpus-folder-picker-button:active:not(:disabled) {
-    background-color: var(--color-surface-muted);
+    background-color: var(--color-control-active-surface);
     transform: translateY(0);
 }
 
 .corpus-folder-picker-button:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--color-accent) 65%, white);
+    outline: 2px solid var(--color-focus-ring-soft);
     outline-offset: 2px;
 }
 
@@ -61,18 +61,18 @@
 
 .corpus-folder-dropzone {
     min-height: 132px;
-    border: 1px dashed color-mix(in srgb, var(--color-border) 82%, transparent);
-    border-radius: 18px;
+    border: 1px dashed var(--color-dropzone-border);
+    border-radius: var(--radius-3xl);
     background:
         radial-gradient(
             circle at 1px 1px,
-            color-mix(in srgb, var(--color-border) 28%, transparent) 1px,
+            var(--color-dropzone-pattern) 1px,
             transparent 0
         ),
         linear-gradient(
             180deg,
-            color-mix(in srgb, var(--color-surface) 94%, transparent),
-            color-mix(in srgb, var(--color-surface-muted) 92%, transparent)
+            var(--color-dropzone-surface-start),
+            var(--color-dropzone-surface-end)
         );
     background-size: 14px 14px, auto;
     display: flex;
@@ -88,20 +88,20 @@
 }
 
 .corpus-folder-dropzone.is-drag-active {
-    border-color: color-mix(in srgb, var(--color-accent) 55%, var(--color-border));
+    border-color: var(--color-dropzone-active-border);
     background:
         radial-gradient(
             circle at 1px 1px,
-            color-mix(in srgb, var(--color-border) 24%, transparent) 1px,
+            var(--color-dropzone-active-pattern) 1px,
             transparent 0
         ),
         linear-gradient(
             180deg,
-            color-mix(in srgb, var(--color-surface) 82%, var(--color-accent)),
-            color-mix(in srgb, var(--color-surface-muted) 88%, var(--color-accent))
+            var(--color-dropzone-active-start),
+            var(--color-dropzone-active-end)
         );
     background-size: 14px 14px, auto;
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 12%, transparent);
+    box-shadow: 0 0 0 3px var(--color-focus-ring-shadow-soft);
     transform: translateY(-1px);
 }
 
@@ -132,9 +132,9 @@
 }
 
 .corpus-folder-selected-label {
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-size: var(--font-size-label-md);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--letter-spacing-label);
     text-transform: uppercase;
     color: var(--color-text-muted);
 }
@@ -142,9 +142,9 @@
 .corpus-folder-selected-path {
     display: block;
     padding: 0.85rem 0.95rem;
-    border-radius: 14px;
-    background-color: color-mix(in srgb, var(--color-input-bg) 88%, var(--color-surface));
-    border: 1px solid color-mix(in srgb, var(--color-input-border) 85%, transparent);
+    border-radius: var(--radius-xl);
+    background-color: var(--color-selected-surface);
+    border: 1px solid var(--color-selected-border);
     color: var(--color-text);
     line-height: 1.35;
     word-break: break-word;

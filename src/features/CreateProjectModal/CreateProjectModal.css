@@ -3,8 +3,8 @@
     inset: 0;
     display: grid;
     place-items: center;
-    padding: 1.5rem;
-    background: color-mix(in srgb, var(--color-bg) 35%, black 35%);
+    padding: var(--space-6);
+    background: var(--color-overlay-backdrop-strong);
     backdrop-filter: blur(6px);
     z-index: 100;
 }
@@ -13,11 +13,11 @@
     width: min(640px, 100%);
     position: relative;
     border: 1px solid var(--color-border);
-    border-radius: 24px;
+    border-radius: var(--radius-5xl);
     background: var(--color-surface);
     color: var(--color-text);
-    padding: 1.5rem;
-    box-shadow: 0 24px 60px color-mix(in srgb, var(--color-text) 16%, transparent);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-elevation-lg);
 }
 
 .create-project-modal-panel::before {
@@ -25,7 +25,7 @@
     position: absolute;
     inset: 1px;
     border-radius: 23px;
-    border: 1px solid color-mix(in srgb, white 18%, transparent);
+    border: 1px solid var(--color-panel-highlight);
     pointer-events: none;
 }
 
@@ -34,8 +34,8 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-panel-border-subtle);
 }
 
 .create-project-modal-title {
@@ -43,7 +43,7 @@
     font-family: var(--font-display);
     font-size: 1.6rem;
     line-height: 1;
-    letter-spacing: -0.03em;
+    letter-spacing: var(--letter-spacing-display-tight);
 }
 
 .create-project-modal-subtitle {
@@ -57,14 +57,14 @@
     align-items: center;
     justify-content: center;
     min-width: 84px;
-    height: 32px;
+    height: var(--control-height-sm);
     padding: 0 0.85rem;
     border: 1px solid var(--color-border);
-    border-radius: 999px;
-    background-color: var(--color-surface-muted);
+    border-radius: var(--radius-pill);
+    background-color: var(--color-control-surface);
     color: var(--color-text);
     font: inherit;
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     cursor: pointer;
     transition: background-color 160ms ease,
       border-color 160ms ease,
@@ -72,13 +72,13 @@
 }
 
 .create-project-modal-close:hover {
-    background-color: var(--color-surface);
-    border-color: color-mix(in srgb, var(--color-border) 75%, var(--color-accent));
+    background-color: var(--color-control-hover-surface);
+    border-color: var(--color-control-hover-border);
     transform: translateY(-1px);
 }
 
 .create-project-modal-close:active {
-    background-color: var(--color-surface-muted);
+    background-color: var(--color-control-active-surface);
     transform: translateY(0);
 }
 
@@ -89,19 +89,19 @@
 }
 
 .create-project-field-label {
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
+    font-size: var(--font-size-label-md);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--letter-spacing-label);
     text-transform: uppercase;
     color: var(--color-text-muted);
 }
 
 .create-project-text-input {
     width: 100%;
-    height: 46px;
+    height: var(--control-height-field);
     padding: 0 0.95rem;
     border: 1px solid var(--color-input-border);
-    border-radius: 14px;
+    border-radius: var(--radius-xl);
     background: var(--color-input-bg);
     color: var(--color-text);
     font: inherit;
@@ -113,17 +113,17 @@
 }
 
 .create-project-text-input::placeholder {
-    color: color-mix(in srgb, var(--color-text-muted) 75%, transparent);
+    color: var(--color-field-placeholder);
 }
 
 .create-project-text-input:hover {
-    border-color: color-mix(in srgb, var(--color-input-border) 70%, var(--color-accent));
+    border-color: var(--color-field-hover-border);
 }
 
 .create-project-text-input:focus-visible {
     outline: none;
-    border-color: color-mix(in srgb, var(--color-accent) 60%, var(--color-input-border));
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 14%, transparent);
+    border-color: var(--color-field-focus-border);
+    box-shadow: 0 0 0 3px var(--color-focus-ring-shadow-strong);
 }
 
 .create-project-modal-body {
@@ -137,8 +137,8 @@
     align-items: center;
     justify-content: flex-end;
     gap: 0.75rem;
-    padding-top: 1rem;
-    border-top: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-panel-border-subtle);
 }
 
 .create-project-modal-reset,
@@ -147,11 +147,11 @@
     align-items: center;
     justify-content: center;
     min-width: 118px;
-    height: 40px;
+    height: var(--control-height-lg);
     padding: 0 1rem;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     font: inherit;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
     cursor: pointer;
     transition:
         background-color 160ms ease,
@@ -164,61 +164,61 @@
 
 .create-project-modal-reset {
     border: 1px solid var(--color-border);
-    background-color: var(--color-surface-muted);
+    background-color: var(--color-control-surface);
     color: var(--color-text);
 }
 
 .create-project-modal-reset:hover:not(:disabled) {
-    background-color: var(--color-surface);
-    border-color: color-mix(in srgb, var(--color-border) 75%, var(--color-accent));
+    background-color: var(--color-control-hover-surface);
+    border-color: var(--color-control-hover-border);
     transform: translateY(-1px);
 }
 
 .create-project-modal-reset:active:not(:disabled) {
-    background-color: var(--color-surface-muted);
+    background-color: var(--color-control-active-surface);
     transform: translateY(0);
 }
 
 .create-project-modal-button {
-    border: 1px solid var(--color-welcome-button-border);
+    border: 1px solid var(--color-action-primary-border);
     background: linear-gradient(
         135deg,
-        var(--color-welcome-button-start),
-        var(--color-welcome-button-end)
+        var(--color-action-primary-start),
+        var(--color-action-primary-end)
     );
-    color: var(--color-welcome-button-text);
+    color: var(--color-action-primary-text);
     box-shadow:
-        0 12px 28px color-mix(in srgb, var(--color-text) 10%, transparent),
-        inset 0 1px 0 color-mix(in srgb, white 22%, transparent);
+        var(--shadow-interactive),
+        var(--shadow-inset-highlight-soft);
 }
 
 .create-project-modal-button:hover:not(:disabled) {
     background: linear-gradient(
         135deg,
-        var(--color-welcome-button-hover-start),
-        var(--color-welcome-button-hover-end)
+        var(--color-action-primary-hover-start),
+        var(--color-action-primary-hover-end)
     );
     transform: translateY(-1px);
     box-shadow:
-        0 16px 34px color-mix(in srgb, var(--color-text) 12%, transparent),
-        inset 0 1px 0 color-mix(in srgb, white 20%, transparent);
+        var(--shadow-interactive-hover),
+        var(--shadow-inset-highlight-soft-hover);
 }
 
 .create-project-modal-button:active:not(:disabled) {
     background: linear-gradient(
         135deg,
-        var(--color-welcome-button-active-start),
-        var(--color-welcome-button-active-end)
+        var(--color-action-primary-active-start),
+        var(--color-action-primary-active-end)
     );
     transform: translateY(0);
     box-shadow:
-        0 8px 18px color-mix(in srgb, var(--color-text) 10%, transparent),
-        inset 0 1px 0 color-mix(in srgb, white 14%, transparent);
+        var(--shadow-interactive-active),
+        var(--shadow-inset-highlight-soft-active);
 }
 
 .create-project-modal-reset:focus-visible,
 .create-project-modal-button:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--color-accent) 60%, white);
+    outline: 2px solid var(--color-focus-ring);
     outline-offset: 2px;
 }
 
@@ -231,13 +231,36 @@
 }
 
 :root[data-theme="dark"] .create-project-modal-button {
-    box-shadow: inset 0 1px 0 color-mix(in srgb, white 8%, transparent);
+    box-shadow: var(--shadow-inset-highlight-soft);
 }
 
 :root[data-theme="dark"] .create-project-modal-button:hover:not(:disabled) {
-    box-shadow: inset 0 1px 0 color-mix(in srgb, white 8%, transparent);
+    box-shadow: var(--shadow-inset-highlight-soft-hover);
 }
 
 :root[data-theme="dark"] .create-project-modal-button:active:not(:disabled) {
-    box-shadow: inset 0 1px 0 color-mix(in srgb, white 6%, transparent);
+    box-shadow: var(--shadow-inset-highlight-soft-active);
+}
+
+.create-project-error-message {
+    margin-top: var(--space-4);
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--color-error-border);
+    border-radius: var(--radius-xl);
+    background:
+        linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--color-error-surface) 94%, var(--color-surface)),
+            var(--color-error-surface)
+        );
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--color-error-border) 14%, transparent),
+        0 10px 24px var(--color-error-shadow);
+}
+
+.create-project-error-message p {
+    margin: 0;
+    color: var(--color-error-text);
+    font-size: 0.94rem;
+    line-height: 1.5;
 }

@@ -4,12 +4,47 @@
     --space-2: 0.5rem;
     --space-3: 0.75rem;
     --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
 
     --font-ui: "IBM Plex Sans", sans-serif;
     --font-display: "Space Grotesk", sans-serif;
+    --font-code: ui-monospace, SFMono-Regular, Menlo, monospace;
 
     --radius-sm: 6px;
     --radius-md: 10px;
+    --radius-lg: 12px;
+    --radius-xl: 14px;
+    --radius-2xl: 16px;
+    --radius-3xl: 18px;
+    --radius-4xl: 20px;
+    --radius-5xl: 24px;
+    --radius-pill: 999px;
+    --radius-focus: 4px;
+
+    --control-height-xs: 20px;
+    --control-height-sm: 32px;
+    --control-height-md: 36px;
+    --control-height-lg: 40px;
+    --control-height-xl: 44px;
+    --control-height-field: 46px;
+
+    --font-size-label-sm: 0.74rem;
+    --font-size-label-md: 0.78rem;
+    --font-size-caption-sm: 0.86rem;
+    --font-size-caption-md: 0.88rem;
+    --font-size-caption-lg: 0.92rem;
+    --font-size-body-sm: 0.95rem;
+
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --letter-spacing-label: 0.08em;
+    --letter-spacing-display-tight: -0.03em;
+    --letter-spacing-display-mid: -0.02em;
+
+    --motion-duration-fast: 160ms;
+    --motion-duration-spinner: 900ms;
+    --motion-ease-standard: ease;
 
     --shadow-panel: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
@@ -31,13 +66,89 @@
     --color-accent: #2f6fed;
     --color-accent-contrast: #ffffff;
 
-    --color-welcome-button-text: #1c5c63;
-    --color-welcome-button-border: #c7c28d;
-    --color-welcome-button-hover: #CCCC9F;
-    --color-welcome-button-active: #959873;
+    --color-action-primary-text: #1c5c63;
+    --color-action-primary-border: #c7c28d;
+    --color-action-primary-bg: #f0ece3;
+    --color-action-primary-hover-bg: #cccc9f;
+    --color-action-primary-active-bg: #959873;
+    --color-action-primary-start: #f0ece3;
+    --color-action-primary-end: #f0ece3;
+    --color-action-primary-hover-start: #cccc9f;
+    --color-action-primary-hover-end: #cccc9f;
+    --color-action-primary-active-start: #959873;
+    --color-action-primary-active-end: #959873;
 
     --color-input-bg: #ffffff;
     --color-input-border: #cfc7b8;
+    --color-error-text: #8e3b37;
+    --color-error-border: #d8a8a2;
+    --color-error-surface: #f8e8e4;
+
+    --color-panel-border-subtle: color-mix(in srgb, var(--color-border) 80%, transparent);
+    --color-panel-highlight: color-mix(in srgb, white 18%, transparent);
+    --color-field-placeholder: color-mix(in srgb, var(--color-text-muted) 75%, transparent);
+    --color-field-hover-border: color-mix(in srgb, var(--color-input-border) 70%, var(--color-accent));
+    --color-field-focus-border: color-mix(in srgb, var(--color-accent) 60%, var(--color-input-border));
+    --color-control-hover-border: color-mix(in srgb, var(--color-border) 75%, var(--color-accent));
+    --color-control-hover-border-strong: color-mix(in srgb, var(--color-border) 78%, var(--color-accent));
+    --color-control-surface: var(--color-surface-muted);
+    --color-control-surface-subtle: color-mix(in srgb, var(--color-surface-muted) 92%, transparent);
+    --color-control-hover-surface: var(--color-surface);
+    --color-control-active-surface: var(--color-surface-muted);
+    --color-focus-ring: color-mix(in srgb, var(--color-accent) 60%, white);
+    --color-focus-ring-soft: color-mix(in srgb, var(--color-accent) 65%, white);
+    --color-focus-ring-subtle: color-mix(in srgb, var(--color-accent) 55%, white);
+    --color-focus-ring-shadow-strong: color-mix(in srgb, var(--color-accent) 14%, transparent);
+    --color-focus-ring-shadow-soft: color-mix(in srgb, var(--color-accent) 12%, transparent);
+    --color-dropzone-border: color-mix(in srgb, var(--color-border) 82%, transparent);
+    --color-dropzone-border-soft: color-mix(in srgb, var(--color-border) 74%, transparent);
+    --color-dropzone-pattern: color-mix(in srgb, var(--color-border) 28%, transparent);
+    --color-dropzone-pattern-soft: color-mix(in srgb, var(--color-border) 24%, transparent);
+    --color-dropzone-surface-start: color-mix(in srgb, var(--color-surface) 94%, transparent);
+    --color-dropzone-surface-end: color-mix(in srgb, var(--color-surface-muted) 92%, transparent);
+    --color-dropzone-surface-start-soft: color-mix(in srgb, var(--color-surface) 96%, transparent);
+    --color-dropzone-surface-end-soft: color-mix(in srgb, var(--color-surface-muted) 95%, transparent);
+    --color-dropzone-active-border: color-mix(in srgb, var(--color-accent) 55%, var(--color-border));
+    --color-dropzone-active-border-soft: color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
+    --color-dropzone-active-pattern: color-mix(in srgb, var(--color-border) 24%, transparent);
+    --color-dropzone-active-pattern-soft: color-mix(in srgb, var(--color-border) 20%, transparent);
+    --color-dropzone-active-start: color-mix(in srgb, var(--color-surface) 82%, var(--color-accent));
+    --color-dropzone-active-end: color-mix(in srgb, var(--color-surface-muted) 88%, var(--color-accent));
+    --color-dropzone-active-start-soft: color-mix(in srgb, var(--color-surface) 88%, var(--color-accent));
+    --color-dropzone-active-end-soft: color-mix(in srgb, var(--color-surface-muted) 92%, var(--color-accent));
+    --color-selected-surface: color-mix(in srgb, var(--color-input-bg) 88%, var(--color-surface));
+    --color-selected-surface-soft: color-mix(in srgb, var(--color-input-bg) 90%, var(--color-surface));
+    --color-selected-border: color-mix(in srgb, var(--color-input-border) 85%, transparent);
+    --color-selected-border-soft: color-mix(in srgb, var(--color-input-border) 82%, transparent);
+    --color-overlay-backdrop-strong: color-mix(in srgb, var(--color-bg) 35%, black 35%);
+    --color-overlay-backdrop-soft: color-mix(in srgb, var(--color-bg) 42%, black 20%);
+    --color-card-surface-start: color-mix(in srgb, var(--color-surface) 95%, transparent);
+    --color-card-surface-end: color-mix(in srgb, var(--color-surface-muted) 96%, transparent);
+    --color-card-surface-start-soft: color-mix(in srgb, var(--color-surface) 94%, transparent);
+    --color-card-surface-end-soft: color-mix(in srgb, var(--color-surface-muted) 96%, transparent);
+    --color-code-surface: color-mix(in srgb, var(--color-input-bg) 92%, var(--color-surface));
+    --color-code-border: color-mix(in srgb, var(--color-input-border) 82%, transparent);
+    --color-spinner-track: color-mix(in srgb, var(--color-border) 70%, transparent);
+    --color-folder-icon: color-mix(in srgb, #d3b45c 78%, var(--color-surface));
+    --color-folder-icon-tab: color-mix(in srgb, #d9be72 82%, var(--color-surface));
+    --color-error-shadow: color-mix(in srgb, #c9685f 12%, transparent);
+
+    --shadow-elevation-md: 0 18px 42px color-mix(in srgb, var(--color-text) 14%, transparent);
+    --shadow-elevation-lg: 0 24px 60px color-mix(in srgb, var(--color-text) 16%, transparent);
+    --shadow-elevation-xl: 0 24px 60px color-mix(in srgb, var(--color-text) 10%, transparent);
+    --shadow-floating: 0 10px 22px color-mix(in srgb, var(--color-text) 10%, transparent);
+    --shadow-interactive: 0 12px 28px color-mix(in srgb, var(--color-text) 10%, transparent);
+    --shadow-interactive-hover: 0 16px 34px color-mix(in srgb, var(--color-text) 12%, transparent);
+    --shadow-interactive-active: 0 8px 18px color-mix(in srgb, var(--color-text) 10%, transparent);
+    --shadow-welcome: 0 24px 60px color-mix(in srgb, var(--color-text) 10%, transparent);
+    --shadow-welcome-button: 0 14px 30px color-mix(in srgb, var(--color-text) 10%, transparent);
+    --shadow-welcome-button-hover: 0 18px 36px color-mix(in srgb, var(--color-text) 14%, transparent);
+    --shadow-welcome-button-active: 0 8px 18px color-mix(in srgb, var(--color-text) 10%, transparent);
+    --shadow-inset-highlight-strong: inset 0 1px 0 color-mix(in srgb, white 35%, transparent);
+    --shadow-inset-highlight-md: inset 0 1px 0 color-mix(in srgb, white 30%, transparent);
+    --shadow-inset-highlight-soft: inset 0 1px 0 color-mix(in srgb, white 22%, transparent);
+    --shadow-inset-highlight-soft-hover: inset 0 1px 0 color-mix(in srgb, white 20%, transparent);
+    --shadow-inset-highlight-soft-active: inset 0 1px 0 color-mix(in srgb, white 14%, transparent);
 }
 
 /* Dark mode */
@@ -57,13 +168,89 @@
     --color-accent: #6ea2ff;
     --color-accent-contrast: #101318;
 
-    --color-welcome-button-text: #d8d0c1;
-    --color-welcome-button-border: #4a453d;
-    --color-welcome-button-hover: #433f36;
-    --color-welcome-button-active: #302d27;
+    --color-action-primary-text: #d8d0c1;
+    --color-action-primary-border: #4a453d;
+    --color-action-primary-bg: #2b2824;
+    --color-action-primary-hover-bg: #433f36;
+    --color-action-primary-active-bg: #302d27;
+    --color-action-primary-start: #2b2824;
+    --color-action-primary-end: #2b2824;
+    --color-action-primary-hover-start: #433f36;
+    --color-action-primary-hover-end: #433f36;
+    --color-action-primary-active-start: #302d27;
+    --color-action-primary-active-end: #302d27;
 
     --color-input-bg: #1d1b18;
     --color-input-border: #4a453d;
+    --color-error-text: #f1b3ab;
+    --color-error-border: #7a4b47;
+    --color-error-surface: #3a2523;
+
+    --color-panel-border-subtle: color-mix(in srgb, var(--color-border) 80%, transparent);
+    --color-panel-highlight: color-mix(in srgb, white 18%, transparent);
+    --color-field-placeholder: color-mix(in srgb, var(--color-text-muted) 75%, transparent);
+    --color-field-hover-border: color-mix(in srgb, var(--color-input-border) 70%, var(--color-accent));
+    --color-field-focus-border: color-mix(in srgb, var(--color-accent) 60%, var(--color-input-border));
+    --color-control-hover-border: color-mix(in srgb, var(--color-border) 75%, var(--color-accent));
+    --color-control-hover-border-strong: color-mix(in srgb, var(--color-border) 78%, var(--color-accent));
+    --color-control-surface: var(--color-surface-muted);
+    --color-control-surface-subtle: color-mix(in srgb, var(--color-surface-muted) 92%, transparent);
+    --color-control-hover-surface: var(--color-surface);
+    --color-control-active-surface: var(--color-surface-muted);
+    --color-focus-ring: color-mix(in srgb, var(--color-accent) 60%, white);
+    --color-focus-ring-soft: color-mix(in srgb, var(--color-accent) 65%, white);
+    --color-focus-ring-subtle: color-mix(in srgb, var(--color-accent) 55%, white);
+    --color-focus-ring-shadow-strong: color-mix(in srgb, var(--color-accent) 14%, transparent);
+    --color-focus-ring-shadow-soft: color-mix(in srgb, var(--color-accent) 12%, transparent);
+    --color-dropzone-border: color-mix(in srgb, var(--color-border) 82%, transparent);
+    --color-dropzone-border-soft: color-mix(in srgb, var(--color-border) 74%, transparent);
+    --color-dropzone-pattern: color-mix(in srgb, var(--color-border) 28%, transparent);
+    --color-dropzone-pattern-soft: color-mix(in srgb, var(--color-border) 24%, transparent);
+    --color-dropzone-surface-start: color-mix(in srgb, var(--color-surface) 94%, transparent);
+    --color-dropzone-surface-end: color-mix(in srgb, var(--color-surface-muted) 92%, transparent);
+    --color-dropzone-surface-start-soft: color-mix(in srgb, var(--color-surface) 96%, transparent);
+    --color-dropzone-surface-end-soft: color-mix(in srgb, var(--color-surface-muted) 95%, transparent);
+    --color-dropzone-active-border: color-mix(in srgb, var(--color-accent) 55%, var(--color-border));
+    --color-dropzone-active-border-soft: color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
+    --color-dropzone-active-pattern: color-mix(in srgb, var(--color-border) 24%, transparent);
+    --color-dropzone-active-pattern-soft: color-mix(in srgb, var(--color-border) 20%, transparent);
+    --color-dropzone-active-start: color-mix(in srgb, var(--color-surface) 82%, var(--color-accent));
+    --color-dropzone-active-end: color-mix(in srgb, var(--color-surface-muted) 88%, var(--color-accent));
+    --color-dropzone-active-start-soft: color-mix(in srgb, var(--color-surface) 88%, var(--color-accent));
+    --color-dropzone-active-end-soft: color-mix(in srgb, var(--color-surface-muted) 92%, var(--color-accent));
+    --color-selected-surface: color-mix(in srgb, var(--color-input-bg) 88%, var(--color-surface));
+    --color-selected-surface-soft: color-mix(in srgb, var(--color-input-bg) 90%, var(--color-surface));
+    --color-selected-border: color-mix(in srgb, var(--color-input-border) 85%, transparent);
+    --color-selected-border-soft: color-mix(in srgb, var(--color-input-border) 82%, transparent);
+    --color-overlay-backdrop-strong: color-mix(in srgb, var(--color-bg) 35%, black 35%);
+    --color-overlay-backdrop-soft: color-mix(in srgb, var(--color-bg) 42%, black 20%);
+    --color-card-surface-start: color-mix(in srgb, var(--color-surface) 95%, transparent);
+    --color-card-surface-end: color-mix(in srgb, var(--color-surface-muted) 96%, transparent);
+    --color-card-surface-start-soft: color-mix(in srgb, var(--color-surface) 94%, transparent);
+    --color-card-surface-end-soft: color-mix(in srgb, var(--color-surface-muted) 96%, transparent);
+    --color-code-surface: color-mix(in srgb, var(--color-input-bg) 92%, var(--color-surface));
+    --color-code-border: color-mix(in srgb, var(--color-input-border) 82%, transparent);
+    --color-spinner-track: color-mix(in srgb, var(--color-border) 70%, transparent);
+    --color-folder-icon: color-mix(in srgb, #d3b45c 78%, var(--color-surface));
+    --color-folder-icon-tab: color-mix(in srgb, #d9be72 82%, var(--color-surface));
+    --color-error-shadow: color-mix(in srgb, #d9796f 18%, transparent);
+
+    --shadow-elevation-md: 0 18px 42px color-mix(in srgb, var(--color-text) 14%, transparent);
+    --shadow-elevation-lg: 0 24px 60px color-mix(in srgb, var(--color-text) 16%, transparent);
+    --shadow-elevation-xl: 0 24px 60px color-mix(in srgb, var(--color-text) 10%, transparent);
+    --shadow-floating: 0 10px 22px color-mix(in srgb, var(--color-text) 10%, transparent);
+    --shadow-interactive: 0 12px 28px color-mix(in srgb, var(--color-text) 10%, transparent);
+    --shadow-interactive-hover: 0 16px 34px color-mix(in srgb, var(--color-text) 12%, transparent);
+    --shadow-interactive-active: 0 8px 18px color-mix(in srgb, var(--color-text) 10%, transparent);
+    --shadow-welcome: 0 24px 60px color-mix(in srgb, var(--color-text) 10%, transparent);
+    --shadow-welcome-button: 0 14px 30px color-mix(in srgb, var(--color-text) 10%, transparent);
+    --shadow-welcome-button-hover: 0 18px 36px color-mix(in srgb, var(--color-text) 14%, transparent);
+    --shadow-welcome-button-active: 0 8px 18px color-mix(in srgb, var(--color-text) 10%, transparent);
+    --shadow-inset-highlight-strong: inset 0 1px 0 color-mix(in srgb, white 35%, transparent);
+    --shadow-inset-highlight-md: inset 0 1px 0 color-mix(in srgb, white 30%, transparent);
+    --shadow-inset-highlight-soft: inset 0 1px 0 color-mix(in srgb, white 8%, transparent);
+    --shadow-inset-highlight-soft-hover: inset 0 1px 0 color-mix(in srgb, white 8%, transparent);
+    --shadow-inset-highlight-soft-active: inset 0 1px 0 color-mix(in srgb, white 6%, transparent);
 }
 
 /* Shared global usage */
