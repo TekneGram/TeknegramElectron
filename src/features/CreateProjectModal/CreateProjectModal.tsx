@@ -11,7 +11,7 @@ interface CreateProjectModalProps {
 }
 const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
 
-    const { values, setters, resetForm } = useCreateProjectForm();
+    const { values, setters, resetForm, canSubmit } = useCreateProjectForm();
     const { projectName, corpusName, folderPath, semanticsRulesPath } = values;
     const { setProjectName, setCorpusName, setFolderPath, setSemanticsRulesPath } = setters;
     const { mutate, mutateAsync, isPending, isSuccess, isError, error } = useCreateProjectMutation();
@@ -40,6 +40,23 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
         } finally {
             setIsPickingSemanticsRules(false);
         }
+    }
+
+    async function handleSubmit() {
+        if (!canSubmit) {
+            return;
+        }
+
+        const request = {
+            projectName: projectName.trim(),
+            corpusName: corpusName.trim(),
+            folderPath: folderPath.trim(),
+            semanticsRulesPath: semanticsRulesPath.trim() ? semanticsRulesPath.trim() : undefined,
+        }
+
+        await mutateAsync(request);
+        resetForm();
+        onClose();
     }
 
     return(
@@ -107,6 +124,25 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
                             semanticsRulesPath={semanticsRulesPath}
                         />
                     </div>
+                </div>
+                <div className="create-project-modal-footer">
+                    <button
+                        type="button"
+                        className="create-project-modal-reset"
+                        onClick={() => {resetForm()}}
+                        aria-label="Close create project modal"
+                    >
+                        Reset form
+                    </button>
+                    <button
+                        type="button"
+                        className="create-project-modal-button"
+                        onClick={handleSubmit}
+                        disabled={!canSubmit || isPending}
+                        aria-label="create project"
+                    >
+                        Create
+                    </button>
                 </div>
                 
             </div>

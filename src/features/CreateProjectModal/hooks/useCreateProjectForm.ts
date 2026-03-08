@@ -14,6 +14,26 @@ const useCreateProjectForm = () => {
         setSemanticsRulesPath("");
     }
 
+    const trimmedProjectName = projectName.trim();
+    const trimmedCorpusName = corpusName.trim();
+    const trimmedFolderPath = folderPath.trim();
+    const trimmedSemanticsRulesPath = semanticsRulesPath.trim();
+
+    const errors = {
+        projectName: trimmedProjectName ? "" : "Project name is required.",
+        corpusName: trimmedCorpusName ? "" : "Corpus name is required",
+        folderPath: trimmedFolderPath ? "": "Corpus folder is required",
+        semanticsRulesPath: trimmedSemanticsRulesPath && !trimmedSemanticsRulesPath.toLowerCase().endsWith(".tsv")
+            ? "Semantic rules file must be a TSV file."
+            : ""
+    };
+
+    const canSubmit = 
+        !errors.projectName &&
+        !errors.corpusName &&
+        !errors.folderPath &&
+        !errors.semanticsRulesPath; 
+
     return {
         values: {
             projectName,
@@ -27,6 +47,8 @@ const useCreateProjectForm = () => {
             setFolderPath,
             setSemanticsRulesPath,
         },
+        errors,
+        canSubmit,
         resetForm,
     };
 };

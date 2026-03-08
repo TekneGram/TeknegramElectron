@@ -23,6 +23,7 @@ DONE!
   - manage optional semanticsRulesPath
   - manage submitting/loading/error state
 
+DONE!
   3. Build the modal form UI.
      Files:
 
@@ -36,6 +37,7 @@ DONE!
   - submit button
   - cancel/close button
 
+DONE!
   4. Add a backend folder picker IPC command.
      Electron files:
 
@@ -45,6 +47,7 @@ DONE!
   - open native directory dialog
   - return selected folder path or null
 
+DONE!
   5. Add a backend file picker IPC command for semantic rules.
      Electron files:
 
@@ -55,6 +58,7 @@ DONE!
   - restrict to .tsv if possible
   - return selected file path or null
 
+DONE!
   6. Expose picker contracts in IPC contracts.
      Files:
 
@@ -62,6 +66,7 @@ DONE!
     Purpose:
   - define request/response types for folder picking and file picking
 
+DONE!
   7. Add validation schemas for picker requests if needed.
      Files:
 
@@ -69,6 +74,7 @@ DONE!
     Purpose:
   - validate any picker options payloads if you pass them through IPC
 
+DONE!
   8. Add frontend ports for the picker operations.
      File:
 
@@ -78,6 +84,7 @@ DONE!
       - pickCorpusFolder()
       - pickSemanticsRulesFile()
 
+DONE!
   9. Add frontend adapters for the picker operations.
      File:
 
@@ -86,6 +93,7 @@ DONE!
   - call the IPC channels
   - return AppResult<string | null> or similar
 
+DONE!
   10. Wire picker buttons into the modal.
      In CreateProjectModal.tsx:
 
@@ -93,6 +101,7 @@ DONE!
   - “Select semantic rules file” button calls file picker adapter/service
   - selected paths populate form state
 
+DONE!
   11. Add drag-and-drop support for the corpus folder.
      In the modal UI:
 
