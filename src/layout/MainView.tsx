@@ -4,6 +4,7 @@ import { useListProjectsQuery } from '@/features/ProjectsTinyView/hooks/useProje
 import CreateProjectModal from '@/features/CreateProjectModal/CreateProjectModal';
 import { useState, useEffect } from 'react';
 import CreateSuccessTransition from './MainView/CreateSuccessTransition';
+import ProjectsList from './MainView/ProjectsList';
 
 interface MainViewProps {
     modalIsOpen: boolean;
@@ -14,7 +15,7 @@ interface MainViewProps {
 type MainViewState = 
         | { kind: "welcome" }
         | { kind: "create-success-transition" }
-        | { kind: "projects" };
+        | { kind: "projects-list" };
 
 const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsOpen }) => {
 
@@ -38,24 +39,28 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
         return() => window.clearTimeout(timeoutId);
     }, [viewState, refetch]);
 
+    // Observe viewState to reach the projects-list screen
     useEffect(() => {
         if (viewState.kind !== "create-success-transition") {
             return;
         }
 
         if (data !== undefined && data.length > 0) {
-            setViewState({ kind: "projects" });
+            setViewState({ kind: "projects-list" });
         }
     }, [viewState, data]);
 
+    // Screen to show when loading the projects
     if (isLoading) {
         return(<p>Loading!</p>);
     }
 
+    // Screen to show if there was an error loading the projects
     if (isError) {
         return(<p>Something went badly wrong!</p>);
     }
 
+    // A transition screen after successfully creating a project.
     if (viewState.kind === "create-success-transition") {
         return(
             <CreateSuccessTransition />
@@ -95,6 +100,32 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
                 }
             </section>
         );
+    }
+    
+        // const data2 = [
+        //     {
+        //         projectName: "BAWE Project",
+        //         uuid: "123-123-123-123-123-123",
+        //         createdAt: "some data"
+        //     },
+        //     {
+        //         projectName: "BNC Project",
+        //         uuid: "123-123-123-123-123-124",
+        //         createdAt: "some data"
+        //     },
+        //     {
+        //         projectName: "CEFR Levels Corpus",
+        //         uuid: "123-123-123-123-123-125",
+        //         createdAt: "some data"
+        //     }
+        // ]
+        
+    
+    // To the projects list screen
+    if (viewState.kind === "projects-list") {
+        return (
+            <ProjectsList projectsData={data2} />
+        )
     }
 
     return (
