@@ -2,7 +2,9 @@ import './createProjectModal.css';
 import useCreateProjectForm from './hooks/useCreateProjectForm';
 import useCreateProjectMutation from './hooks/useCreateProjectMutation';
 import usePickCorpusFolder from './hooks/usePickCorpusFolder';
+import usePickSemanticsRulesFile from './hooks/usePickSemanticsRulesFile';
 import CorpusFolderPicker from './CorpusFolderPicker';
+import SemanticsRulesPicker from './SemanticsRulesPicker';
 
 interface CreateProjectModalProps {
     onClose: () => void;
@@ -14,6 +16,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
     const { setProjectName, setCorpusName, setFolderPath, setSemanticsRulesPath } = setters;
     const { mutate, mutateAsync, isPending, isSuccess, isError, error } = useCreateProjectMutation();
     const { pickFolder, isPicking, setIsPicking } = usePickCorpusFolder();
+    const { pickSemanticsRules, isPickingSemanticsRules, setIsPickingSemanticsRules } = usePickSemanticsRulesFile();
 
     async function handlePickCorpusFolder() {
         setIsPicking(true);
@@ -24,6 +27,18 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
             }
         } finally {
             setIsPicking(false);
+        }
+    }
+
+    async function handlePickSemanticsRules() {
+        setIsPickingSemanticsRules(true);
+        try {
+            const filePath = await pickSemanticsRules();
+            if(filePath) {
+                setSemanticsRulesPath(filePath);
+            }
+        } finally {
+            setIsPickingSemanticsRules(false);
         }
     }
 
@@ -84,7 +99,14 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
                             folderPath={folderPath}
                         />
                     </div>
-                    <div>Upload / file for semantic rules selection area</div>
+                    <div className="semantics-rules-picker-area">
+                        <SemanticsRulesPicker 
+                            onSetSemanticsRulesPath={setSemanticsRulesPath}
+                            onPickSemanticsRules={handlePickSemanticsRules}
+                            isPickingSemanticsRules={isPickingSemanticsRules}
+                            semanticsRulesPath={semanticsRulesPath}
+                        />
+                    </div>
                 </div>
                 
             </div>
