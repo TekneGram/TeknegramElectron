@@ -2,7 +2,7 @@ import TeknegramIcon from './MainView/TeknegramIcon';
 import '@/styles/layout.css';
 import { useListProjectsQuery } from '@/features/ProjectsTinyView/hooks/useProjectsQuery';
 import CreateProjectModal from '@/features/CreateProjectModal/CreateProjectModal';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface MainViewProps {
     modalIsOpen: boolean;
@@ -10,15 +10,42 @@ interface MainViewProps {
     onCloseModal: () => void;
 }
 
+type MainViewState = 
+        | "welcome"
+        | "create-success-transition"
+        | "projects";
+
 const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsOpen }) => {
 
-    const { data, isLoading, isError } = useListProjectsQuery();
-    const [transitionScreen, setTransitionScreen] = useState<boolean>(false);
+    const { data, isLoading, isError, refetch } = useListProjectsQuery();
+    const [viewState, setViewState] = useState<MainViewState>("welcome");
 
     function handleSuccessfulCreation() {
-        onCloseModal(); // Close the modal
-        setTransitionScreen(true);
+        onCloseModal(); // Close the modal if a project is successfully created.
+        setViewState("create-success-transition");
     }
+
+
+    // Observe viewState to create a transition screen
+    useEffect(() => {
+        if(viewState !== "create-success-transition") return;
+
+        const timeoutId = window.setTimeout(() => {
+            refetch();
+        }, 1000);
+
+        return() => window.clearTimeout(timeoutId);
+    }, [viewState, refetch]);
+
+    useEffect(() => {
+        if (viewState !== "create-success-transition") {
+            return;
+        }
+
+        if (data !== undefined && data.length > 0) {
+            setViewState("projects");
+        }
+    }, [viewState, data]);
 
     if (isLoading) {
         return(<p>Loading!</p>);
@@ -26,6 +53,34 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
 
     if (isError) {
         return(<p>Something went badly wrong!</p>);
+    }
+
+    if (viewState === "create-success-transition") {
+        return(
+            <section className="main-view-transition">
+                <div className="main-view-transition-card">
+                    <div className="main-view-transition-badge">Project Created</div>
+                    <div className="main-view-transition-icon-shell" aria-hidden="true">
+                        <div className="main-view-transition-icon-ring" />
+                        <div className="main-view-transition-icon-core">
+                            <TeknegramIcon />
+                        </div>
+                    </div>
+                    <div className="main-view-transition-copy">
+                        <h1>Corpus created successfully.</h1>
+                        <p>
+                            Teknegram is refreshing your projects so you can jump straight into the new workspace.
+                        </p>
+                    </div>
+                    <div className="main-view-transition-progress" aria-hidden="true">
+                        <span className="main-view-transition-progress-bar" />
+                    </div>
+                    <p className="main-view-transition-status">
+                        Preparing project selection view...
+                    </p>
+                </div>
+            </section>
+        );
     }
 
     if (data === undefined || data.length === 0) {
@@ -54,25 +109,15 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
                 {
                     modalIsOpen ? <CreateProjectModal onClose={onCloseModal} onSuccessfulCreation={handleSuccessfulCreation} /> : <></>
                 }
-                {
-                    transitionScreen ? <p>Transitioning</p> : <></>
-                }
-        
             </section>
-            
         );
     }
 
     return (
         <section className="main-view">
             <div>
-                <p>The main view</p>
+                <p>Projects will get rendered here!</p>
             </div>
-            {
-                modalIsOpen
-                    ? <div onClick={onCloseModal}>HELLO!</div>
-                    : <></>
-            }
         </section>
     );
 };
