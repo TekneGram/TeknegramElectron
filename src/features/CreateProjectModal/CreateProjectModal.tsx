@@ -5,6 +5,7 @@ import usePickCorpusFolder from './hooks/usePickCorpusFolder';
 import usePickSemanticsRulesFile from './hooks/usePickSemanticsRulesFile';
 import CorpusFolderPicker from './CorpusFolderPicker';
 import SemanticsRulesPicker from './SemanticsRulesPicker';
+import ProcessingOverlay from './ProcessingOverlay';
 
 interface CreateProjectModalProps {
     onClose: () => void;
@@ -42,6 +43,15 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
         }
     }
 
+    function handleRequestClose() {
+        if (isPending) {
+            return;
+        }
+
+        resetForm();
+        onClose();
+    }
+
     async function handleSubmit() {
         if (!canSubmit) {
             return;
@@ -60,11 +70,19 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
     }
 
     return(
-        <div className="create-project-modal-backdrop" onClick={onClose}>
+        <div className="create-project-modal-backdrop" onClick={handleRequestClose}>
             <div 
                 className="create-project-modal-panel"
                 onClick={(event) => event.stopPropagation()}
             >
+                {
+                    isPending ? (
+                        <ProcessingOverlay
+                            updateMessage={"Processing"}
+                            percent={20}
+                        />
+                    ) : null
+                }
                 <div className="create-project-modal-header">
                     <div>
                         <h2 className="create-project-modal-title">Start New Project</h2>
@@ -75,8 +93,9 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
                     <button
                         type="button"
                         className="create-project-modal-close"
-                        onClick={() => {resetForm(); onClose()}}
+                        onClick={() => {handleRequestClose()}}
                         aria-label="Close create project modal"
+                        disabled = {isPending}
                     >
                         Close
                     </button>
@@ -93,6 +112,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
                             placeholder="Example: Academic Writing Project"
                             value = {projectName}
                             onChange = {(e) => setProjectName(e.target.value)}
+                            disabled={isPending}
                         />    
                     </div>
                     <div className="corpus-name-field">
@@ -106,6 +126,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
                             placeholder="Example: BAWE"
                             value = {corpusName}
                             onChange = {(e) => setCorpusName(e.target.value)}
+                            disabled={isPending}
                         />
                     </div>
                     <div className="corpus-folder-picker-area">
@@ -131,6 +152,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
                         className="create-project-modal-reset"
                         onClick={() => {resetForm()}}
                         aria-label="Close create project modal"
+                        disabled={isPending}
                     >
                         Reset form
                     </button>
