@@ -64,8 +64,8 @@
   color: var(--color-text-muted);
   cursor: pointer;
   transition:
-    color 160ms ease,
-    transform 160ms ease;
+    color var(--motion-duration-fast) var(--motion-ease-standard),
+    transform var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .sidebar-create-project-button:hover {
@@ -74,9 +74,9 @@
 }
 
 .sidebar-create-project-button:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-accent) 60%, white);
+  outline: 2px solid var(--color-focus-ring);
   outline-offset: 2px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
 }
 
 .sidebar-tooltip {
@@ -87,20 +87,20 @@
   transform: translateY(-50%) translateX(-4px);
   padding: 0.35rem 0.6rem;
   border: 1px solid var(--color-border);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--color-surface) 96%, transparent);
   color: var(--color-text);
   font-size: 0.82rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   white-space: nowrap;
-  box-shadow: 0 10px 22px color-mix(in srgb, var(--color-text) 10%, transparent);
+  box-shadow: var(--shadow-floating);
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
   transition:
-    opacity 160ms ease,
-    transform 160ms ease,
-    visibility 0s linear 160ms;
+    opacity var(--motion-duration-fast) var(--motion-ease-standard),
+    transform var(--motion-duration-fast) var(--motion-ease-standard),
+    visibility 0s linear var(--motion-duration-fast);
   transition-delay: 0.5s;
 }
 
@@ -153,12 +153,12 @@
   width: min(720px, 100%);
   padding: clamp(2rem, 4vw, 3.5rem);
   border: 1px solid var(--color-border);
-  border-radius: 24px;
+  border-radius: var(--radius-5xl);
   background:
     linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 92%, transparent), var(--color-surface-muted));
   box-shadow:
-    0 24px 60px color-mix(in srgb, var(--color-text) 10%, transparent),
-    inset 0 1px 0 color-mix(in srgb, white 35%, transparent);
+    var(--shadow-welcome),
+    var(--shadow-inset-highlight-strong);
   display: grid;
   justify-items: center;
   gap: 1.5rem;
@@ -215,47 +215,47 @@
 
 .main-view-welcome-button {
   min-width: 220px;
-  height: 44px;
+  height: var(--control-height-xl);
   padding: 0 1.4rem;
-  border: 1px solid var(--color-welcome-button-border);
-  border-radius: 999px;
-  background:var(--color-surface-muted);
-  color: var(--color-welcome-button-text);
+  border: 1px solid var(--color-action-primary-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-action-primary-bg);
+  color: var(--color-action-primary-text);
   font: inherit;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: clamp(1.2rem, 1.8vw, 1.5rem);
   letter-spacing: 0.01em;
   cursor: pointer;
   box-shadow:
-    0 14px 30px color-mix(in srgb, var(--color-text) 10%, transparent),
-    inset 0 1px 0 color-mix(in srgb, white 30%, transparent);
+    var(--shadow-welcome-button),
+    var(--shadow-inset-highlight-md);
 }
 
 .main-view-welcome-button:hover {
-  background:var(--color-welcome-button-hover);
+  background: var(--color-action-primary-hover-bg);
   transform: translateY(-1px);
   box-shadow:
-    0 18px 36px color-mix(in srgb, var(--color-text) 14%, transparent),
-    inset 0 1px 0 color-mix(in srgb, white 30%, transparent);
+    var(--shadow-welcome-button-hover),
+    var(--shadow-inset-highlight-md);
   filter: saturate(1.02);
 }
 
 .main-view-welcome-button:active {
-  background:var(--color-welcome-button-active);
+  background: var(--color-action-primary-active-bg);
   transform: translateY(0);
   box-shadow:
-    0 8px 18px color-mix(in srgb, var(--color-text) 10%, transparent),
-    inset 0 1px 0 color-mix(in srgb, white 20%, transparent);
+    var(--shadow-welcome-button-active),
+    var(--shadow-inset-highlight-soft-hover);
   filter: saturate(0.98);
 }
 
 .main-view-welcome-button:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-accent) 65%, white);
+  outline: 2px solid var(--color-focus-ring-soft);
   outline-offset: 3px;
 }
 
 :root[data-theme="dark"] .main-view-welcome-button {
-  box-shadow: inset 0 1px 0 color-mix(in srgb, white 10%, transparent);
+  box-shadow: var(--shadow-inset-highlight-md);
 }
 
 :root[data-theme="dark"] .main-view-welcome-button:hover {
