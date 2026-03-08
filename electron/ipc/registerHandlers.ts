@@ -30,6 +30,7 @@ export function registerHandlers(): void {
     safeHandle<PickCorpusFolderRequest, PickCorpusFolderResponse>(
         "system:pick-corpus-folder",
         async (_event, rawArgs, _ctx) => {
+            void _ctx;
             const args = validateOrThrow(pickCorpusFolderSchema, rawArgs);
             return pickCorpusFolder(args);
         }
@@ -38,6 +39,7 @@ export function registerHandlers(): void {
     safeHandle<PickSemanticsRulesFileRequest, PickSemanticsRulesFileResponse>(
         "system:pick-semantics-rules-file",
         async (_event, rawArgs, _ctx) => {
+            void _ctx;
             const args = validateOrThrow(pickSemanticsRulesFileSchema, rawArgs);
             return pickSemanticsRulesFile(args);
         }

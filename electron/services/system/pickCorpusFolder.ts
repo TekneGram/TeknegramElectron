@@ -5,6 +5,7 @@ import type {
 } from "@electron/ipc/contracts/system.contracts";
 
 export async function pickCorpusFolder(_request: PickCorpusFolderRequest): Promise<PickCorpusFolderResponse> {
+    void _request;
     const focusedWindow = BrowserWindow.getFocusedWindow();
 
     const result = focusedWindow 

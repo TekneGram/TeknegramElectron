@@ -7,6 +7,7 @@ import type {
 export async function pickSemanticsRulesFile(
     _request: PickSemanticsRulesFileRequest
 ): Promise<PickSemanticsRulesFileResponse> {
+    void _request;
     const focusedWindow = BrowserWindow.getFocusedWindow();
 
     const result = focusedWindow
