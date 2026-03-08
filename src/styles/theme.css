@@ -80,6 +80,9 @@
 
     --color-input-bg: #ffffff;
     --color-input-border: #cfc7b8;
+    --color-error-text: #8e3b37;
+    --color-error-border: #d8a8a2;
+    --color-error-surface: #f8e8e4;
 
     --color-panel-border-subtle: color-mix(in srgb, var(--color-border) 80%, transparent);
     --color-panel-highlight: color-mix(in srgb, white 18%, transparent);
@@ -128,6 +131,7 @@
     --color-spinner-track: color-mix(in srgb, var(--color-border) 70%, transparent);
     --color-folder-icon: color-mix(in srgb, #d3b45c 78%, var(--color-surface));
     --color-folder-icon-tab: color-mix(in srgb, #d9be72 82%, var(--color-surface));
+    --color-error-shadow: color-mix(in srgb, #c9685f 12%, transparent);
 
     --shadow-elevation-md: 0 18px 42px color-mix(in srgb, var(--color-text) 14%, transparent);
     --shadow-elevation-lg: 0 24px 60px color-mix(in srgb, var(--color-text) 16%, transparent);
@@ -178,6 +182,9 @@
 
     --color-input-bg: #1d1b18;
     --color-input-border: #4a453d;
+    --color-error-text: #f1b3ab;
+    --color-error-border: #7a4b47;
+    --color-error-surface: #3a2523;
 
     --color-panel-border-subtle: color-mix(in srgb, var(--color-border) 80%, transparent);
     --color-panel-highlight: color-mix(in srgb, white 18%, transparent);
@@ -226,6 +233,7 @@
     --color-spinner-track: color-mix(in srgb, var(--color-border) 70%, transparent);
     --color-folder-icon: color-mix(in srgb, #d3b45c 78%, var(--color-surface));
     --color-folder-icon-tab: color-mix(in srgb, #d9be72 82%, var(--color-surface));
+    --color-error-shadow: color-mix(in srgb, #d9796f 18%, transparent);
 
     --shadow-elevation-md: 0 18px 42px color-mix(in srgb, var(--color-text) 14%, transparent);
     --shadow-elevation-lg: 0 24px 60px color-mix(in srgb, var(--color-text) 16%, transparent);
