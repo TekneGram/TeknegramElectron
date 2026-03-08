@@ -15,7 +15,9 @@ const WindowPane = () => {
             <Header 
                 onOpenModal = {openModal}
             />
-            <Sidebar />
+            <Sidebar 
+                onOpenModal = {openModal}
+            />
             <MainView 
                 modalIsOpen = {modalIsOpen}
                 onOpenModal = {openModal}
