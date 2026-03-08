@@ -5,6 +5,11 @@ import { createProject } from "@electron/services/projects/createProject";
 import type { CreateProjectRequest, CreateProjectResponse } from "./contracts/projects.contracts";
 import { validateOrThrow } from "./validate";
 import { createProjectSchema } from "./validationSchemas/projects.schemas";
+import { pickCorpusFolderSchema, pickSemanticsRulesFileSchema } from "./validationSchemas/system.schemas";
+import type { PickCorpusFolderRequest, PickCorpusFolderResponse } from "./contracts/system.contracts";
+import { pickCorpusFolder } from "@electron/services/system/pickCorpusFolder";
+import type { PickSemanticsRulesFileRequest, PickSemanticsRulesFileResponse } from "./contracts/system.contracts";
+import { pickSemanticsRulesFile } from "@electron/services/system/pickSemanticsRulesFile";
 
 export function registerHandlers(): void {
     safeHandle<null, ProjectListItem[]>(
@@ -21,6 +26,22 @@ export function registerHandlers(): void {
             return createProject(args, ctx);
         }
     );
+
+    safeHandle<PickCorpusFolderRequest, PickCorpusFolderResponse>(
+        "system:pick-corpus-folder",
+        async (_event, rawArgs, _ctx) => {
+            const args = validateOrThrow(pickCorpusFolderSchema, rawArgs);
+            return pickCorpusFolder(args);
+        }
+    );
+
+    safeHandle<PickSemanticsRulesFileRequest, PickSemanticsRulesFileResponse>(
+        "system:pick-semantics-rules-file",
+        async (_event, rawArgs, _ctx) => {
+            const args = validateOrThrow(pickSemanticsRulesFileSchema, rawArgs);
+            return pickSemanticsRulesFile(args);
+        }
+    )
 
     /**
      * Example feature channel template:

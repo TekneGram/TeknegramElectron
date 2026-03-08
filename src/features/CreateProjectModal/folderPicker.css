@@ -1,0 +1,151 @@
+.corpus-folder-picker {
+    display: grid;
+    gap: 0.85rem;
+    width: 100%;
+}
+
+.corpus-folder-picker-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.corpus-folder-picker-caption {
+    margin: 0.35rem 0 0;
+    font-size: 0.92rem;
+    color: var(--color-text-muted);
+}
+
+.corpus-folder-picker-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 132px;
+    height: var(--control-height-md);
+    padding: 0 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background-color: var(--color-control-surface);
+    color: var(--color-text);
+    font: inherit;
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition:
+        background-color 160ms ease,
+        border-color 160ms ease,
+        transform 160ms ease,
+        opacity 160ms ease;
+}
+
+.corpus-folder-picker-button:hover:not(:disabled) {
+    background-color: var(--color-control-hover-surface);
+    border-color: var(--color-control-hover-border);
+    transform: translateY(-1px);
+}
+
+.corpus-folder-picker-button:active:not(:disabled) {
+    background-color: var(--color-control-active-surface);
+    transform: translateY(0);
+}
+
+.corpus-folder-picker-button:focus-visible {
+    outline: 2px solid var(--color-focus-ring-soft);
+    outline-offset: 2px;
+}
+
+.corpus-folder-picker-button:disabled {
+    cursor: default;
+    opacity: 0.7;
+}
+
+.corpus-folder-dropzone {
+    min-height: 132px;
+    border: 1px dashed var(--color-dropzone-border);
+    border-radius: var(--radius-3xl);
+    background:
+        radial-gradient(
+            circle at 1px 1px,
+            var(--color-dropzone-pattern) 1px,
+            transparent 0
+        ),
+        linear-gradient(
+            180deg,
+            var(--color-dropzone-surface-start),
+            var(--color-dropzone-surface-end)
+        );
+    background-size: 14px 14px, auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 1.1rem;
+    text-align: center;
+    transition:
+        border-color 160ms ease,
+        background-color 160ms ease,
+        transform 160ms ease,
+        box-shadow 160ms ease;
+}
+
+.corpus-folder-dropzone.is-drag-active {
+    border-color: var(--color-dropzone-active-border);
+    background:
+        radial-gradient(
+            circle at 1px 1px,
+            var(--color-dropzone-active-pattern) 1px,
+            transparent 0
+        ),
+        linear-gradient(
+            180deg,
+            var(--color-dropzone-active-start),
+            var(--color-dropzone-active-end)
+        );
+    background-size: 14px 14px, auto;
+    box-shadow: 0 0 0 3px var(--color-focus-ring-shadow-soft);
+    transform: translateY(-1px);
+}
+
+.corpus-folder-dropzone-empty {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.corpus-folder-dropzone-empty p {
+    margin: 0;
+}
+
+.corpus-folder-dropzone-empty p:first-child {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.corpus-folder-dropzone-empty p:last-child {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+}
+
+.corpus-folder-selected {
+    display: grid;
+    gap: 0.45rem;
+    width: 100%;
+    text-align: left;
+}
+
+.corpus-folder-selected-label {
+    font-size: var(--font-size-label-md);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--letter-spacing-label);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.corpus-folder-selected-path {
+    display: block;
+    padding: 0.85rem 0.95rem;
+    border-radius: var(--radius-xl);
+    background-color: var(--color-selected-surface);
+    border: 1px solid var(--color-selected-border);
+    color: var(--color-text);
+    line-height: 1.35;
+    word-break: break-word;
+}

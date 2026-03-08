@@ -1,5 +1,6 @@
 Todo list for wiring CreateProjectModal end to end:
 
+DONE!
   1. Create a feature-level submit service for the modal.
      File:
 
@@ -10,6 +11,7 @@ Todo list for wiring CreateProjectModal end to end:
   - trigger notifications on failure/success
   - return created project data
 
+DONE!
   2. Add a local form-state hook for the modal.
      File:
 
@@ -21,6 +23,7 @@ Todo list for wiring CreateProjectModal end to end:
   - manage optional semanticsRulesPath
   - manage submitting/loading/error state
 
+DONE!
   3. Build the modal form UI.
      Files:
 
@@ -34,6 +37,7 @@ Todo list for wiring CreateProjectModal end to end:
   - submit button
   - cancel/close button
 
+DONE!
   4. Add a backend folder picker IPC command.
      Electron files:
 
@@ -43,6 +47,7 @@ Todo list for wiring CreateProjectModal end to end:
   - open native directory dialog
   - return selected folder path or null
 
+DONE!
   5. Add a backend file picker IPC command for semantic rules.
      Electron files:
 
@@ -53,6 +58,7 @@ Todo list for wiring CreateProjectModal end to end:
   - restrict to .tsv if possible
   - return selected file path or null
 
+DONE!
   6. Expose picker contracts in IPC contracts.
      Files:
 
@@ -60,6 +66,7 @@ Todo list for wiring CreateProjectModal end to end:
     Purpose:
   - define request/response types for folder picking and file picking
 
+DONE!
   7. Add validation schemas for picker requests if needed.
      Files:
 
@@ -67,6 +74,7 @@ Todo list for wiring CreateProjectModal end to end:
     Purpose:
   - validate any picker options payloads if you pass them through IPC
 
+DONE!
   8. Add frontend ports for the picker operations.
      File:
 
@@ -76,6 +84,7 @@ Todo list for wiring CreateProjectModal end to end:
       - pickCorpusFolder()
       - pickSemanticsRulesFile()
 
+DONE!
   9. Add frontend adapters for the picker operations.
      File:
 
@@ -84,6 +93,7 @@ Todo list for wiring CreateProjectModal end to end:
   - call the IPC channels
   - return AppResult<string | null> or similar
 
+DONE!
   10. Wire picker buttons into the modal.
      In CreateProjectModal.tsx:
 
@@ -91,6 +101,7 @@ Todo list for wiring CreateProjectModal end to end:
   - “Select semantic rules file” button calls file picker adapter/service
   - selected paths populate form state
 
+DONE!
   11. Add drag-and-drop support for the corpus folder.
      In the modal UI:
 

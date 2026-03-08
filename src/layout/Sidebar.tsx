@@ -1,10 +1,17 @@
 import '@/styles/layout.css';
+import CreateProjectButton from './Sidebar/CreateProjectButton';
 
-const Sidebar = () => {
+interface SidebarProps {
+    onOpenModal: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ onOpenModal }) => {
     return (
         <aside className="sidebar">
             <div>
-                <p>Side</p>
+                <CreateProjectButton
+                    onClickCreate={onOpenModal}
+                />
             </div>
         </aside>
     );
