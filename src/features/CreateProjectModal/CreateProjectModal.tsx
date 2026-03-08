@@ -1,9 +1,16 @@
 import './CreateProjectModal.css';
+// import useCreateProjectForm from './hooks/useCreateProjectForm';
+// import useCreateProjectMutation from './hooks/useCreateProjectMutation';
 
 interface CreateProjectModalProps {
     onClose: () => void;
 }
 const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
+
+    // const { values, setters, resetForm } = useCreateProjectForm();
+    // const { projectName, corpusName, folderPath, semanticsRulesPath } = values;
+    // const { setProjectName, setCorpusName, setFolderPath, setSemanticsRulesPath } = setters;
+    // const { mutate, mutateAsync, isPending, isSuccess, isError, error } = useCreateProjectMutation();
 
     return(
         <div className="create-project-modal-backdrop" onClick={onClose}>
