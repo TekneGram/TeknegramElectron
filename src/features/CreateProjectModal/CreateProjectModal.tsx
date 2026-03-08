@@ -1,4 +1,4 @@
-import './CreateProjectModal.css';
+import './createProjectModal.css';
 import useCreateProjectForm from './hooks/useCreateProjectForm';
 import useCreateProjectMutation from './hooks/useCreateProjectMutation';
 import usePickCorpusFolder from './hooks/usePickCorpusFolder';
