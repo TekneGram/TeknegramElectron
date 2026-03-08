@@ -48,7 +48,7 @@ const CorpusFolderPicker: React.FC<CorpusFolderPickerProps> = ({ onSetFolderPath
         <div className="corpus-folder-picker">
             <div className="corpus-folder-picker-header">
                 <div>
-                    <label className="create-project-field-label">Corpus Folder</label>
+                    <label className="create-project-field-label">Corpus Corpus Folder</label>
                     <p className="corpus-folder-picker-caption">
                         Select a folder or drop one into the area below
                     </p>
@@ -60,7 +60,7 @@ const CorpusFolderPicker: React.FC<CorpusFolderPickerProps> = ({ onSetFolderPath
                 disabled={isPicking}
                 onClick={onPickFolder}
             >
-                {isPicking ? "Opening...": "Choose Folder"}
+                {isPicking ? "Opening...": "Choose Corpus Folder"}
             </button>
             <div
                 className={`corpus-folder-dropzone ${isDragActive ? "is-drag-active" : "" }`}
