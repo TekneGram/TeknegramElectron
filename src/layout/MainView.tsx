@@ -124,7 +124,7 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
     // To the projects list screen
     if (viewState.kind === "projects-list") {
         return (
-            <ProjectsList projectsData={data2} />
+            <ProjectsList projectsData={data} />
         )
     }
 
