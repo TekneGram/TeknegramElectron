@@ -2,6 +2,7 @@ import './CreateProjectModal.css';
 import useCreateProjectForm from './hooks/useCreateProjectForm';
 import useCreateProjectMutation from './hooks/useCreateProjectMutation';
 import usePickCorpusFolder from './hooks/usePickCorpusFolder';
+import CorpusFolderPicker from './CorpusFolderPicker';
 
 interface CreateProjectModalProps {
     onClose: () => void;
@@ -76,15 +77,12 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
                         />
                     </div>
                     <div className="corpus-folder-picker-area">
-                        <button
-                            className="corpus-folder-picker-button"
-                            type="button"
-                            disabled={isPicking}
-                            onClick={() => {handlePickCorpusFolder()}}
-                        >
-                            Select corpus folder
-                        </button>
-                        {folderPath}
+                        <CorpusFolderPicker 
+                            onSetFolderPath={setFolderPath} 
+                            onPickFolder={handlePickCorpusFolder}
+                            isPicking={isPicking}
+                            folderPath={folderPath}
+                        />
                     </div>
                     <div>Upload / file for semantic rules selection area</div>
                 </div>
