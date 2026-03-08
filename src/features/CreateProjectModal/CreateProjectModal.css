@@ -81,3 +81,47 @@
     background-color: var(--color-surface-muted);
     transform: translateY(0);
 }
+
+.project-name-field {
+    display: grid;
+    gap: 0.45rem;
+    width: 100%;
+}
+
+.create-project-field-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.create-project-text-input {
+    width: 100%;
+    height: 46px;
+    padding: 0 0.95rem;
+    border: 1px solid var(--color-input-border);
+    border-radius: 14px;
+    background: var(--color-input-bg);
+    color: var(--color-text);
+    font: inherit;
+    box-sizing: border-box;
+    transition:
+        border-color 160ms ease,
+        background-color 160ms ease,
+        box-shadow 160ms ease;
+}
+
+.create-project-text-input::placeholder {
+    color: color-mix(in srgb, var(--color-text-muted) 75%, transparent);
+}
+
+.create-project-text-input:hover {
+    border-color: color-mix(in srgb, var(--color-input-border) 70%, var(--color-accent));
+}
+
+.create-project-text-input:focus-visible {
+    outline: none;
+    border-color: color-mix(in srgb, var(--color-accent) 60%, var(--color-input-border));
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 14%, transparent);
+}

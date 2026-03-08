@@ -1,16 +1,30 @@
 import './CreateProjectModal.css';
-// import useCreateProjectForm from './hooks/useCreateProjectForm';
-// import useCreateProjectMutation from './hooks/useCreateProjectMutation';
+import useCreateProjectForm from './hooks/useCreateProjectForm';
+import useCreateProjectMutation from './hooks/useCreateProjectMutation';
+import usePickCorpusFolder from './hooks/usePickCorpusFolder';
 
 interface CreateProjectModalProps {
     onClose: () => void;
 }
 const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
 
-    // const { values, setters, resetForm } = useCreateProjectForm();
-    // const { projectName, corpusName, folderPath, semanticsRulesPath } = values;
-    // const { setProjectName, setCorpusName, setFolderPath, setSemanticsRulesPath } = setters;
-    // const { mutate, mutateAsync, isPending, isSuccess, isError, error } = useCreateProjectMutation();
+    const { values, setters, resetForm } = useCreateProjectForm();
+    const { projectName, corpusName, folderPath, semanticsRulesPath } = values;
+    const { setProjectName, setCorpusName, setFolderPath, setSemanticsRulesPath } = setters;
+    const { mutate, mutateAsync, isPending, isSuccess, isError, error } = useCreateProjectMutation();
+    const { pickFolder, isPicking, setIsPicking } = usePickCorpusFolder();
+
+    async function handlePickCorpusFolder() {
+        setIsPicking(true);
+        try {
+            const folderPath = await pickFolder();
+            if(folderPath) {
+                setters.setFolderPath(folderPath)
+            }
+        } finally {
+            setIsPicking(false);
+        }
+    }
 
     return(
         <div className="create-project-modal-backdrop" onClick={onClose}>
@@ -28,16 +42,50 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose }) => {
                     <button
                         type="button"
                         className="create-project-modal-close"
-                        onClick={onClose}
+                        onClick={() => {resetForm(); onClose()}}
                         aria-label="Close create project modal"
                     >
                         Close
                     </button>
                 </div>
                 <div className="create-project-modal-body">
-                    <div>Project name field</div>
-                    <div>Corpus name field</div>
-                    <div>Upload / folder for corpus selection area</div>
+                    <div className="project-name-field">
+                        <label className="create-project-field-label" htmlFor="project-name">
+                            Project Name
+                        </label>
+                        <input
+                            id="project-name"
+                            className="create-project-text-input"
+                            type = "text"
+                            placeholder="Example: Academic Writing Project"
+                            value = {projectName}
+                            onChange = {(e) => setProjectName(e.target.value)}
+                        />    
+                    </div>
+                    <div className="corpus-name-field">
+                        <label className="create-project-field-label" htmlFor="corpus-name">
+                            Corpus Name
+                        </label>
+                        <input
+                            id="corpus-name"
+                            className="create-project-text-input"
+                            type = "text"
+                            placeholder="Example: BAWE"
+                            value = {corpusName}
+                            onChange = {(e) => setCorpusName(e.target.value)}
+                        />
+                    </div>
+                    <div className="corpus-folder-picker-area">
+                        <button
+                            className="corpus-folder-picker-button"
+                            type="button"
+                            disabled={isPicking}
+                            onClick={() => {handlePickCorpusFolder()}}
+                        >
+                            Select corpus folder
+                        </button>
+                        {folderPath}
+                    </div>
                     <div>Upload / file for semantic rules selection area</div>
                 </div>
                 

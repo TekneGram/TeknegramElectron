@@ -5,6 +5,9 @@ import { createProject } from "@electron/services/projects/createProject";
 import type { CreateProjectRequest, CreateProjectResponse } from "./contracts/projects.contracts";
 import { validateOrThrow } from "./validate";
 import { createProjectSchema } from "./validationSchemas/projects.schemas";
+import { pickCorpusFolderSchema } from "./validationSchemas/system.schemas";
+import type { PickCorpusFolderRequest, PickCorpusFolderResponse } from "./contracts/system.contracts";
+import { pickCorpusFolder } from "@electron/services/system/pickCorpusFolder";
 
 export function registerHandlers(): void {
     safeHandle<null, ProjectListItem[]>(
@@ -21,6 +24,14 @@ export function registerHandlers(): void {
             return createProject(args, ctx);
         }
     );
+
+    safeHandle<PickCorpusFolderRequest, PickCorpusFolderResponse>(
+        "system:pick-corpus-folder",
+        async (_event, rawArgs, _ctx) => {
+            const args = validateOrThrow(pickCorpusFolderSchema, rawArgs);
+            return pickCorpusFolder(args);
+        }
+    )
 
     /**
      * Example feature channel template:
