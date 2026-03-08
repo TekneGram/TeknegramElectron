@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './folderPicker.css'
+import './semanticsRulesPicker.css';
 
 
 interface SemanticsRulesPickerProps {
@@ -46,40 +46,107 @@ const SemanticsRulesPicker: React.FC<SemanticsRulesPickerProps> = ({ onSetSemant
     }
 
     return (
-        <div className="corpus-folder-picker">
-            <div className="corpus-folder-picker-header">
+        <div className="semantics-rules-picker">
+            <div className="semantics-rules-picker-header">
                 <div>
-                    <label className="create-project-field-label">
-                        Semantics Rules File - 
-                        <span>What's this?</span>
-                    </label>
-                    <p className="corpus-folder-picker-caption">
+                    <div className="semantics-rules-picker-label-row">
+                        <label className="create-project-field-label">
+                            Semantics Rules File (Optional)
+                        </label>
+                        <div className="semantics-rules-tooltip">
+                            <span
+                                className="semantics-rules-tooltip-trigger"
+                                tabIndex={0}
+                            >
+                                What is this?
+                            </span>
+                            <div className="semantics-rules-tooltip-content">
+                                <p>
+                                    Optionally add a TSV (tab separated values) file that gives semantics to your corpus folder structure.
+                                </p>
+                                <div className="semantics-rules-tooltip-tree" aria-hidden="true">
+                                    <div className="semantics-rules-tree-row semantics-rules-tree-root">
+                                        <span className="semantics-rules-tree-caret">⌄</span>
+                                        <span className="semantics-rules-folder-icon" />
+                                        <span>Corpus</span>
+                                    </div>
+                                    <div className="semantics-rules-tree-branch">
+                                        <div className="semantics-rules-tree-row semantics-rules-tree-level-1">
+                                            <span className="semantics-rules-tree-caret">⌄</span>
+                                            <span className="semantics-rules-folder-icon" />
+                                            <span>CEFR A1</span>
+                                        </div>
+                                        <div className="semantics-rules-tree-branch">
+                                            <div className="semantics-rules-tree-row semantics-rules-tree-level-2">
+                                                <span className="semantics-rules-tree-caret semantics-rules-tree-caret-placeholder" />
+                                                <span className="semantics-rules-folder-icon" />
+                                                <span>French</span>
+                                            </div>
+                                            <div className="semantics-rules-tree-row semantics-rules-tree-level-2">
+                                                <span className="semantics-rules-tree-caret semantics-rules-tree-caret-placeholder" />
+                                                <span className="semantics-rules-folder-icon" />
+                                                <span>Spanish</span>
+                                            </div>
+                                        </div>
+                                        <div className="semantics-rules-tree-row semantics-rules-tree-level-1">
+                                            <span className="semantics-rules-tree-caret">⌄</span>
+                                            <span className="semantics-rules-folder-icon" />
+                                            <span>CEFR A2</span>
+                                        </div>
+                                        <div className="semantics-rules-tree-branch">
+                                            <div className="semantics-rules-tree-row semantics-rules-tree-level-2">
+                                                <span className="semantics-rules-tree-caret semantics-rules-tree-caret-placeholder" />
+                                                <span className="semantics-rules-folder-icon" />
+                                                <span>French</span>
+                                            </div>
+                                            <div className="semantics-rules-tree-row semantics-rules-tree-level-2">
+                                                <span className="semantics-rules-tree-caret semantics-rules-tree-caret-placeholder" />
+                                                <span className="semantics-rules-folder-icon" />
+                                                <span>Spanish</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p>
+                                    Your TSV file might look like this:
+                                </p>
+                                <pre className="semantics-rules-tooltip-code">
+                                    {`Level\tdepth\t0
+                                    First_Language\tdepth\t1`}
+                                </pre>
+                                <p>
+                                    Later you will be able to search your corpus by level or by first language.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <p className="semantics-rules-picker-caption">
                         Select a TSV semantics rules file or drop one below.
                     </p>
                 </div>
             </div>
             <button
                 type="button"
-                className="corpus-folder-picker-button"
+                className="semantics-rules-picker-button"
                 disabled={isPickingSemanticsRules}
                 onClick={onPickSemanticsRules}
             >
                 {isPickingSemanticsRules ? "Opening...": "Choose TSV file"}
             </button>
             <div
-                className={`corpus-folder-dropzone ${isDragActive ? "is-drag-active" : "" }`}
+                className={`semantics-rules-dropzone ${isDragActive ? "is-drag-active" : "" }`}
                 onDragOver={handleDragOver}
                 onDragEnter={handleDragEnter}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
             >
                 {semanticsRulesPath ? (
-                    <div className="corpus-folder-selected">
-                        <span className="corpus-folder-selected-label">Selected TSV File</span>
-                        <span className="corpus-folder-selected-path">{semanticsRulesPath}</span>
+                    <div className="semantics-rules-selected">
+                        <span className="semantics-rules-selected-label">Selected TSV File</span>
+                        <span className="semantics-rules-selected-path">{semanticsRulesPath}</span>
                     </div>
                 ) : (
-                    <div className="corpus-folder-dropzone-empty">
+                    <div className="semantics-rules-dropzone-empty">
                         <p>Drop semantics rules file here</p>
                         <p>or use the file picker button above</p>
                     </div>
