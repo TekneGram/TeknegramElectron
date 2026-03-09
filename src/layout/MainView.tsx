@@ -67,7 +67,26 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
         );
     }
 
+    const data2 = [
+            {
+                projectName: "BAWE Project",
+                uuid: "123-123-123-123-123-123",
+                createdAt: "some data"
+            },
+            {
+                projectName: "BNC Project",
+                uuid: "123-123-123-123-123-124",
+                createdAt: "some data"
+            },
+            {
+                projectName: "CEFR Levels Corpus",
+                uuid: "123-123-123-123-123-125",
+                createdAt: "some data"
+            }
+        ]
+
     if (data === undefined || data.length === 0) {
+        
         return(
             <section className="main-view-welcome">
                 <div className="main-view-welcome-card">
@@ -99,41 +118,36 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
                     modalIsOpen ? <CreateProjectModal onClose={onCloseModal} onSuccessfulCreation={handleSuccessfulCreation} /> : <></>
                 }
             </section>
+            
         );
     }
-    
-        // const data2 = [
-        //     {
-        //         projectName: "BAWE Project",
-        //         uuid: "123-123-123-123-123-123",
-        //         createdAt: "some data"
-        //     },
-        //     {
-        //         projectName: "BNC Project",
-        //         uuid: "123-123-123-123-123-124",
-        //         createdAt: "some data"
-        //     },
-        //     {
-        //         projectName: "CEFR Levels Corpus",
-        //         uuid: "123-123-123-123-123-125",
-        //         createdAt: "some data"
-        //     }
-        // ]
         
     
     // To the projects list screen
-    if (viewState.kind === "projects-list") {
+    if (data2.length >= 1) {
         return (
-            <ProjectsList projectsData={data} />
+            <>
+            <ProjectsList projectsData={data2} />
+            {
+                modalIsOpen ? <CreateProjectModal onClose={onCloseModal} onSuccessfulCreation={handleSuccessfulCreation} /> : <></>
+            }
+            </>
         )
     }
+    // if (viewState.kind === "projects-list") {
+    //     return (
+    //         <>
+    //         <ProjectsList projectsData={data} />
+    //         {
+    //             modalIsOpen ? <CreateProjectModal onClose={onCloseModal} onSuccessfulCreation={handleSuccessfulCreation} /> : <></>
+    //         }
+    //         </>
+            
+    //     )
+    // }
 
     return (
-        <section className="main-view">
-            <div>
-                <p>Projects will get rendered here!</p>
-            </div>
-        </section>
+        <></>
     );
 };
 

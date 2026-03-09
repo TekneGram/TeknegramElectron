@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { CreateProjectRequest } from "../contracts/projects.contracts";
 
 export const createProjectSchema: z.ZodType<CreateProjectRequest> = z.object({
+    requestId: z.string().min(1),
     projectName: z.string().min(1),
     corpusName: z.string().min(1),
     folderPath: z.string().min(1),

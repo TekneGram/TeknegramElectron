@@ -23,6 +23,7 @@ import { randomUUID } from 'node:crypto';
 import fs from "node:fs";
 import path from "node:path";
 import type { CreateProjectRequest, CreateProjectResponse } from "@electron/ipc/contracts/projects.contracts";
+import { PROJECTS_CREATE_PROGRESS_CHANNEL } from "@electron/ipc/contracts/progress.event.contracts";
 
 type ValidatedCreateProjectRequest = {
     projectName: string;
@@ -94,6 +95,12 @@ export async function createProject(request: CreateProjectRequest, ctx: RequestC
         executable: "corpus_build_pipeline",
         expectJsonLines: true,
         onProgress: (message) => {
+            ctx.sendEvent(PROJECTS_CREATE_PROGRESS_CHANNEL, {
+                requestId: request.requestId,
+                correlationId: ctx.correlationId,
+                message: message.message,
+                percent: message.percent ?? 0,
+            });
             logger.info("Corpus build progress", {
                 correlationId: ctx.correlationId,
                 percent: message.percent,

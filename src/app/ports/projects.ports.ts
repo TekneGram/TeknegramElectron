@@ -7,6 +7,7 @@ export interface ProjectListItem {
 }
 
 export interface CreateProjectRequest {
+    requestId: string;
     projectName: string;
     corpusName: string;
     folderPath: string;

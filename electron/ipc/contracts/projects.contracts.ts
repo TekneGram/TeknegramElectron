@@ -1,4 +1,5 @@
 export type CreateProjectRequest = {
+    requestId: string;
     projectName: string;
     corpusName: string;
     folderPath: string;
