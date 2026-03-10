@@ -13,21 +13,20 @@ type BackendResultDto<T> =
 
 export function mapBackendError(dto: BackendErrorDto): AppError {
   switch (dto.code) {
-    case "VALIDATION_INVALID_PAYLOAD":
-    case "VALIDATION_MISSING_FIELD":
-    case "VALIDATION_INVALID_STATE":
-      return { kind: "validation", userMessage: dto.message, debugId: dto.correlationId };
-    case "CPP_PROCESS_SPAWN_FAILED":
-    case "CPP_PROCESS_NON_ZERO_EXIT":
-    case "CPP_PROCESS_TIMEOUT":
-    case "DB_CONNECTION_FAILED":
-    case "DB_QUERY_FAILED":
-    case "DB_CONSTRAINT_VIOLATION":
-      return { kind: "processing", userMessage: dto.message, debugId: dto.correlationId };
-    case "IPC_CHANNEL_NOT_FOUND":
-    case "IPC_HANDLER_FAILED":
-    case "NETWORK_UNAVAILABLE":
-    case "NETWORK_TIMEOUT":
+    case "VALIDATION_INVALID_PAYLOAD": return { kind: "validation", userMessage: dto.message, debugId: dto.correlationId };
+    case "VALIDATION_MISSING_FIELD": return { kind: "validation", userMessage: dto.message, debugId: dto.correlationId };
+    case "VALIDATION_INVALID_STATE": return { kind: "validation", userMessage: dto.message, debugId: dto.correlationId };
+    case "CPP_PROCESS_SPAWN_FAILED": return { kind: "processing", userMessage: dto.message, debugId: dto.correlationId };
+    case "CPP_PROCESS_NON_ZERO_EXIT": return { kind: "processing", userMessage: dto.message, debugId: dto.correlationId };
+    case "CPP_PROCESS_TIMEOUT": return { kind: "processing", userMessage: dto.message, debugId: dto.correlationId };
+    case "CPP_PROCESS_CANCELLED": return { kind: "cancelled", userMessage: dto.message, debugId: dto.correlationId };
+    case "DB_CONNECTION_FAILED": return { kind: "processing", userMessage: dto.message, debugId: dto.correlationId };
+    case "DB_QUERY_FAILED": return { kind: "processing", userMessage: dto.message, debugId: dto.correlationId };
+    case "DB_CONSTRAINT_VIOLATION": return { kind: "processing", userMessage: dto.message, debugId: dto.correlationId };
+    case "IPC_CHANNEL_NOT_FOUND": return { kind: "infrastructure", userMessage: dto.message, debugId: dto.correlationId };
+    case "IPC_HANDLER_FAILED": return { kind: "infrastructure", userMessage: dto.message, debugId: dto.correlationId };
+    case "NETWORK_UNAVAILABLE": return { kind: "infrastructure", userMessage: dto.message, debugId: dto.correlationId };
+    case "NETWORK_TIMEOUT": return { kind: "infrastructure", userMessage: dto.message, debugId: dto.correlationId };
     case "DEPENDENCY_UNAVAILABLE":
       return {
         kind: "infrastructure",

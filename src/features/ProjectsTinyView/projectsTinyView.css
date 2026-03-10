@@ -2,22 +2,75 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: var(--control-height-xs);
-    padding: 0 0.7rem;
+    height: 22px;
+    padding: 0 0.75rem;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-pill);
     background: var(--color-control-surface);
     color: var(--color-text);
     font: inherit;
+    font-size: 0.82rem;
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.01em;
     line-height: 1;
     cursor: pointer;
+    box-shadow: inset 0 1px 0 color-mix(in srgb, white 12%, transparent);
+    transition:
+        background-color var(--motion-duration-fast) var(--motion-ease-standard),
+        border-color var(--motion-duration-fast) var(--motion-ease-standard),
+        transform var(--motion-duration-fast) var(--motion-ease-standard),
+        box-shadow var(--motion-duration-fast) var(--motion-ease-standard);
 }
 
 .projects-tinyview-new:hover {
     background: var(--color-control-hover-surface);
+    border-color: var(--color-control-hover-border);
+    transform: translateY(-1px);
 }
 
 .projects-tinyview-new:focus-visible {
     outline: 2px solid var(--color-focus-ring);
     outline-offset: 2px;
+}
+
+.projects-tinyview-select {
+    width: min(220px, 36vw);
+    height: 100%;
+    min-height: 24px;
+    padding: 0 2rem 0 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background:
+        linear-gradient(
+            180deg,
+            color-mix(in srgb, var(--color-surface) 94%, transparent),
+            color-mix(in srgb, var(--color-surface-muted) 96%, transparent)
+        );
+    color: var(--color-text);
+    font: inherit;
+    font-size: 0.82rem;
+    font-weight: var(--font-weight-medium);
+    line-height: normal;
+    box-shadow: inset 0 1px 0 color-mix(in srgb, white 12%, transparent);
+    cursor: pointer;
+    outline: none;
+    transition:
+        background-color var(--motion-duration-fast) var(--motion-ease-standard),
+        border-color var(--motion-duration-fast) var(--motion-ease-standard),
+        box-shadow var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.projects-tinyview-select:hover {
+    background: var(--color-control-hover-surface);
+    border-color: var(--color-control-hover-border);
+}
+
+.projects-tinyview-select:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+}
+
+:root[data-theme="dark"] .projects-tinyview-new,
+:root[data-theme="dark"] .projects-tinyview-select {
+    box-shadow: inset 0 1px 0 color-mix(in srgb, white 10%, transparent);
 }

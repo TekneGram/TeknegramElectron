@@ -7,6 +7,7 @@ export interface ProjectListItem {
 }
 
 export interface CreateProjectRequest {
+    requestId: string;
     projectName: string;
     corpusName: string;
     folderPath: string;
@@ -20,7 +21,17 @@ export interface CreateProjectResponse {
     binaryFilesPath: string;
 }
 
+export interface CancelCreateProjectRequest {
+    requestId: string;
+}
+
+export interface CancelCreateProjectResponse {
+    requestId: string;
+    message: string;
+}
+
 export interface ProjectsPort {
     listProjects(): Promise<AppResult<ProjectListItem[]>>
     createProject(request: CreateProjectRequest): Promise<AppResult<CreateProjectResponse>>
+    cancelCreateProject(request: CancelCreateProjectRequest): Promise<AppResult<CancelCreateProjectResponse>>
 }

@@ -1,4 +1,5 @@
 export type CreateProjectRequest = {
+    requestId: string;
     projectName: string;
     corpusName: string;
     folderPath: string;
@@ -10,4 +11,13 @@ export type CreateProjectResponse = {
     corpusUuid: string;
     binaryFilesPathUuid: string;
     binaryFilesPath: string;
+}
+
+export type CancelCreateProjectRequest = {
+    requestId: string;
+}
+
+export type CancelCreateProjectResponse = {
+    requestId: string;
+    message: string;
 }

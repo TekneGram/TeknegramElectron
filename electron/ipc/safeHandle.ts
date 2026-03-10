@@ -23,7 +23,12 @@ export function toErrorResult(
 export function safeHandle<TArgs, TData>(channel: string, handler: Handler<TArgs, TData>): void {
     ipcMain.handle(channel, async (event, args: TArgs): Promise<Result<TData>> => {
         const correlationId = randomUUID();
-        const ctx = { correlationId };
+        const ctx: RequestContext = {
+            correlationId,
+            sendEvent(channel, payload) {
+                event.sender.send(channel, payload);
+            },
+        };
 
         try {
             const data = await handler(event, args, ctx);

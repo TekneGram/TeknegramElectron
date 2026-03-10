@@ -1,6 +1,7 @@
 import './createProjectModal.css';
 import useCreateProjectForm from './hooks/useCreateProjectForm';
-import useCreateProjectMutation from './hooks/useCreateProjectMutation';
+//import useCreateProjectMutation from './hooks/useCreateProjectMutation';
+import useCreateProjectFlow from './hooks/useCreateProjectFlow';
 import usePickCorpusFolder from './hooks/usePickCorpusFolder';
 import usePickSemanticsRulesFile from './hooks/usePickSemanticsRulesFile';
 import CorpusFolderPicker from './CorpusFolderPicker';
@@ -17,9 +18,22 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
     const { values, setters, resetForm, canSubmit } = useCreateProjectForm();
     const { projectName, corpusName, folderPath, semanticsRulesPath } = values;
     const { setProjectName, setCorpusName, setFolderPath, setSemanticsRulesPath } = setters;
-    const { mutate, isPending, isSuccess, isError, error } = useCreateProjectMutation();
+
+    const { 
+        submitCreateProject, 
+        cancelCreateProject,
+        wasCancelled,
+        isPending,
+        isSuccess,
+        isError,
+        error,
+        progressMessage,
+        percent
+    } = useCreateProjectFlow()
+    
     const { pickFolder, isPicking, setIsPicking } = usePickCorpusFolder();
     const { pickSemanticsRules, isPickingSemanticsRules, setIsPickingSemanticsRules } = usePickSemanticsRulesFile();
+    
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     async function handlePickCorpusFolder() {
@@ -67,7 +81,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
             semanticsRulesPath: semanticsRulesPath.trim() ? semanticsRulesPath.trim() : undefined,
         }
 
-        mutate(request);
+        submitCreateProject(request);
     }
 
     // watch isSuccess
@@ -75,18 +89,18 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
         if(!isSuccess) return;
 
         onSuccessfulCreation();
-        resetForm()
+        resetForm();
         onClose();
-    }, [isSuccess, onSuccessfulCreation, resetForm, onClose]);
+    }, [isSuccess, wasCancelled, onSuccessfulCreation, resetForm, onClose]);
 
     // watch isError
     useEffect(() => {
-        if(!isError) {
+        if(wasCancelled || !isError) {
             setErrorMessage(null);
             return;
         }
-        setErrorMessage(`There was an error creating the project: ${error.message}`);
-    }, [isError, setErrorMessage, error]);
+        setErrorMessage(`There was an error creating the project: ${error?.message}`);
+    }, [isError, wasCancelled, setErrorMessage, error]);
 
     return(
         <div className="create-project-modal-backdrop" onClick={handleRequestClose}>
@@ -97,8 +111,9 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
                 {
                     isPending ? (
                         <ProcessingOverlay
-                            updateMessage={"Processing"}
-                            percent={20}
+                            updateMessage={progressMessage}
+                            percent={percent}
+                            cancel={() => cancelCreateProject()}
                         />
                     ) : null
                 }
@@ -186,7 +201,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
                     </button>
                 </div>
                 {
-                    isError ? (
+                    isError && !wasCancelled ? (
                         <div className="create-project-error-message">
                             <p>{errorMessage}</p>
                         </div>

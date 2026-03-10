@@ -51,6 +51,7 @@ class NativeProcessRunner<T = unknown> {
     private jsonMessages: NativeJsonMessage<T>[] = [];
     private finalResult: T | undefined;
     private nativeJsonError: NativeErrorMessage | null = null;
+    private wasCancelled: boolean = false;
 
     private constructor(
         params: NativeRunParams,
@@ -128,6 +129,19 @@ class NativeProcessRunner<T = unknown> {
                     return;
                 }
 
+                // Cancellation branch
+                if (this.wasCancelled) {
+                    reject(
+                        new AppException(
+                            "CPP_PROCESS_CANCELLED",
+                            "Native process was cancelled",
+                            this.processErrorOutput || this.processOutput,
+                            false
+                        )
+                    );
+                    return;
+                }
+
                 // Non-zero exit
                 if (exitCode !== 0) {
                     reject(
@@ -166,6 +180,15 @@ class NativeProcessRunner<T = unknown> {
 
             this.writeDataToProcess(jsonData ?? this.params.inputJson);
         })
+    }
+
+    cancelProcess(): void {
+        if (!this.nativeProcess || this.nativeProcess.killed || this.nativeProcess.exitCode !== null) {
+            return;
+        }
+
+        this.wasCancelled = true;
+        this.nativeProcess.kill("SIGTERM");
     }
 
     private writeDataToProcess(jsonData?: string): void {
