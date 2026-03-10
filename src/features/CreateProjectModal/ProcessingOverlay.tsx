@@ -4,9 +4,10 @@ import "./processingOverlay.css";
 interface ProcessingOverlayProps {
     updateMessage?: string;
     percent?: number;
+    cancel: () => void;
 }
 
-const ProcessingOverlay: React.FC<ProcessingOverlayProps> = ({ updateMessage, percent }) => {
+const ProcessingOverlay: React.FC<ProcessingOverlayProps> = ({ updateMessage, percent, cancel }) => {
 
         return (
             <div className="create-project-processing-overlay">
@@ -22,6 +23,15 @@ const ProcessingOverlay: React.FC<ProcessingOverlayProps> = ({ updateMessage, pe
                     {percent !== undefined ? (
                         <p className="create-project-processing-percent">{percent}%</p>
                     ) : null}
+                </div>
+                <div className="create-project-cancel-area">
+                    <button
+                        onClick={cancel}
+                        type="button"
+                        className="create-project-cancel"
+                    >
+                        Cancel
+                    </button>
                 </div>
             </div>
         );

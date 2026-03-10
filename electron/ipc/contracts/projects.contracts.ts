@@ -12,3 +12,12 @@ export type CreateProjectResponse = {
     binaryFilesPathUuid: string;
     binaryFilesPath: string;
 }
+
+export type CancelCreateProjectRequest = {
+    requestId: string;
+}
+
+export type CancelCreateProjectResponse = {
+    requestId: string;
+    message: string;
+}

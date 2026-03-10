@@ -22,6 +22,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
     const { 
         submitCreateProject, 
         resetProgress,
+        cancelCreateProject,
         isPending,
         isSuccess,
         isError,
@@ -72,7 +73,6 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
         }
 
         const request = {
-            requestId: crypto.randomUUID(),
             projectName: projectName.trim(),
             corpusName: corpusName.trim(),
             folderPath: folderPath.trim(),
@@ -87,9 +87,9 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
         if(!isSuccess) return;
 
         onSuccessfulCreation();
-        resetForm()
+        resetForm();
         onClose();
-    }, [isSuccess, onSuccessfulCreation, resetForm, onClose]);
+    }, [isSuccess]);
 
     // watch isError
     useEffect(() => {
@@ -98,7 +98,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
             return;
         }
         setErrorMessage(`There was an error creating the project: ${error?.message}`);
-    }, [isError, setErrorMessage, error]);
+    }, [isError]);
 
     return(
         <div className="create-project-modal-backdrop" onClick={handleRequestClose}>
@@ -111,6 +111,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
                         <ProcessingOverlay
                             updateMessage={progressMessage}
                             percent={percent}
+                            cancel={() => cancelCreateProject()}
                         />
                     ) : null
                 }

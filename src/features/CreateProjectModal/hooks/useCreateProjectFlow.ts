@@ -1,15 +1,16 @@
-
 import { useState, useEffect } from "react";
 import { projectProgressEventsAdapter } from "@/app/adapters/projects.adapters.events";
 import type { CreateProjectRequest } from "@/app/ports/projects.ports";
 import useCreateProjectMutation from "./useCreateProjectMutation";
+import { submitCancelCreateProject } from "../services/cancelProjectModal.service";
+import { projectsAdapter } from "@/app/adapters/projects.adapters";
 
 const useCreateProjectFlow = () => {
     const mutation = useCreateProjectMutation();
 
     const [progressMessage, setProgressMessage] = useState<string>("Preparing project creation...");
     const [percent, setPercent] = useState<number>(0);
-    const [activeRequestId, setActiveRequestId] = useState<string | null>(null);
+    const [activeRequestId, setActiveRequestId] = useState<string>("");
 
     useEffect(() => {
         const unsubscribe = projectProgressEventsAdapter.subscribeToProjectCreationProgress((event) => {
@@ -23,22 +24,28 @@ const useCreateProjectFlow = () => {
         return unsubscribe;
     }, [activeRequestId]);
 
-    async function submitCreateProject(args: CreateProjectRequest) {
-        setActiveRequestId(args.requestId);
+    async function submitCreateProject(args: Omit<CreateProjectRequest, "requestId">) {
+        const updatedArgs = { ...args, requestId: crypto.randomUUID() };
+        setActiveRequestId(updatedArgs.requestId);
         setProgressMessage("Preparing corpus build...");
         setPercent(0);
 
         try {
             await mutation.mutateAsync({
-                ...args
+                ...updatedArgs
             });
         } finally {
-            setActiveRequestId(null);
+            setActiveRequestId("");
         }
     }
 
+    async function cancelCreateProject() {
+        await submitCancelCreateProject(projectsAdapter, {requestId: activeRequestId});
+        setProgressMessage("Cancelling project creation...");
+    }
+
     function resetProgress() {
-        setActiveRequestId(null);
+        setActiveRequestId("");
         setProgressMessage("Preparing project creation...");
         setPercent(0);
     }
@@ -46,6 +53,7 @@ const useCreateProjectFlow = () => {
     return {
         submitCreateProject,
         resetProgress,
+        cancelCreateProject,
         isPending: mutation.isPending,
         isSuccess: mutation.isSuccess,
         isError: mutation.isError,
