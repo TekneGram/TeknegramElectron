@@ -2,9 +2,10 @@ import { safeHandle } from "./safeHandle";
 // import { validateOrThrow } from "./validate";
 import { listProjects, type ProjectListItem } from "@electron/services/projects/listProjects";
 import { createProject } from "@electron/services/projects/createProject";
-import type { CreateProjectRequest, CreateProjectResponse } from "./contracts/projects.contracts";
+import { cancelCreateProject } from "@electron/services/projects/cancelCreateProject";
+import type { CreateProjectRequest, CreateProjectResponse, CancelCreateProjectRequest, CancelCreateProjectResponse } from "./contracts/projects.contracts";
 import { validateOrThrow } from "./validate";
-import { createProjectSchema } from "./validationSchemas/projects.schemas";
+import { createProjectSchema, cancelCreateProjectSchema } from "./validationSchemas/projects.schemas";
 import { pickCorpusFolderSchema, pickSemanticsRulesFileSchema } from "./validationSchemas/system.schemas";
 import type { PickCorpusFolderRequest, PickCorpusFolderResponse } from "./contracts/system.contracts";
 import { pickCorpusFolder } from "@electron/services/system/pickCorpusFolder";
@@ -26,6 +27,14 @@ export function registerHandlers(): void {
             return createProject(args, ctx);
         }
     );
+
+    safeHandle<CancelCreateProjectRequest,  CancelCreateProjectResponse>(
+        "projects:create:cancel",
+        async (_event, rawArgs, ctx) => {
+            const args = validateOrThrow(cancelCreateProjectSchema, rawArgs);
+            return cancelCreateProject(args, ctx);
+        }
+    )
 
     safeHandle<PickCorpusFolderRequest, PickCorpusFolderResponse>(
         "system:pick-corpus-folder",

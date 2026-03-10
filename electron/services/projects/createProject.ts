@@ -15,6 +15,7 @@ import { NewProjectRow, NewCorpusRow, NewCorpusFilesPathRow } from "@electron/db
 import { getRuntimeDbPath, getCorpusBinariesDir, getUdpipeModelPath } from "@electron/runtime/runtimePaths";
 import type { NativeRunParams } from "@electron/services/nativeProcessFactory";
 import NativeProcessRunner from "@electron/services/nativeProcessFactory";
+import type { NativeRunResult } from "../nativeProcessRunner";
 import { runInTransaction } from '@electron/db/sqlite';
 import { createAppDatabase } from "@electron/db/appDatabase";
 import { insertProject, insertCorpus, insertCorpusFilePath } from "@electron/db/repositories/projectRepositories";
@@ -24,6 +25,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { CreateProjectRequest, CreateProjectResponse } from "@electron/ipc/contracts/projects.contracts";
 import { PROJECTS_CREATE_PROGRESS_CHANNEL } from "@electron/ipc/contracts/progress.event.contracts";
+import { projectServiceRegistry } from "../projectServiceRegistry";
 
 type ValidatedCreateProjectRequest = {
     projectName: string;
@@ -108,14 +110,41 @@ export async function createProject(request: CreateProjectRequest, ctx: RequestC
             });
         },
     }
-    const runner = NativeProcessRunner.create<BuildCorpusProcessResult>(nativeRunnerParameters);
 
-    const nativeResult = await runner.runProcess(requestJSON);
+    // Register the runner, created here, in the ProjectServiceRegistry so it can be cancelled or cleaned up later
+    const runner = NativeProcessRunner.create<BuildCorpusProcessResult>(nativeRunnerParameters);
+    projectServiceRegistry.registerCreateProjectOperation({
+        requestId: request.requestId,
+        outputDir: corpusBinariesDir,
+        cancel: () => runner.cancelProcess()
+    });
+
+    let nativeResult: NativeRunResult<BuildCorpusProcessResult>;
+    try {
+        nativeResult = await runner.runProcess(requestJSON);
+    } catch (err) {
+        try {
+            fs.rmSync(corpusBinariesDir, { recursive: true, force: true });
+        } catch {
+            logger.warn("Corpus build cancelled/failed before metadata persistence", {
+                correlationId: ctx.correlationId,
+                outputDir: corpusBinariesDir
+            })
+        }
+        throw err
+    } finally {
+        projectServiceRegistry.removeCreateProjectOperation(request.requestId)
+    }
+
+    // const nativeResult = await runner.runProcess(requestJSON);
     // No need to check if nativeResult.result exists, since this is checked in runProcess
     logger.info("Corpus build completed", {
         correlationId: ctx.correlationId,
-        outputDir: nativeResult.result?.outputDir
+        outputDir: corpusBinariesDir
     });
+    
+
+    
 
     // Run transaction inserts into the database
     const appDatabase = createAppDatabase(getRuntimeDbPath());
@@ -134,7 +163,7 @@ export async function createProject(request: CreateProjectRequest, ctx: RequestC
             // Log with a warning if cleanup fails
             logger.warn("Corpus binaries failed to be deleted", {
                 correlationId: ctx.correlationId,
-                outputDir: nativeResult.result?.outputDir
+                outputDir: corpusBinariesDir
             });
         }
         // Raise the error if database transaction fails.

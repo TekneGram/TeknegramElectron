@@ -1,4 +1,10 @@
-import type { ProjectListItem, CreateProjectRequest, CreateProjectResponse, ProjectsPort } from "@/app/ports/projects.ports";
+import type { 
+    ProjectListItem, 
+    CreateProjectRequest, 
+    CreateProjectResponse, 
+    CancelCreateProjectRequest,
+    CancelCreateProjectResponse,
+    ProjectsPort } from "@/app/ports/projects.ports";
 import { invokeRequest } from "./invokeRequest";
 
 export const projectsAdapter: ProjectsPort = {
@@ -8,5 +14,9 @@ export const projectsAdapter: ProjectsPort = {
 
     async createProject(request: CreateProjectRequest) {
         return invokeRequest<CreateProjectRequest, CreateProjectResponse>("projects:create", request);
+    },
+
+    async cancelCreateProject(request: CancelCreateProjectRequest) {
+        return invokeRequest<CancelCreateProjectRequest, CancelCreateProjectResponse>("projects:create:cancel", request);
     }
 }
