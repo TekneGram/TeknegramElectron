@@ -1,5 +1,5 @@
 export type AppError = {
-    kind: "validation" | "processing" | "infrastructure" | "unknown";
+    kind: "validation" | "processing" | "infrastructure" | "cancelled" | "unknown";
     userMessage: string;
     debugId?: string;
 };

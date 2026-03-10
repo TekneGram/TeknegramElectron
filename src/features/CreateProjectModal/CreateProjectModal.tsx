@@ -18,11 +18,11 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
     const { values, setters, resetForm, canSubmit } = useCreateProjectForm();
     const { projectName, corpusName, folderPath, semanticsRulesPath } = values;
     const { setProjectName, setCorpusName, setFolderPath, setSemanticsRulesPath } = setters;
-    //const { mutate, isPending, isSuccess, isError, error } = useCreateProjectMutation();
+
     const { 
         submitCreateProject, 
-        resetProgress,
         cancelCreateProject,
+        wasCancelled,
         isPending,
         isSuccess,
         isError,
@@ -30,8 +30,10 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
         progressMessage,
         percent
     } = useCreateProjectFlow()
+    
     const { pickFolder, isPicking, setIsPicking } = usePickCorpusFolder();
     const { pickSemanticsRules, isPickingSemanticsRules, setIsPickingSemanticsRules } = usePickSemanticsRulesFile();
+    
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     async function handlePickCorpusFolder() {
@@ -89,16 +91,16 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
         onSuccessfulCreation();
         resetForm();
         onClose();
-    }, [isSuccess]);
+    }, [isSuccess, wasCancelled, onSuccessfulCreation, resetForm, onClose]);
 
     // watch isError
     useEffect(() => {
-        if(!isError) {
+        if(wasCancelled || !isError) {
             setErrorMessage(null);
             return;
         }
         setErrorMessage(`There was an error creating the project: ${error?.message}`);
-    }, [isError]);
+    }, [isError, wasCancelled, setErrorMessage, error]);
 
     return(
         <div className="create-project-modal-backdrop" onClick={handleRequestClose}>
@@ -199,7 +201,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
                     </button>
                 </div>
                 {
-                    isError ? (
+                    isError && !wasCancelled ? (
                         <div className="create-project-error-message">
                             <p>{errorMessage}</p>
                         </div>

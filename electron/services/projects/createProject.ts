@@ -15,7 +15,6 @@ import { NewProjectRow, NewCorpusRow, NewCorpusFilesPathRow } from "@electron/db
 import { getRuntimeDbPath, getCorpusBinariesDir, getUdpipeModelPath } from "@electron/runtime/runtimePaths";
 import type { NativeRunParams } from "@electron/services/nativeProcessFactory";
 import NativeProcessRunner from "@electron/services/nativeProcessFactory";
-import type { NativeRunResult } from "../nativeProcessRunner";
 import { runInTransaction } from '@electron/db/sqlite';
 import { createAppDatabase } from "@electron/db/appDatabase";
 import { insertProject, insertCorpus, insertCorpusFilePath } from "@electron/db/repositories/projectRepositories";
@@ -119,9 +118,8 @@ export async function createProject(request: CreateProjectRequest, ctx: RequestC
         cancel: () => runner.cancelProcess()
     });
 
-    let nativeResult: NativeRunResult<BuildCorpusProcessResult>;
     try {
-        nativeResult = await runner.runProcess(requestJSON);
+        await runner.runProcess(requestJSON);
     } catch (err) {
         try {
             fs.rmSync(corpusBinariesDir, { recursive: true, force: true });
