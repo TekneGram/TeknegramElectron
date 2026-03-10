@@ -24,26 +24,26 @@ const ProjectsTinyView: React.FC<ProjectsTinyViewProps>  = ({ onOpenModal }) => 
     }
 
     return(
-        <>
-            <select
-                value={selectedProjectId}
-                onChange={(event) => setSelectedProjectId(event.target.value)}
-            >
-                <option value="" disabled>
-                    Projects
-                </option>
-                {
-                    data.map((project) => (
-                        <option
-                            key={project.uuid}
-                            value={project.uuid}
-                        >
-                            {project.projectName}
-                        </option>
-                    ))
-                }
-            </select>
-        </>
+        <select
+            className="projects-tinyview-select"
+            value={selectedProjectId}
+            onChange={(event) => setSelectedProjectId(event.target.value)}
+            aria-label="Select a project"
+        >
+            <option value="" disabled>
+                Projects
+            </option>
+            {
+                data.map((project) => (
+                    <option
+                        key={project.uuid}
+                        value={project.uuid}
+                    >
+                        {project.projectName}
+                    </option>
+                ))
+            }
+        </select>
     )
 
 

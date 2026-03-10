@@ -82,6 +82,36 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
                 projectName: "CEFR Levels Corpus",
                 uuid: "123-123-123-123-123-125",
                 createdAt: "some data"
+            },
+            {
+                projectName: "CEFR Levels Corpus",
+                uuid: "123-123-123-123-123-126",
+                createdAt: "some data"
+            },
+            {
+                projectName: "CEFR Levels Corpus",
+                uuid: "123-123-123-123-123-127",
+                createdAt: "some data"
+            },
+            {
+                projectName: "CEFR Levels Corpus",
+                uuid: "123-123-123-123-123-128",
+                createdAt: "some data"
+            },
+            {
+                projectName: "CEFR Levels Corpus",
+                uuid: "123-123-123-123-123-129",
+                createdAt: "some data"
+            },
+            {
+                projectName: "CEFR Levels Corpus",
+                uuid: "123-123-123-123-123-130",
+                createdAt: "some data"
+            },
+            {
+                projectName: "CEFR Levels Corpus",
+                uuid: "123-123-123-123-123-131",
+                createdAt: "some data"
             }
         ]
 
@@ -124,10 +154,10 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
         
     
     // To the projects list screen
-    if (data2.length >= 1) {
+    if (data.length >= 1) {
         return (
             <>
-            <ProjectsList projectsData={data2} />
+            <ProjectsList projectsData={data} />
             {
                 modalIsOpen ? <CreateProjectModal onClose={onCloseModal} onSuccessfulCreation={handleSuccessfulCreation} /> : <></>
             }
