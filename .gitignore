@@ -28,6 +28,9 @@ native/**/udpipe/
 native/**/corpus_build_pipeline
 native/corpus_pipeline
 
+# Old unnecessary files kept for reference
+.legacy
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

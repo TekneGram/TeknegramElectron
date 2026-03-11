@@ -1,38 +1,53 @@
-treat cancellation as part of a broader improvement:
+The main design decisions ahead are about where complexity is allowed to live. At your size, you can still
+  control that.
 
-  - cleanup on native failure
-  - cleanup on cancellation
-  - cleanup on DB failure
+  Key Decisions
 
-  Implement cancellation in this order:
+  - Domain boundaries: decide what the core concepts are and keep them stable. Projects, corpora, queries,
+    analysis jobs, chat sessions, and result sets should have clear ownership and types.
+  - IPC contract design: your Electron boundary will become expensive if it grows ad hoc. Define request/response
+    shapes, error semantics, cancellation behavior, and streaming patterns early.
+  - Long-running job model: search, corpus build, LLM chat, and Monte Carlo analysis should probably share a
+    consistent job lifecycle.
+    States like queued, running, cancelling, cancelled, failed, completed need to mean the same thing everywhere.
+  - Source of truth for state: decide what lives in React local state, what lives in React Query, and what should
+    be event-driven. If that remains fuzzy, the UI will get brittle fast.
+  - Error taxonomy: you already have kinds. Keep that disciplined. Validation, processing, infrastructure,
+    cancelled, timeout, partial-result, quota, and auth should behave consistently across the app.
+  - Cancellation semantics: decide whether cancel means “best effort”, “guaranteed stop”, or “stop UI and ignore
+    late result”. This matters a lot for LLM and Monte Carlo flows.
+  - Persistence model: decide what is saved and when.
+    Projects, query history, analysis outputs, chat transcripts, cached search results, and reproducible analysis
+    configs all need a policy.
+  - Reproducibility: corpus linguistics and Monte Carlo work benefit from deterministic runs.
+    You may want explicit seeds, versioned settings, and immutable result records.
+  - LLM grounding model: decide whether chat answers are freeform, corpus-grounded, citation-required, or
+    analysis-assisted. If you do not constrain this early, the feature becomes hard to trust.
+  - Query architecture: decide whether search is one unified query system or separate pipelines for concordance,
+    collocation, frequency, keyness, metadata filtering, and chat retrieval.
+  - Native boundary ownership: decide what stays in TypeScript and what belongs in native code/binaries. Keep
+    computationally heavy and stable logic on one side; orchestration and UI-facing transformation on the other.
+  - Result-shaping layer: raw binary/native output should not leak straight into UI components. Add a stable
+    application-layer mapping boundary.
+  - Testing strategy: decide what gets unit-tested, integration-tested, and manually tested.
+    For this app, IPC contracts and analysis correctness matter more than shallow component tests.
+  - Observability: once you add long-running analysis and LLM flows, you will need structured logs, job IDs,
+    timing, and correlation IDs, or debugging will become painful.
+  - Plugin vs built-in analysis: if you expect many analysis types later, design for extensible pipelines now. If
+    not, avoid premature abstraction.
 
-  1. Add cancelCreateProject(requestId) contract/port/adapter
-  2. Add active operation registry in Electron
-  3. Add cancel() support to NativeProcessRunner
-  4. Wire cancel handler to kill the process
-  5. Add cleanup in createProject.ts for cancelled/native-failed runs
-  6. Expose cancel from useCreateProjectFlow
-  7. Add cancel button to the processing UI
+  Most Important Near-Term Questions
 
-- create uses hook -> mutation hook -> service -> adapter
-- cancel uses hook -> service -> adapter
+  - What is the canonical lifecycle model for every long-running operation?
+  - What is the stable contract between UI, Electron, and native processing?
+  - What data must be reproducible and persisted?
+  - What evidence must an LLM answer provide before the UI presents it as trustworthy?
 
-For your current feature, I would probably keep:
+  Practical Advice
 
-  - create as a mutation hook
-  - cancel as a direct service call inside useCreateProjectFlow
+  For the next phase, I would focus on three things:
 
-  Why?
-  Because cancel is subordinate to the main create flow. It is not really an independent screen action; it is a
-  control action within the running workflow.
-
-  So the important architectural point is:
-
-  - yes, services are where adapter/port interaction should happen
-  - and that is already true for both create and cancel in your code
-  - the only difference is whether React Query wraps the service call
-
-  So this is not an oversight. It is just an uneven orchestration shape.
-
-  If you want maximum consistency, add a cancel mutation hook.
-  If you want pragmatic simplicity, your current service-based cancel path is fine.
+  - unify job/cancellation/error handling across all async workflows
+  - define stable typed contracts at the IPC and service boundaries
+  - create a strong result model for search, analysis, and chat so UI components consume normalized data, not
+    backend-shaped payloads

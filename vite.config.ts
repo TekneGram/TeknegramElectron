@@ -13,6 +13,11 @@ export default defineConfig({
   resolve: {
     alias: aliases
   },
+  test: {
+    environment: "happy-dom",
+    setupFiles: "./src/test/setup.ts",
+    clearMocks: true,
+  },
   plugins: [
     react(),
     electron({
