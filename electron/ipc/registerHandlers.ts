@@ -11,6 +11,7 @@ import type { PickCorpusFolderRequest, PickCorpusFolderResponse } from "./contra
 import { pickCorpusFolder } from "@electron/services/system/pickCorpusFolder";
 import type { PickSemanticsRulesFileRequest, PickSemanticsRulesFileResponse } from "./contracts/system.contracts";
 import { pickSemanticsRulesFile } from "@electron/services/system/pickSemanticsRulesFile";
+import { systemDialogsAdapter } from "@electron/adapters/systemDialogs.adapter";
 
 export function registerHandlers(): void {
     safeHandle<null, ProjectListItem[]>(
@@ -41,7 +42,7 @@ export function registerHandlers(): void {
         async (_event, rawArgs, _ctx) => {
             void _ctx;
             const args = validateOrThrow(pickCorpusFolderSchema, rawArgs);
-            return pickCorpusFolder(args);
+            return pickCorpusFolder(args, systemDialogsAdapter);
         }
     );
 
@@ -50,7 +51,7 @@ export function registerHandlers(): void {
         async (_event, rawArgs, _ctx) => {
             void _ctx;
             const args = validateOrThrow(pickSemanticsRulesFileSchema, rawArgs);
-            return pickSemanticsRulesFile(args);
+            return pickSemanticsRulesFile(args, systemDialogsAdapter);
         }
     )
 

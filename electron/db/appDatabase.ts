@@ -1,5 +1,4 @@
 import { openDatabase, closeDatabase, type SqliteDatabase } from "./sqlite";
-import { runMigrationsFromFiles } from "./runMigrations";
 
 export interface AppDatabase {
   db: SqliteDatabase;
@@ -8,8 +7,6 @@ export interface AppDatabase {
 
 export function createAppDatabase(dbPath: string): AppDatabase {
   const db = openDatabase(dbPath);
-
-  runMigrationsFromFiles(db);
 
   return {
     db,

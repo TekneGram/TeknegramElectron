@@ -7,10 +7,30 @@ import { projectsAdapter } from "@/app/adapters/projects.adapters";
 import { isFrontAppError } from "@/app/errors/FrontAppError";
 import { toastifyNotifier } from "@/app/adapters/notifications";
 
+// type UseCreateProjectFlowArgs = {
+//     onSuccess: () => void;
+// };
+
+// type UseCreateProjectFlowResult = {
+//     submitCreateProject: (args: Omit<CreateProjectRequest, "requestId">) => Promise<void>;
+//     cancelCreateProject: () => Promise<void>;
+//     handleRequestClose: () => void;
+
+//     isPending: boolean;
+//     canClose: boolean;
+//     showOverlay: boolean;
+//     progressMessage: string;
+//     percent: number;
+
+//     errorMessage: string | null;
+// };
+
+const INITIAL_PROGRESS_MESSAGE = "Preparing project creation...";
+
 const useCreateProjectFlow = () => {
     const mutation = useCreateProjectMutation();
 
-    const [progressMessage, setProgressMessage] = useState<string>("Preparing project creation...");
+    const [progressMessage, setProgressMessage] = useState<string>(INITIAL_PROGRESS_MESSAGE);
     const [percent, setPercent] = useState<number>(0);
     const [activeRequestId, setActiveRequestId] = useState<string>("");
     const [cancellationRequested, setCancellationRequested] = useState<boolean>(false);
@@ -87,7 +107,7 @@ const useCreateProjectFlow = () => {
         updateActiveRequestId("");
         updateCancellationRequested(false);
         mutation.reset();
-        setProgressMessage("Preparing project creation...");
+        setProgressMessage(INITIAL_PROGRESS_MESSAGE);
         setPercent(0);
     }
 

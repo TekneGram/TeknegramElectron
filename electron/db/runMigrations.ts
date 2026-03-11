@@ -24,7 +24,10 @@ export function runMigrationsFromFiles(db: SqliteDatabase): void {
     const dir = getMigrationsDir();
     if (!fs.existsSync(dir)) return;
 
-    const files = fs.readdirSync(dir).filter((f) => f.endsWith(".sql")).sort((a, b) => a.localeCompare(b));
+    const files = fs
+        .readdirSync(dir)
+        .filter((f) => f.endsWith(".sql"))
+        .sort((a, b) => a.localeCompare(b));
 
     const isAppliedStmt = db.prepare(
         "SELECT 1 FROM schema_migrations WHERE name = ? LIMIT 1"
