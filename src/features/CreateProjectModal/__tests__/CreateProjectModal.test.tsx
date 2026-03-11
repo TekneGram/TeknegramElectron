@@ -3,20 +3,20 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import CreateProjectModal from "../CreateProjectModal";
 
-const useCreateProjectFlowMock = vi.fn();
-const usePickCorpusFolderMock = vi.fn();
-const usePickSemanticsRulesFileMock = vi.fn();
+const mockCreateProjectFlow = vi.fn();
+const mockPickCorpusFolder = vi.fn();
+const mockPickSemanticsRulesFile = vi.fn();
 
 vi.mock("../hooks/useCreateProjectFlow", () => ({
-  default: () => useCreateProjectFlowMock(),
+  default: () => mockCreateProjectFlow(),
 }));
 
 vi.mock("../hooks/usePickCorpusFolder", () => ({
-  default: () => usePickCorpusFolderMock(),
+  default: () => mockPickCorpusFolder(),
 }));
 
 vi.mock("../hooks/usePickSemanticsRulesFile", () => ({
-  default: () => usePickSemanticsRulesFileMock(),
+  default: () => mockPickSemanticsRulesFile(),
 }));
 
 describe("CreateProjectModal", () => {
@@ -30,7 +30,7 @@ describe("CreateProjectModal", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    useCreateProjectFlowMock.mockReturnValue({
+    mockCreateProjectFlow.mockReturnValue({
       submitCreateProject,
       cancelCreateProject,
       wasCancelled: false,
@@ -42,13 +42,13 @@ describe("CreateProjectModal", () => {
       percent: 0,
     });
 
-    usePickCorpusFolderMock.mockReturnValue({
+    mockPickCorpusFolder.mockReturnValue({
       pickFolder,
       isPicking: false,
       setIsPicking: vi.fn(),
     });
 
-    usePickSemanticsRulesFileMock.mockReturnValue({
+    mockPickSemanticsRulesFile.mockReturnValue({
       pickSemanticsRules,
       isPickingSemanticsRules: false,
       setIsPickingSemanticsRules: vi.fn(),
@@ -94,7 +94,7 @@ describe("CreateProjectModal", () => {
     await user.type(screen.getByLabelText("Project Name"), "Project");
     await user.type(screen.getByLabelText("Corpus Name"), "Corpus");
 
-    useCreateProjectFlowMock.mockReturnValue({
+    mockCreateProjectFlow.mockReturnValue({
       submitCreateProject,
       cancelCreateProject,
       wasCancelled: false,
@@ -118,7 +118,7 @@ describe("CreateProjectModal", () => {
   });
 
   it("renders an error message when the flow reports an error", async () => {
-    useCreateProjectFlowMock.mockReturnValue({
+    mockCreateProjectFlow.mockReturnValue({
       submitCreateProject,
       cancelCreateProject,
       wasCancelled: false,
@@ -138,7 +138,7 @@ describe("CreateProjectModal", () => {
   });
 
   it("suppresses the error message when the flow was cancelled", () => {
-    useCreateProjectFlowMock.mockReturnValue({
+    mockCreateProjectFlow.mockReturnValue({
       submitCreateProject,
       cancelCreateProject,
       wasCancelled: true,
@@ -157,7 +157,7 @@ describe("CreateProjectModal", () => {
 
   it("shows the processing overlay and calls cancel while pending", async () => {
     const user = userEvent.setup();
-    useCreateProjectFlowMock.mockReturnValue({
+    mockCreateProjectFlow.mockReturnValue({
       submitCreateProject,
       cancelCreateProject,
       wasCancelled: false,
