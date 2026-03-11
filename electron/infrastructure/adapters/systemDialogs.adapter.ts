@@ -3,7 +3,7 @@ import type {
     SystemDialogsPort,
     OpenFolderDialogResult,
     OpenSemanticsRulesDialogResult,
-} from "@electron/ports/systemDialogs.port";
+} from "@electron/infrastructure/ports/systemDialogs.port";
 
 export const systemDialogsAdapter: SystemDialogsPort = {
     async openCorpusFolderDialog(): Promise<OpenFolderDialogResult> {

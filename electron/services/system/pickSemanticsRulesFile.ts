@@ -1,5 +1,5 @@
 import { PickSemanticsRulesFileRequest, PickSemanticsRulesFileResponse } from '@electron/ipc/contracts/system.contracts';
-import type { SystemDialogsPort } from '@electron/ports/systemDialogs.port';
+import type { SystemDialogsPort } from '@electron/infrastructure/ports/systemDialogs.port';
 
 export async function pickSemanticsRulesFile(
     _request: PickSemanticsRulesFileRequest,

@@ -2,7 +2,7 @@ import type {
     PickCorpusFolderRequest,
     PickCorpusFolderResponse
 } from "@electron/ipc/contracts/system.contracts"
-import { SystemDialogsPort } from "@electron/ports/systemDialogs.port";
+import { SystemDialogsPort } from "@electron/infrastructure/ports/systemDialogs.port";
 
 export async function pickCorpusFolder(
     _request: PickCorpusFolderRequest,
