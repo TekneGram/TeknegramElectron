@@ -9,6 +9,8 @@ import type {
   DeleteProjectResponse,
   ProjectListItem,
   ProjectsPort,
+  UpdateProjectNameRequest,
+  UpdateProjectNameResponse,
 } from "../projects.ports";
 
 describe("projects port contracts", () => {
@@ -59,6 +61,16 @@ describe("projects port contracts", () => {
       deletedBinaryFilesPath: "/tmp/corpus-a",
     };
 
+    const updateProjectNameRequest: UpdateProjectNameRequest = {
+      projectUuid: "11111111-1111-1111-1111-111111111111",
+      projectName: "Updated Corpus Builder",
+    };
+
+    const updateProjectNameResponse: UpdateProjectNameResponse = {
+      projectUuid: "11111111-1111-1111-1111-111111111111",
+      projectName: "Updated Corpus Builder",
+    };
+
     expectTypeOf(projectListItem).toEqualTypeOf<ProjectListItem>();
     expectTypeOf(createRequest).toEqualTypeOf<CreateProjectRequest>();
     expectTypeOf(createRequestWithoutRules).toEqualTypeOf<CreateProjectRequest>();
@@ -67,6 +79,8 @@ describe("projects port contracts", () => {
     expectTypeOf(cancelResponse).toEqualTypeOf<CancelCreateProjectResponse>();
     expectTypeOf(deleteRequest).toEqualTypeOf<DeleteProjectRequest>();
     expectTypeOf(deleteResponse).toEqualTypeOf<DeleteProjectResponse>();
+    expectTypeOf(updateProjectNameRequest).toEqualTypeOf<UpdateProjectNameRequest>();
+    expectTypeOf(updateProjectNameResponse).toEqualTypeOf<UpdateProjectNameResponse>();
   });
 
   it("requires all ProjectsPort methods to return AppResult-wrapped promises", async () => {
@@ -109,6 +123,16 @@ describe("projects port contracts", () => {
           },
         };
       },
+      async updateProjectName(request) {
+        void request;
+        return {
+          ok: true,
+          value: {
+            projectUuid: "11111111-1111-1111-1111-111111111111",
+            projectName: "Updated Corpus Builder",
+          },
+        };
+      },
     };
 
     const listResult = await port.listProjects();
@@ -122,11 +146,16 @@ describe("projects port contracts", () => {
     const deleteResult = await port.deleteProject({
       projectUuid: "11111111-1111-1111-1111-111111111111",
     });
+    const updateProjectNameResult = await port.updateProjectName({
+      projectUuid: "11111111-1111-1111-1111-111111111111",
+      projectName: "Updated Corpus Builder",
+    });
 
     expectTypeOf(listResult).toEqualTypeOf<AppResult<ProjectListItem[]>>();
     expectTypeOf(createResult).toEqualTypeOf<AppResult<CreateProjectResponse>>();
     expectTypeOf(cancelResult).toEqualTypeOf<AppResult<CancelCreateProjectResponse>>();
     expectTypeOf(deleteResult).toEqualTypeOf<AppResult<DeleteProjectResponse>>();
+    expectTypeOf(updateProjectNameResult).toEqualTypeOf<AppResult<UpdateProjectNameResponse>>();
   });
 
   it("rejects invalid project contract shapes", () => {

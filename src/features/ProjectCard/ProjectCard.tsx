@@ -1,5 +1,7 @@
 import type { ProjectListItem } from "@/app/ports/projects.ports";
 import { useDeleteProjectFlow } from "./hooks/useDeleteProjectFlow";
+import { useProjectNameEditFlow } from "./hooks/useProjectNameEditFlow";
+import ProjectCardTitleEditor from "./ProjectCardTitleEditor";
 import "./projectCard.css";
 
 type ProjectCardProps = {
@@ -7,6 +9,20 @@ type ProjectCardProps = {
 };
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
+    const {
+        error: renameError,
+        isEditing,
+        isSaving,
+        draftName,
+        canConfirm,
+        startEditing,
+        cancelEditing,
+        setDraftName,
+        confirmEditing,
+    } = useProjectNameEditFlow({
+        projectUuid: project.uuid,
+        projectName: project.projectName,
+    });
     const {
         error,
         isConfirming,
@@ -28,7 +44,18 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
             <div className="project-card">
                 <div className="project-card-header">
                     <div className="project-card-badge">Ready</div>
-                    <h2>{project.projectName}</h2>
+                    <ProjectCardTitleEditor
+                        projectName={project.projectName}
+                        draftName={draftName}
+                        isEditing={isEditing}
+                        isSaving={isSaving}
+                        canConfirm={canConfirm}
+                        error={renameError}
+                        onStartEditing={startEditing}
+                        onCancelEditing={cancelEditing}
+                        onConfirmEditing={confirmEditing}
+                        onDraftNameChange={setDraftName}
+                    />
                 </div>
                 <div className="project-card-body">
                     <p className="project-card-copy">

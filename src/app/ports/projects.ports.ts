@@ -39,9 +39,20 @@ export interface DeleteProjectResponse {
     deletedBinaryFilesPath: string;
 }
 
+export interface UpdateProjectNameRequest {
+    projectUuid: string;
+    projectName: string;
+}
+
+export interface UpdateProjectNameResponse {
+    projectUuid: string;
+    projectName: string;
+}
+
 export interface ProjectsPort {
     listProjects(): Promise<AppResult<ProjectListItem[]>>
     createProject(request: CreateProjectRequest): Promise<AppResult<CreateProjectResponse>>
     cancelCreateProject(request: CancelCreateProjectRequest): Promise<AppResult<CancelCreateProjectResponse>>
     deleteProject(request: DeleteProjectRequest): Promise<AppResult<DeleteProjectResponse>>
+    updateProjectName(request: UpdateProjectNameRequest): Promise<AppResult<UpdateProjectNameResponse>>
 }

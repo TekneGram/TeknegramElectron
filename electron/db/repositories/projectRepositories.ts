@@ -24,6 +24,19 @@ export function listProjectRows(db: SqliteDatabase): ProjectRow[] {
     );
 }
 
+export function findProjectRowByUuid(db: SqliteDatabase, projectUuid: string): ProjectRow | undefined {
+    return queryOne<ProjectRow>(
+        db,
+        `
+            SELECT uuid, project_name, created_at
+            FROM projects
+            WHERE uuid = ?
+            LIMIT 1
+        `,
+        [projectUuid]
+    );
+}
+
 export function findProjectDeleteTargetRow(db: SqliteDatabase, projectUuid: string): ProjectDeleteTargetRow | undefined {
     return queryOne<ProjectDeleteTargetRow>(
         db,
@@ -103,5 +116,17 @@ export function deleteProjectRow(db: SqliteDatabase, projectUuid: string): void 
             WHERE uuid = ?
         `,
         [projectUuid]
+    );
+}
+
+export function updateProjectNameRow(db: SqliteDatabase, projectUuid: string, projectName: string): void {
+    executeRun(
+        db,
+        `
+            UPDATE projects
+            SET project_name = ?
+            WHERE uuid = ?
+        `,
+        [projectName, projectUuid]
     );
 }

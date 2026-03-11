@@ -6,6 +6,8 @@ import type {
     CancelCreateProjectResponse,
     DeleteProjectRequest,
     DeleteProjectResponse,
+    UpdateProjectNameRequest,
+    UpdateProjectNameResponse,
     ProjectsPort } from "@/app/ports/projects.ports";
 import { invokeRequest } from "./invokeRequest";
 
@@ -24,5 +26,9 @@ export const projectsAdapter: ProjectsPort = {
 
     async deleteProject(request: DeleteProjectRequest) {
         return invokeRequest<DeleteProjectRequest, DeleteProjectResponse>("projects:delete", request);
+    },
+
+    async updateProjectName(request: UpdateProjectNameRequest) {
+        return invokeRequest<UpdateProjectNameRequest, UpdateProjectNameResponse>("projects:update-name", request);
     }
 }

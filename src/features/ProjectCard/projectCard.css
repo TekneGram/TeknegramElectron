@@ -1,3 +1,158 @@
+.project-card-header {
+    display: grid;
+    gap: 0.7rem;
+}
+
+.project-card-title-heading {
+    margin: 0;
+}
+
+.project-card-title-button {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 1.02;
+}
+
+.project-card-title-button:hover {
+    color: var(--color-accent);
+}
+
+.project-card-title-button:focus-visible {
+    outline: 2px solid var(--color-focus-ring-soft);
+    outline-offset: 4px;
+    border-radius: var(--radius-md);
+}
+
+.project-card-title-editor {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+        "input actions"
+        "error error";
+    gap: 0.55rem 0.5rem;
+    min-width: 0;
+}
+
+.project-card-title-input {
+    grid-area: input;
+    min-width: 0;
+    height: var(--control-height-field);
+    padding: 0 0.95rem;
+    border: 1px solid var(--color-input-border);
+    border-radius: var(--radius-xl);
+    background: var(--color-input-bg);
+    color: var(--color-text);
+    font: inherit;
+    font-size: 1rem;
+    font-weight: var(--font-weight-semibold);
+    transition:
+        border-color var(--motion-duration-fast) var(--motion-ease-standard),
+        box-shadow var(--motion-duration-fast) var(--motion-ease-standard),
+        background-color var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.project-card-title-input:hover {
+    border-color: var(--color-field-hover-border);
+}
+
+.project-card-title-input:focus-visible {
+    outline: none;
+    border-color: var(--color-field-focus-border);
+    box-shadow: 0 0 0 3px var(--color-focus-ring-shadow-soft);
+}
+
+.project-card-title-input:disabled {
+    opacity: 0.75;
+}
+
+.project-card-title-actions {
+    grid-area: actions;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.project-card-title-icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--control-height-sm);
+    height: var(--control-height-sm);
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: color-mix(in srgb, var(--color-control-surface) 90%, var(--color-surface));
+    color: var(--color-text);
+    cursor: pointer;
+    transition:
+        transform var(--motion-duration-fast) var(--motion-ease-standard),
+        background-color var(--motion-duration-fast) var(--motion-ease-standard),
+        border-color var(--motion-duration-fast) var(--motion-ease-standard),
+        box-shadow var(--motion-duration-fast) var(--motion-ease-standard),
+        opacity var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.project-card-title-icon-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.project-card-title-icon-button:focus-visible {
+    outline: 2px solid var(--color-focus-ring-soft);
+    outline-offset: 3px;
+}
+
+.project-card-title-icon-button:disabled {
+    cursor: default;
+    opacity: 0.45;
+    transform: none;
+    box-shadow: none;
+}
+
+.project-card-title-icon-button-cancel:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--color-error-border) 72%, var(--color-border));
+    background: color-mix(in srgb, var(--color-control-hover-surface) 72%, var(--color-error-surface));
+}
+
+.project-card-title-icon-button-confirm {
+    border-color: var(--color-action-primary-border);
+    background: linear-gradient(
+        135deg,
+        var(--color-action-primary-start),
+        var(--color-action-primary-end)
+    );
+    color: var(--color-action-primary-text);
+    box-shadow: var(--shadow-interactive);
+}
+
+.project-card-title-icon-button-confirm:hover:not(:disabled) {
+    background: linear-gradient(
+        135deg,
+        var(--color-action-primary-hover-start),
+        var(--color-action-primary-hover-end)
+    );
+    box-shadow: var(--shadow-interactive-hover);
+}
+
+.project-card-inline-icon {
+    width: 0.95rem;
+    height: 0.95rem;
+}
+
+.project-card-title-error {
+    grid-area: error;
+    margin: 0;
+    color: var(--color-error-border);
+    font-size: 0.84rem;
+    line-height: 1.35;
+}
+
 .project-card-actions {
     display: flex;
     align-items: center;

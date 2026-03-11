@@ -64,4 +64,19 @@ describe("projectsAdapter", () => {
     await expect(projectsAdapter.deleteProject(request)).resolves.toBe(result);
     expect(invokeRequestMock).toHaveBeenCalledWith("projects:delete", request);
   });
+
+  it("updates a project name through the projects:update-name channel", async () => {
+    const request = {
+      projectUuid: "11111111-1111-1111-1111-111111111111",
+      projectName: "Updated BAWE",
+    };
+    const result = {
+      ok: true,
+      value: request,
+    };
+    invokeRequestMock.mockResolvedValue(result);
+
+    await expect(projectsAdapter.updateProjectName(request)).resolves.toBe(result);
+    expect(invokeRequestMock).toHaveBeenCalledWith("projects:update-name", request);
+  });
 });

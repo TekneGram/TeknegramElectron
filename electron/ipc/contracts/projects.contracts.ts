@@ -30,3 +30,13 @@ export type DeleteProjectResponse = {
     projectUuid: string;
     deletedBinaryFilesPath: string;
 }
+
+export type UpdateProjectNameRequest = {
+    projectUuid: string;
+    projectName: string;
+}
+
+export type UpdateProjectNameResponse = {
+    projectUuid: string;
+    projectName: string;
+}

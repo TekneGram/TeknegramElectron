@@ -9,11 +9,19 @@ import type {
     CancelCreateProjectResponse,
     DeleteProjectRequest,
     DeleteProjectResponse,
+    UpdateProjectNameRequest,
+    UpdateProjectNameResponse,
 } from "../contracts/projects.contracts";
 import { createProject } from "@electron/services/projects/createProject";
 import { cancelCreateProject } from "@electron/services/projects/cancelCreateProject";
 import { deleteProject } from "@electron/services/projects/deleteProject";
-import { createProjectSchema, cancelCreateProjectSchema, deleteProjectSchema } from "../validationSchemas/projects.schemas";
+import { updateProjectName } from "@electron/services/projects/updateProjectName";
+import {
+    createProjectSchema,
+    cancelCreateProjectSchema,
+    deleteProjectSchema,
+    updateProjectNameSchema,
+} from "../validationSchemas/projects.schemas";
 
 export function RegisterProjectHandlers(): void {
     safeHandle<null, ProjectListItem[]>(
@@ -44,6 +52,14 @@ export function RegisterProjectHandlers(): void {
         async (_event, rawArgs, ctx) => {
             const args = validateOrThrow(deleteProjectSchema, rawArgs);
             return deleteProject(args, ctx);
+        }
+    );
+
+    safeHandle<UpdateProjectNameRequest, UpdateProjectNameResponse>(
+        "projects:update-name",
+        async (_event, rawArgs, ctx) => {
+            const args = validateOrThrow(updateProjectNameSchema, rawArgs);
+            return updateProjectName(args, ctx);
         }
     );
 }

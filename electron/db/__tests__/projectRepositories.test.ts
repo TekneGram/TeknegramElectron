@@ -14,11 +14,13 @@ vi.mock("../sqlite", () => ({
 
 import {
   deleteProjectRow,
+  findProjectRowByUuid,
   findProjectDeleteTargetRow,
   insertCorpus,
   insertCorpusFilePath,
   insertProject,
   listProjectRows,
+  updateProjectNameRow,
 } from "../repositories/projectRepositories";
 
 describe("projectRepositories", () => {
@@ -119,6 +121,22 @@ describe("projectRepositories", () => {
     );
   });
 
+  it("queries a project row by uuid", () => {
+    const row = {
+      uuid: "11111111-1111-1111-1111-111111111111",
+      project_name: "Corpus A",
+      created_at: "2026-03-11T00:00:00.000Z",
+    };
+    queryOneMock.mockReturnValue(row);
+
+    expect(findProjectRowByUuid(db as never, row.uuid)).toEqual(row);
+    expect(queryOneMock).toHaveBeenCalledWith(
+      db,
+      expect.stringContaining("WHERE uuid = ?"),
+      [row.uuid]
+    );
+  });
+
   it("delegates project deletes to executeRun with the expected parameters", () => {
     deleteProjectRow(db as never, "11111111-1111-1111-1111-111111111111");
 
@@ -126,6 +144,16 @@ describe("projectRepositories", () => {
       db,
       expect.stringContaining("DELETE FROM projects"),
       ["11111111-1111-1111-1111-111111111111"]
+    );
+  });
+
+  it("delegates project rename updates to executeRun with the expected parameters", () => {
+    updateProjectNameRow(db as never, "11111111-1111-1111-1111-111111111111", "Updated Corpus");
+
+    expect(executeRunMock).toHaveBeenCalledWith(
+      db,
+      expect.stringContaining("UPDATE projects"),
+      ["Updated Corpus", "11111111-1111-1111-1111-111111111111"]
     );
   });
 });

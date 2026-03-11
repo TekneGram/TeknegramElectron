@@ -24,6 +24,7 @@ describe("submitCancelCreateProject", () => {
       createProject: vi.fn(),
       cancelCreateProject: vi.fn().mockResolvedValue({ ok: true, value: response }),
       deleteProject: vi.fn(),
+      updateProjectName: vi.fn(),
     };
 
     await expect(submitCancelCreateProject(port, request)).resolves.toEqual(response);
@@ -43,6 +44,7 @@ describe("submitCancelCreateProject", () => {
         },
       }),
       deleteProject: vi.fn(),
+      updateProjectName: vi.fn(),
     };
 
     await expect(submitCancelCreateProject(port, request)).rejects.toBeInstanceOf(FrontAppError);
@@ -63,6 +65,7 @@ describe("submitCancelCreateProject", () => {
         },
       }),
       deleteProject: vi.fn(),
+      updateProjectName: vi.fn(),
     };
 
     await expect(submitCancelCreateProject(port, request)).rejects.toMatchObject({

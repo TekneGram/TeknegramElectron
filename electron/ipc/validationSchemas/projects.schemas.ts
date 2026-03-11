@@ -1,5 +1,10 @@
 import { z } from "zod";
-import type { CancelCreateProjectRequest, CreateProjectRequest, DeleteProjectRequest } from "../contracts/projects.contracts";
+import type {
+    CancelCreateProjectRequest,
+    CreateProjectRequest,
+    DeleteProjectRequest,
+    UpdateProjectNameRequest,
+} from "../contracts/projects.contracts";
 
 export const createProjectSchema: z.ZodType<CreateProjectRequest> = z.object({
     requestId: z.string().min(1),
@@ -15,4 +20,9 @@ export const cancelCreateProjectSchema: z.ZodType<CancelCreateProjectRequest> = 
 
 export const deleteProjectSchema: z.ZodType<DeleteProjectRequest> = z.object({
     projectUuid: z.string().uuid(),
+});
+
+export const updateProjectNameSchema: z.ZodType<UpdateProjectNameRequest> = z.object({
+    projectUuid: z.string().uuid(),
+    projectName: z.string().min(1),
 });
