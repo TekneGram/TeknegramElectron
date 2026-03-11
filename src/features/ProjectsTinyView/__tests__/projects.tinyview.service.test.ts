@@ -21,6 +21,7 @@ describe("listProjects", () => {
       listProjects: vi.fn().mockResolvedValue({ ok: true, value: projects }),
       createProject: vi.fn(),
       cancelCreateProject: vi.fn(),
+      deleteProject: vi.fn(),
     };
 
     await expect(listProjects(port)).resolves.toEqual(projects);
@@ -39,6 +40,7 @@ describe("listProjects", () => {
       }),
       createProject: vi.fn(),
       cancelCreateProject: vi.fn(),
+      deleteProject: vi.fn(),
     };
 
     await expect(listProjects(port)).rejects.toThrow("Failed to load projects");

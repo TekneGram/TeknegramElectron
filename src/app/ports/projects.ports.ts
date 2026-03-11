@@ -30,8 +30,18 @@ export interface CancelCreateProjectResponse {
     message: string;
 }
 
+export interface DeleteProjectRequest {
+    projectUuid: string;
+}
+
+export interface DeleteProjectResponse {
+    projectUuid: string;
+    deletedBinaryFilesPath: string;
+}
+
 export interface ProjectsPort {
     listProjects(): Promise<AppResult<ProjectListItem[]>>
     createProject(request: CreateProjectRequest): Promise<AppResult<CreateProjectResponse>>
     cancelCreateProject(request: CancelCreateProjectRequest): Promise<AppResult<CancelCreateProjectResponse>>
+    deleteProject(request: DeleteProjectRequest): Promise<AppResult<DeleteProjectResponse>>
 }

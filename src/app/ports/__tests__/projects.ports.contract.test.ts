@@ -5,6 +5,8 @@ import type {
   CancelCreateProjectResponse,
   CreateProjectRequest,
   CreateProjectResponse,
+  DeleteProjectRequest,
+  DeleteProjectResponse,
   ProjectListItem,
   ProjectsPort,
 } from "../projects.ports";
@@ -48,12 +50,23 @@ describe("projects port contracts", () => {
       message: "Cancelled",
     };
 
+    const deleteRequest: DeleteProjectRequest = {
+      projectUuid: "11111111-1111-1111-1111-111111111111",
+    };
+
+    const deleteResponse: DeleteProjectResponse = {
+      projectUuid: "11111111-1111-1111-1111-111111111111",
+      deletedBinaryFilesPath: "/tmp/corpus-a",
+    };
+
     expectTypeOf(projectListItem).toEqualTypeOf<ProjectListItem>();
     expectTypeOf(createRequest).toEqualTypeOf<CreateProjectRequest>();
     expectTypeOf(createRequestWithoutRules).toEqualTypeOf<CreateProjectRequest>();
     expectTypeOf(createResponse).toEqualTypeOf<CreateProjectResponse>();
     expectTypeOf(cancelRequest).toEqualTypeOf<CancelCreateProjectRequest>();
     expectTypeOf(cancelResponse).toEqualTypeOf<CancelCreateProjectResponse>();
+    expectTypeOf(deleteRequest).toEqualTypeOf<DeleteProjectRequest>();
+    expectTypeOf(deleteResponse).toEqualTypeOf<DeleteProjectResponse>();
   });
 
   it("requires all ProjectsPort methods to return AppResult-wrapped promises", async () => {
@@ -86,6 +99,16 @@ describe("projects port contracts", () => {
           },
         };
       },
+      async deleteProject(request) {
+        void request;
+        return {
+          ok: true,
+          value: {
+            projectUuid: "11111111-1111-1111-1111-111111111111",
+            deletedBinaryFilesPath: "/tmp/corpus-a",
+          },
+        };
+      },
     };
 
     const listResult = await port.listProjects();
@@ -96,10 +119,14 @@ describe("projects port contracts", () => {
       folderPath: "/tmp/corpus",
     });
     const cancelResult = await port.cancelCreateProject({ requestId: "req-1" });
+    const deleteResult = await port.deleteProject({
+      projectUuid: "11111111-1111-1111-1111-111111111111",
+    });
 
     expectTypeOf(listResult).toEqualTypeOf<AppResult<ProjectListItem[]>>();
     expectTypeOf(createResult).toEqualTypeOf<AppResult<CreateProjectResponse>>();
     expectTypeOf(cancelResult).toEqualTypeOf<AppResult<CancelCreateProjectResponse>>();
+    expectTypeOf(deleteResult).toEqualTypeOf<AppResult<DeleteProjectResponse>>();
   });
 
   it("rejects invalid project contract shapes", () => {

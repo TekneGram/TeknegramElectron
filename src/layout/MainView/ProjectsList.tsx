@@ -1,4 +1,5 @@
 import { ProjectListItem } from "@/app/ports/projects.ports";
+import ProjectCard from "@/features/ProjectCard/ProjectCard";
 interface ProjectsListProps {
     projectsData: ProjectListItem[];
 }
@@ -20,27 +21,10 @@ const ProjectsList: React.FC<ProjectsListProps> = ({ projectsData }) => {
                 {
                     projectsData.map((project) => {
                         return(
-                        <div
-                            className="project-card-shell"
+                        <ProjectCard
                             key={project.uuid}
-                        >
-                            <div className="project-card">
-                                <div className="project-card-header">
-                                    <div className="project-card-badge">Ready</div>
-                                    <h2>{project.projectName}</h2>
-                                </div>
-                                <div className="project-card-body">
-                                    <p className="project-card-copy">
-                                        Later, put some more interesting text here, e.g., last accessed, or metadata on the corpus or some recent results and stats.
-                                    </p>
-                                    <div className="project-card-footer">
-                                        <button className="project-enter-button">
-                                            Enter Project
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                            project={project}
+                        />
                         )
                     })
                 }

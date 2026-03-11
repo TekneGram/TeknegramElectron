@@ -80,6 +80,32 @@ describe("mapBackendError", () => {
       debugId: "cid-6",
     });
   });
+
+  it("maps filesystem and resource errors", () => {
+    expect(
+      mapBackendError({
+        code: "RESOURCE_NOT_FOUND",
+        message: "Missing project",
+        correlationId: "cid-8",
+      })
+    ).toEqual({
+      kind: "validation",
+      userMessage: "Missing project",
+      debugId: "cid-8",
+    });
+
+    expect(
+      mapBackendError({
+        code: "FS_WRITE_FAILED",
+        message: "Cleanup failed",
+        correlationId: "cid-9",
+      })
+    ).toEqual({
+      kind: "processing",
+      userMessage: "Cleanup failed",
+      debugId: "cid-9",
+    });
+  });
 });
 
 describe("invokeRequest", () => {

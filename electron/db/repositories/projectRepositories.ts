@@ -1,10 +1,16 @@
-import { queryAll, executeRun } from "../sqlite";
+import { queryAll, executeRun, queryOne } from "../sqlite";
 import type { SqliteDatabase } from "../sqlite";
 
 type ProjectRow = {
     uuid: string;
     project_name: string;
     created_at: string;
+};
+
+export type ProjectDeleteTargetRow = {
+    project_uuid: string;
+    corpus_uuid: string;
+    binary_files_path: string;
 };
 
 export function listProjectRows(db: SqliteDatabase): ProjectRow[] {
@@ -15,6 +21,24 @@ export function listProjectRows(db: SqliteDatabase): ProjectRow[] {
             FROM projects
             ORDER BY created_at DESC
         `
+    );
+}
+
+export function findProjectDeleteTargetRow(db: SqliteDatabase, projectUuid: string): ProjectDeleteTargetRow | undefined {
+    return queryOne<ProjectDeleteTargetRow>(
+        db,
+        `
+            SELECT
+                p.uuid AS project_uuid,
+                c.uuid AS corpus_uuid,
+                cfp.binary_files_path AS binary_files_path
+            FROM projects p
+            INNER JOIN corpora c ON c.project_uuid = p.uuid
+            INNER JOIN corpus_files_path cfp ON cfp.corpus_uuid = c.uuid
+            WHERE p.uuid = ?
+            LIMIT 1
+        `,
+        [projectUuid]
     );
 }
 
@@ -68,5 +92,16 @@ export function insertCorpusFilePath(db: SqliteDatabase, row: NewCorpusFilesPath
             VALUES (?, ?, ?, ?)
         `,
         [row.uuid, row.corpus_uuid, row.binary_files_path, row.created_at]
+    );
+}
+
+export function deleteProjectRow(db: SqliteDatabase, projectUuid: string): void {
+    executeRun(
+        db,
+        `
+            DELETE FROM projects
+            WHERE uuid = ?
+        `,
+        [projectUuid]
     );
 }

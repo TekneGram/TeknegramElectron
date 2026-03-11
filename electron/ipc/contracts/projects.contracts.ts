@@ -21,3 +21,12 @@ export type CancelCreateProjectResponse = {
     requestId: string;
     message: string;
 }
+
+export type DeleteProjectRequest = {
+    projectUuid: string;
+}
+
+export type DeleteProjectResponse = {
+    projectUuid: string;
+    deletedBinaryFilesPath: string;
+}
