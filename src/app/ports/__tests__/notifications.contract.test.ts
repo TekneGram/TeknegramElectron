@@ -18,12 +18,17 @@ describe("notifier port contracts", () => {
 
   it("rejects invalid notifier option shapes", () => {
     const invalidPort: NotifierPort = {
-      error(
-        _message,
+      error(message, opts) {
+        void message;
+        void opts;
         // @ts-expect-error id must be a string when provided
-        _opts = { id: 123 },
-      ) {},
-      success(_message, _opts) {},
+        const invalidOpts: Parameters<NotifierPort["error"]>[1] = { id: 123 };
+        void invalidOpts;
+      },
+      success(message, opts) {
+        void message;
+        void opts;
+      },
     };
 
     expectTypeOf(invalidPort).toEqualTypeOf<NotifierPort>();

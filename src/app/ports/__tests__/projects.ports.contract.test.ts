@@ -64,7 +64,8 @@ describe("projects port contracts", () => {
           value: [],
         };
       },
-      async createProject(_request) {
+      async createProject(request) {
+        void request;
         return {
           ok: true,
           value: {
@@ -75,7 +76,8 @@ describe("projects port contracts", () => {
           },
         };
       },
-      async cancelCreateProject(_request) {
+      async cancelCreateProject(request) {
+        void request;
         return {
           ok: true,
           value: {
@@ -116,7 +118,8 @@ describe("projects port contracts", () => {
           value: [],
         };
       },
-      async createProject(_request) {
+      async createProject(request) {
+        void request;
         return {
           ok: true,
           value: {
