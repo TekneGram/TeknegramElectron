@@ -40,3 +40,9 @@ Use `electron/ipc/*` for the transport boundary between the renderer and the Ele
   - IPC validates request
   - IPC delegates to service
   - `safeHandle` returns `Result<T>`
+
+  Testing
+
+  - Write unit tests here for validation helpers, request/result normalization, and other IPC-boundary behavior.
+  - Mock services in IPC tests; do not duplicate service orchestration tests here.
+  - Test boundary validation and `Result<T>` wrapping precisely.

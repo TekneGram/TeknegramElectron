@@ -103,3 +103,9 @@ A compact summary for the whole backend is:
 Explore each folder's AGENTS.md file before writing in any of the folder.
 
 If you need to write code that seems to break any of this architecture, stop and discuss with me a new architecture recommendation before implementing any code.
+
+Testing:
+- Put backend unit/local tests near the code they verify, typically in folder-level `__tests__`.
+- Put Electron/backend integration tests in `electron/test/integration`.
+- Put full app end-to-end tests in root `test/e2e`.
+- Consult each subfolder `AGENTS.md` for domain-specific test expectations and quirks.

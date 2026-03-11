@@ -21,3 +21,9 @@ backend -> adapter -> port-shaped result -> service -> React Query state -> hook
   when the feature needs new ports/adapters/contracts.
   - If shared state starts crossing distant shell regions and looks domain-level, consult `src/layout/AGENTS.md`
   and consider whether a provider is needed.
+
+Testing:
+- Put frontend unit/local tests near the code they verify, typically in folder-level `__tests__`.
+- Put frontend integration tests in `src/test/integration`.
+- Put full app end-to-end tests in root `test/e2e`.
+- Consult each subfolder `AGENTS.md` for domain-specific test expectations and quirks.

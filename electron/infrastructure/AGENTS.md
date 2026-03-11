@@ -26,3 +26,8 @@ Rules
 Goal
   - Keep Electron/platform API usage from spreading across services while avoiding unnecessary architecture
   elsewhere.
+
+Testing
+  - Write adapter tests here when Electron/platform wrapper behavior is non-trivial.
+  - Mock Electron APIs directly in this layer's tests.
+  - Do not retest service orchestration here.

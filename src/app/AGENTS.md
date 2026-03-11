@@ -38,3 +38,9 @@ When writing code here the main rule is: put transport and platform concerns in 
         not generic IPC calls.
   - Keep providers in src/app/providers/* for genuinely cross-cutting app state only.
     They are not part of request flow.
+
+Testing:
+  - Write unit tests here for adapter result mapping, error mapping, and other infrastructure-bound transformations.
+  - Test providers here only when provider logic is non-trivial.
+  - Mock `window.api` in tests; do not hit real IPC from this layer's unit tests.
+  - Test `AppResult` mapping and `FrontAppError`-related behavior precisely.

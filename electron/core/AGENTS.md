@@ -20,3 +20,7 @@ Rules
 
 Goal
   - give services, IPC, and infrastructure a common backend language for errors and request context
+
+Testing
+  - Write small unit tests here for error types, exception helpers, and request-context-related primitives.
+  - Keep tests framework-light and focused on pure behavior.

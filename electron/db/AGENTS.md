@@ -35,3 +35,8 @@ Pattern
   - services open the DB when needed
   - services call repositories
   - services own transactions and orchestration
+
+Testing
+  - Write repository unit tests here and database initialization/migration tests when useful.
+  - Prefer a temp or isolated test database setup.
+  - Test row shapes and SQL behavior here, not service-level IPC response DTO mapping.

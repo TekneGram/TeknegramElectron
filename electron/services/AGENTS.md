@@ -62,3 +62,8 @@ Typical pattern
   - service calls runtime/db/infrastructure/native helpers
   - service logs meaningful events
   - service returns typed response or throws a structured backend error
+
+Testing
+  - Write service unit tests here for orchestration logic, branching, transactions, cancellation, and DTO mapping.
+  - Mock repositories, runtime helpers, infrastructure ports/adapters, and native-process helpers in service unit tests.
+  - Write registry tests here when a registry is used for lifecycle control such as cancellation or status lookup.

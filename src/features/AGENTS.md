@@ -24,3 +24,11 @@ New features should follow these rules:
   - Errors should be thrown from services rather than encoded as undefined/null failure results.
   - For long-running flows, track progress and cancellation explicitly in the feature hook, and filter events to
     the active request.
+
+Testing:
+  - Write feature unit/local tests in the feature folder, typically under `__tests__`.
+  - Good default coverage is: feature services, feature hooks, and top-level component branching/interaction.
+  - Use component tests for rendering and user interactions; use hook tests for workflow/state logic.
+  - Keep cross-feature or cross-layer tests out of feature `__tests__`; those belong in integration or e2e locations.
+  - Hook and component tests use the DOM test environment.
+  - When mocking hooks in tests, do not name plain mock functions with a `use*` prefix; the React Hooks linter treats those as hooks and may report false rule violations.

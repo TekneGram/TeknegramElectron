@@ -34,3 +34,8 @@ Use `electron/runtime/*` for runtime environment and filesystem policy.
   - business validation
   - database queries
   - Electron UI/system capability wrappers
+
+  Testing
+
+  - Write tests here for path resolution and storage bootstrap behavior.
+  - Mock filesystem and environment/app packaging state when needed.
