@@ -22,8 +22,23 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
     const { data, isLoading, isError, refetch } = useListProjectsQuery();
     const [viewState, setViewState] = useState<MainViewState>({ kind: "welcome" });
 
+    useEffect(() => {
+        if (isLoading || isError) {
+            return;
+        }
+
+        if (viewState.kind === "create-success-transition") {
+            return;
+        }
+
+        const nextKind = data && data.length > 0 ? "projects-list" : "welcome";
+
+        if (viewState.kind !== nextKind) {
+            setViewState({ kind: nextKind });
+        }
+    }, [data, isLoading, isError, viewState.kind]);
+
     function handleSuccessfulCreation() {
-        onCloseModal(); // Close the modal if a project is successfully created.
         setViewState({ kind: "create-success-transition" });
     }
 
@@ -32,23 +47,38 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
     useEffect(() => {
         if(viewState.kind !== "create-success-transition") return;
 
-        const timeoutId = window.setTimeout(() => {
-            refetch();
-        }, 1000);
+        let cancelled = false;
 
-        return() => window.clearTimeout(timeoutId);
-    }, [viewState, refetch]);
+        const timeoutId = window.setTimeout(async () => {
+            const result = await refetch();
 
-    // Observe viewState to reach the projects-list screen
-    useEffect(() => {
-        if (viewState.kind !== "create-success-transition") {
-            return;
-        }
+            if (cancelled) {
+                return;
+            }
 
-        if (data !== undefined && data.length > 0) {
-            setViewState({ kind: "projects-list" });
-        }
-    }, [viewState, data]);
+            const refreshedData = result.data;
+
+            if (refreshedData !== undefined && refreshedData.length > 0) {
+                setViewState({ kind: "projects-list" });
+                return;
+            }
+            
+            setViewState({ kind: "welcome" });
+
+        }, 4000);
+
+        return() => {
+            cancelled = true;
+            window.clearTimeout(timeoutId);
+        };
+    }, [viewState.kind, refetch]);
+
+    // A transition screen after successfully creating a project.
+    if (viewState.kind === "create-success-transition") {
+        return(
+            <CreateSuccessTransition />
+        );
+    }
 
     // Screen to show when loading the projects
     if (isLoading) {
@@ -58,13 +88,6 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
     // Screen to show if there was an error loading the projects
     if (isError) {
         return(<p>Something went badly wrong!</p>);
-    }
-
-    // A transition screen after successfully creating a project.
-    if (viewState.kind === "create-success-transition") {
-        return(
-            <CreateSuccessTransition />
-        );
     }
 
     // const data2 = [
@@ -115,7 +138,7 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
     //         }
     //     ]
 
-    if (data === undefined || data.length === 0) {
+    if (viewState.kind === "welcome") {
         
         return(
             <section className="main-view-welcome">
@@ -154,7 +177,11 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
         
     
     // To the projects list screen
-    if (data.length >= 1) {
+    if (viewState.kind === "projects-list") {
+        if (!data || data.length === 0) {
+            return null;
+        }
+
         return (
             <>
             <ProjectsList projectsData={data} />
@@ -164,17 +191,6 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
             </>
         )
     }
-    // if (viewState.kind === "projects-list") {
-    //     return (
-    //         <>
-    //         <ProjectsList projectsData={data} />
-    //         {
-    //             modalIsOpen ? <CreateProjectModal onClose={onCloseModal} onSuccessfulCreation={handleSuccessfulCreation} /> : <></>
-    //         }
-    //         </>
-            
-    //     )
-    // }
 
     return (
         <></>
