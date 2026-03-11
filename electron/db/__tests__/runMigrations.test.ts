@@ -1,7 +1,16 @@
 import fs from "node:fs";
 import path from "node:path";
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { createTempDatabase, createTempDir } from "./testDb";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+const { electronApp } = vi.hoisted(() => ({
+  electronApp: { isPackaged: false },
+}));
+
+vi.mock("electron", () => ({
+  app: electronApp,
+}));
+
+import { runMigrationsFromFiles } from "../runMigrations";
 
 const originalResourcesPathDescriptor = Object.getOwnPropertyDescriptor(process, "resourcesPath");
 
@@ -13,120 +22,129 @@ function setResourcesPath(resourcesPath: string): void {
   });
 }
 
-afterEach(() => {
-  vi.resetModules();
-  vi.unmock("electron");
-  if (originalResourcesPathDescriptor) {
-    Object.defineProperty(process, "resourcesPath", originalResourcesPathDescriptor);
-  } else {
-    Reflect.deleteProperty(process, "resourcesPath");
-  }
-});
+function createMockDb() {
+  const exec = vi.fn();
+  const selectAppliedGet = vi.fn();
+  const markAppliedRun = vi.fn();
+  const transaction = vi.fn((work: () => void) => () => work());
 
-async function importRunMigrations(isPackaged: boolean) {
-  vi.doMock("electron", () => ({
-    app: {
-      isPackaged,
+  const prepare = vi.fn((sql: string) => {
+    if (sql.includes("SELECT 1 FROM schema_migrations")) {
+      return { get: selectAppliedGet };
+    }
+
+    if (sql.includes("INSERT INTO schema_migrations")) {
+      return { run: markAppliedRun };
+    }
+
+    throw new Error(`Unexpected SQL prepared in test: ${sql}`);
+  });
+
+  return {
+    db: {
+      exec,
+      prepare,
+      transaction,
     },
-  }));
-
-  return import("../runMigrations");
+    exec,
+    prepare,
+    selectAppliedGet,
+    markAppliedRun,
+    transaction,
+  };
 }
 
 describe("runMigrationsFromFiles", () => {
-  it("applies the real schema migration on first run", async () => {
-    const { db } = createTempDatabase();
-    const { runMigrationsFromFiles } = await importRunMigrations(false);
-
-    runMigrationsFromFiles(db);
-
-    expect(
-      db
-        .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name IN ('projects', 'corpora', 'corpus_files_path')")
-        .all()
-    ).toEqual([
-      { name: "projects" },
-      { name: "corpora" },
-      { name: "corpus_files_path" },
-    ]);
-    expect(
-      db.prepare("SELECT name FROM schema_migrations ORDER BY name ASC").all()
-    ).toEqual([{ name: "0001_core_entities.sql" }]);
+  beforeEach(() => {
+    vi.clearAllMocks();
+    electronApp.isPackaged = false;
   });
 
-  it("is idempotent across repeated runs", async () => {
-    const { db } = createTempDatabase();
-    const { runMigrationsFromFiles } = await importRunMigrations(false);
-
-    runMigrationsFromFiles(db);
-    runMigrationsFromFiles(db);
-
-    expect(db.prepare("SELECT COUNT(*) AS count FROM schema_migrations").get()).toEqual({ count: 1 });
+  afterEach(() => {
+    if (originalResourcesPathDescriptor) {
+      Object.defineProperty(process, "resourcesPath", originalResourcesPathDescriptor);
+    } else {
+      Reflect.deleteProperty(process, "resourcesPath");
+    }
   });
 
-  it("applies packaged migrations in filename order", async () => {
-    const tempDir = createTempDir();
-    const migrationsDir = path.join(tempDir, "db-migration");
+  it("creates the schema migrations table and returns cleanly when the directory does not exist", () => {
+    const { db, exec, prepare } = createMockDb();
+    vi.spyOn(fs, "existsSync").mockReturnValue(false);
 
-    fs.mkdirSync(migrationsDir, { recursive: true });
-    fs.writeFileSync(
-      path.join(migrationsDir, "0002_second.sql"),
-      "INSERT INTO ordered_steps (step_name) VALUES ('second');"
+    expect(() => runMigrationsFromFiles(db as never)).not.toThrow();
+
+    expect(exec).toHaveBeenCalledWith(expect.stringContaining("CREATE TABLE IF NOT EXISTS schema_migrations"));
+    expect(fs.existsSync).toHaveBeenCalledWith(
+      path.join(process.cwd(), "electron", "db", "migration"),
     );
-    fs.writeFileSync(
-      path.join(migrationsDir, "0001_first.sql"),
-      "CREATE TABLE ordered_steps (step_name TEXT PRIMARY KEY); INSERT INTO ordered_steps (step_name) VALUES ('first');"
-    );
-
-    setResourcesPath(tempDir);
-
-    const { db } = createTempDatabase();
-    const { runMigrationsFromFiles } = await importRunMigrations(true);
-
-    runMigrationsFromFiles(db);
-
-    expect(
-      db.prepare("SELECT step_name FROM ordered_steps ORDER BY rowid ASC").all()
-    ).toEqual([{ step_name: "first" }, { step_name: "second" }]);
-    expect(
-      db.prepare("SELECT name FROM schema_migrations ORDER BY name ASC").all()
-    ).toEqual([{ name: "0001_first.sql" }, { name: "0002_second.sql" }]);
+    expect(prepare).not.toHaveBeenCalled();
   });
 
-  it("rolls back a failing migration file without marking it applied", async () => {
-    const tempDir = createTempDir();
-    const migrationsDir = path.join(tempDir, "db-migration");
+  it("applies dev migrations in filename order and records each applied file", () => {
+    const { db, exec, selectAppliedGet, markAppliedRun } = createMockDb();
+    vi.spyOn(fs, "existsSync").mockReturnValue(true);
+    vi.spyOn(fs, "readdirSync").mockReturnValue(["0002_second.sql", "notes.txt", "0001_first.sql"] as never);
+    vi.spyOn(fs, "readFileSync").mockImplementation((filePath) => {
+      if (String(filePath).endsWith("0001_first.sql")) {
+        return "SQL FIRST" as never;
+      }
 
-    fs.mkdirSync(migrationsDir, { recursive: true });
-    fs.writeFileSync(
-      path.join(migrationsDir, "0001_failure.sql"),
-      [
-        "CREATE TABLE partial_table (id TEXT PRIMARY KEY);",
-        "INSERT INTO partial_table (id) VALUES ('first');",
-        "INSERT INTO missing_table (id) VALUES ('boom');",
-      ].join("\n")
+      return "SQL SECOND" as never;
+    });
+    selectAppliedGet.mockReturnValue(undefined);
+
+    runMigrationsFromFiles(db as never);
+
+    expect(selectAppliedGet).toHaveBeenNthCalledWith(1, "0001_first.sql");
+    expect(selectAppliedGet).toHaveBeenNthCalledWith(2, "0002_second.sql");
+    expect(exec).toHaveBeenNthCalledWith(2, "SQL FIRST");
+    expect(exec).toHaveBeenNthCalledWith(3, "SQL SECOND");
+    expect(markAppliedRun).toHaveBeenNthCalledWith(1, "0001_first.sql");
+    expect(markAppliedRun).toHaveBeenNthCalledWith(2, "0002_second.sql");
+  });
+
+  it("skips migrations that are already applied", () => {
+    const { db, exec, selectAppliedGet, markAppliedRun } = createMockDb();
+    vi.spyOn(fs, "existsSync").mockReturnValue(true);
+    vi.spyOn(fs, "readdirSync").mockReturnValue(["0001_first.sql", "0002_second.sql"] as never);
+    vi.spyOn(fs, "readFileSync").mockReturnValue("SQL SECOND" as never);
+    selectAppliedGet.mockImplementation((fileName: string) =>
+      fileName === "0001_first.sql" ? { one: 1 } : undefined,
     );
 
-    setResourcesPath(tempDir);
+    runMigrationsFromFiles(db as never);
 
-    const { db } = createTempDatabase();
-    const { runMigrationsFromFiles } = await importRunMigrations(true);
-
-    expect(() => runMigrationsFromFiles(db)).toThrow(/missing_table/i);
-    expect(
-      db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'partial_table'").get()
-    ).toBeUndefined();
-    expect(db.prepare("SELECT COUNT(*) AS count FROM schema_migrations").get()).toEqual({ count: 0 });
+    expect(exec).toHaveBeenCalledTimes(2);
+    expect(exec).toHaveBeenLastCalledWith("SQL SECOND");
+    expect(markAppliedRun).toHaveBeenCalledTimes(1);
+    expect(markAppliedRun).toHaveBeenCalledWith("0002_second.sql");
   });
 
-  it("returns cleanly when the migrations directory does not exist", async () => {
-    const tempDir = createTempDir();
-    setResourcesPath(tempDir);
+  it("uses the packaged migrations directory when Electron is packaged", () => {
+    const { db } = createMockDb();
+    electronApp.isPackaged = true;
+    setResourcesPath("/bundle/resources");
+    vi.spyOn(fs, "existsSync").mockReturnValue(false);
 
-    const { db } = createTempDatabase();
-    const { runMigrationsFromFiles } = await importRunMigrations(true);
+    runMigrationsFromFiles(db as never);
 
-    expect(() => runMigrationsFromFiles(db)).not.toThrow();
-    expect(db.prepare("SELECT COUNT(*) AS count FROM schema_migrations").get()).toEqual({ count: 0 });
+    expect(fs.existsSync).toHaveBeenCalledWith("/bundle/resources/db-migration");
+  });
+
+  it("propagates a migration error and does not mark the failed file as applied", () => {
+    const { db, exec, selectAppliedGet, markAppliedRun } = createMockDb();
+    vi.spyOn(fs, "existsSync").mockReturnValue(true);
+    vi.spyOn(fs, "readdirSync").mockReturnValue(["0001_failure.sql"] as never);
+    vi.spyOn(fs, "readFileSync").mockReturnValue("BROKEN SQL" as never);
+    selectAppliedGet.mockReturnValue(undefined);
+    exec.mockImplementation((sql: string) => {
+      if (sql === "BROKEN SQL") {
+        throw new Error("missing_table");
+      }
+    });
+
+    expect(() => runMigrationsFromFiles(db as never)).toThrow(/missing_table/i);
+    expect(markAppliedRun).not.toHaveBeenCalled();
   });
 });

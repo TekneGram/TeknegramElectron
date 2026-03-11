@@ -40,3 +40,4 @@ Testing
   - Write repository unit tests here and database initialization/migration tests when useful.
   - Prefer a temp or isolated test database setup.
   - Test row shapes and SQL behavior here, not service-level IPC response DTO mapping.
+  - Any sqlite unit tests should be mocked and not run with a real database. Real database should only be used on end to end or integration tests.

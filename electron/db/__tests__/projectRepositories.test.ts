@@ -1,108 +1,101 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+const { queryAllMock, executeRunMock } = vi.hoisted(() => ({
+  queryAllMock: vi.fn(),
+  executeRunMock: vi.fn(),
+}));
+
+vi.mock("../sqlite", () => ({
+  queryAll: queryAllMock,
+  executeRun: executeRunMock,
+}));
+
 import {
   insertCorpus,
   insertCorpusFilePath,
   insertProject,
   listProjectRows,
 } from "../repositories/projectRepositories";
-import { createTempDatabase, applyCoreSchema } from "./testDb";
 
 describe("projectRepositories", () => {
-  it("inserts projects and lists them by created_at descending", () => {
-    const { db } = createTempDatabase();
-    applyCoreSchema(db);
+  const db = { name: "mock-db" };
 
-    insertProject(db, {
-      uuid: "11111111-1111-1111-1111-111111111111",
-      project_name: "Older",
-      created_at: "2024-01-01T00:00:00.000Z",
-    });
-    insertProject(db, {
-      uuid: "22222222-2222-2222-2222-222222222222",
-      project_name: "Newer",
-      created_at: "2024-01-02T00:00:00.000Z",
-    });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-    expect(listProjectRows(db)).toEqual([
+  it("delegates project listing to queryAll with the expected SQL", () => {
+    const rows = [
       {
         uuid: "22222222-2222-2222-2222-222222222222",
         project_name: "Newer",
         created_at: "2024-01-02T00:00:00.000Z",
       },
-      {
-        uuid: "11111111-1111-1111-1111-111111111111",
-        project_name: "Older",
-        created_at: "2024-01-01T00:00:00.000Z",
-      },
-    ]);
+    ];
+    queryAllMock.mockReturnValue(rows);
+
+    expect(listProjectRows(db as never)).toEqual(rows);
+    expect(queryAllMock).toHaveBeenCalledWith(
+      db,
+      expect.stringContaining("SELECT uuid, project_name, created_at"),
+    );
+    expect(queryAllMock).toHaveBeenCalledWith(
+      db,
+      expect.stringContaining("ORDER BY created_at DESC"),
+    );
   });
 
-  it("writes project, corpus, and file path rows with the expected shape", () => {
-    const { db } = createTempDatabase();
-    applyCoreSchema(db);
-
-    insertProject(db, {
+  it("delegates project inserts to executeRun with the expected parameters", () => {
+    insertProject(db as never, {
       uuid: "11111111-1111-1111-1111-111111111111",
       project_name: "Project A",
       created_at: "2024-01-01T00:00:00.000Z",
     });
-    insertCorpus(db, {
+
+    expect(executeRunMock).toHaveBeenCalledWith(
+      db,
+      expect.stringContaining("INSERT INTO projects"),
+      ["11111111-1111-1111-1111-111111111111", "Project A", "2024-01-01T00:00:00.000Z"],
+    );
+  });
+
+  it("delegates corpus inserts to executeRun with the expected parameters", () => {
+    insertCorpus(db as never, {
       uuid: "33333333-3333-3333-3333-333333333333",
       project_uuid: "11111111-1111-1111-1111-111111111111",
       corpus_name: "Corpus A",
       created_at: "2024-01-03T00:00:00.000Z",
     });
-    insertCorpusFilePath(db, {
+
+    expect(executeRunMock).toHaveBeenCalledWith(
+      db,
+      expect.stringContaining("INSERT INTO corpora"),
+      [
+        "33333333-3333-3333-3333-333333333333",
+        "11111111-1111-1111-1111-111111111111",
+        "Corpus A",
+        "2024-01-03T00:00:00.000Z",
+      ],
+    );
+  });
+
+  it("delegates corpus file path inserts to executeRun with the expected parameters", () => {
+    insertCorpusFilePath(db as never, {
       uuid: "44444444-4444-4444-4444-444444444444",
       corpus_uuid: "33333333-3333-3333-3333-333333333333",
       binary_files_path: "/tmp/corpus.bin",
       created_at: "2024-01-04T00:00:00.000Z",
     });
 
-    expect(db.prepare("SELECT * FROM projects").get()).toEqual({
-      uuid: "11111111-1111-1111-1111-111111111111",
-      project_name: "Project A",
-      created_at: "2024-01-01T00:00:00.000Z",
-    });
-    expect(db.prepare("SELECT * FROM corpora").get()).toEqual({
-      uuid: "33333333-3333-3333-3333-333333333333",
-      project_uuid: "11111111-1111-1111-1111-111111111111",
-      corpus_name: "Corpus A",
-      created_at: "2024-01-03T00:00:00.000Z",
-    });
-    expect(db.prepare("SELECT * FROM corpus_files_path").get()).toEqual({
-      uuid: "44444444-4444-4444-4444-444444444444",
-      corpus_uuid: "33333333-3333-3333-3333-333333333333",
-      binary_files_path: "/tmp/corpus.bin",
-      created_at: "2024-01-04T00:00:00.000Z",
-    });
-  });
-
-  it("enforces the project foreign key when inserting a corpus", () => {
-    const { db } = createTempDatabase();
-    applyCoreSchema(db);
-
-    expect(() =>
-      insertCorpus(db, {
-        uuid: "33333333-3333-3333-3333-333333333333",
-        project_uuid: "99999999-9999-9999-9999-999999999999",
-        corpus_name: "Orphan corpus",
-        created_at: "2024-01-03T00:00:00.000Z",
-      })
-    ).toThrow(/foreign key/i);
-  });
-
-  it("enforces the corpus foreign key when inserting a file path", () => {
-    const { db } = createTempDatabase();
-    applyCoreSchema(db);
-
-    expect(() =>
-      insertCorpusFilePath(db, {
-        uuid: "44444444-4444-4444-4444-444444444444",
-        corpus_uuid: "99999999-9999-9999-9999-999999999999",
-        binary_files_path: "/tmp/corpus.bin",
-        created_at: "2024-01-04T00:00:00.000Z",
-      })
-    ).toThrow(/foreign key/i);
+    expect(executeRunMock).toHaveBeenCalledWith(
+      db,
+      expect.stringContaining("INSERT INTO corpus_files_path"),
+      [
+        "44444444-4444-4444-4444-444444444444",
+        "33333333-3333-3333-3333-333333333333",
+        "/tmp/corpus.bin",
+        "2024-01-04T00:00:00.000Z",
+      ],
+    );
   });
 });

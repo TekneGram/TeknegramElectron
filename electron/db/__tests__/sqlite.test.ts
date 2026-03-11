@@ -1,6 +1,14 @@
 import fs from "node:fs";
-import path from "node:path";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+const { DatabaseMock } = vi.hoisted(() => ({
+  DatabaseMock: vi.fn(),
+}));
+
+vi.mock("better-sqlite3", () => ({
+  default: DatabaseMock,
+}));
+
 import {
   closeDatabase,
   executeRun,
@@ -10,75 +18,100 @@ import {
   queryOne,
   runInTransaction,
 } from "../sqlite";
-import { createTempDir, createTempDatabase } from "./testDb";
+
+function createMockDb() {
+  const pragma = vi.fn();
+  const close = vi.fn();
+  const exec = vi.fn();
+  const run = vi.fn();
+  const all = vi.fn();
+  const get = vi.fn();
+  const prepare = vi.fn(() => ({ run, all, get }));
+  const transactionWrapper = vi.fn((work: () => unknown) => () => work());
+
+  return {
+    db: {
+      pragma,
+      close,
+      exec,
+      prepare,
+      transaction: transactionWrapper,
+    },
+    pragma,
+    close,
+    exec,
+    run,
+    all,
+    get,
+    prepare,
+    transactionWrapper,
+  };
+}
 
 describe("sqlite helpers", () => {
-  it("creates parent directories and configures expected pragmas", () => {
-    const tempDir = createTempDir();
-    const dbPath = path.join(tempDir, "nested", "app.sqlite");
-
-    const db = openDatabase(dbPath);
-
-    expect(fs.existsSync(path.dirname(dbPath))).toBe(true);
-    expect(queryOne<{ foreign_keys: number }>(db, "PRAGMA foreign_keys")).toEqual({ foreign_keys: 1 });
-    expect(queryOne<{ journal_mode: string }>(db, "PRAGMA journal_mode")).toEqual({ journal_mode: "wal" });
-
-    closeDatabase(db);
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  it("executes writes and reads rows through the helper API", () => {
-    const { db } = createTempDatabase();
+  it("creates parent directories and configures the expected pragmas when opening a database", () => {
+    const { db, pragma } = createMockDb();
+    DatabaseMock.mockReturnValue(db);
+    vi.spyOn(fs, "mkdirSync").mockImplementation(() => undefined as never);
 
-    executeSql(db, "CREATE TABLE widgets (id TEXT PRIMARY KEY, label TEXT NOT NULL)");
-    executeRun(db, "INSERT INTO widgets (id, label) VALUES (?, ?)", ["w-1", "Alpha"]);
-    executeRun(db, "INSERT INTO widgets (id, label) VALUES (?, ?)", ["w-2", "Beta"]);
+    const result = openDatabase("/tmp/nested/app.sqlite");
 
-    expect(queryOne<{ id: string; label: string }>(db, "SELECT id, label FROM widgets WHERE id = ?", ["w-1"])).toEqual({
-      id: "w-1",
-      label: "Alpha",
-    });
-    expect(queryAll<{ id: string }>(db, "SELECT id FROM widgets ORDER BY id ASC")).toEqual([
-      { id: "w-1" },
-      { id: "w-2" },
-    ]);
+    expect(fs.mkdirSync).toHaveBeenCalledWith("/tmp/nested", { recursive: true });
+    expect(DatabaseMock).toHaveBeenCalledWith("/tmp/nested/app.sqlite");
+    expect(pragma).toHaveBeenNthCalledWith(1, "foreign_keys = ON");
+    expect(pragma).toHaveBeenNthCalledWith(2, "journal_mode = WAL");
+    expect(result).toBe(db);
   });
 
-  it("commits successful transactions", () => {
-    const { db } = createTempDatabase();
+  it("closes the database connection through the wrapped helper", () => {
+    const { db, close } = createMockDb();
 
-    executeSql(db, "CREATE TABLE widgets (id TEXT PRIMARY KEY)");
+    closeDatabase(db as never);
 
-    runInTransaction(db, () => {
-      executeRun(db, "INSERT INTO widgets (id) VALUES (?)", ["w-1"]);
-      executeRun(db, "INSERT INTO widgets (id) VALUES (?)", ["w-2"]);
-    });
-
-    expect(queryAll<{ id: string }>(db, "SELECT id FROM widgets ORDER BY id ASC")).toEqual([
-      { id: "w-1" },
-      { id: "w-2" },
-    ]);
+    expect(close).toHaveBeenCalled();
   });
 
-  it("rolls back transactions when work throws", () => {
-    const { db } = createTempDatabase();
+  it("executes raw SQL through db.exec", () => {
+    const { db, exec } = createMockDb();
 
-    executeSql(db, "CREATE TABLE widgets (id TEXT PRIMARY KEY)");
+    executeSql(db as never, "CREATE TABLE widgets (id TEXT PRIMARY KEY)");
 
-    expect(() =>
-      runInTransaction(db, () => {
-        executeRun(db, "INSERT INTO widgets (id) VALUES (?)", ["w-1"]);
-        throw new Error("stop");
-      })
-    ).toThrow("stop");
-
-    expect(queryAll<{ id: string }>(db, "SELECT id FROM widgets")).toEqual([]);
+    expect(exec).toHaveBeenCalledWith("CREATE TABLE widgets (id TEXT PRIMARY KEY)");
   });
 
-  it("closes the database connection", () => {
-    const { db } = createTempDatabase();
+  it("executes prepared statements with parameters", () => {
+    const { db, prepare, run } = createMockDb();
 
-    closeDatabase(db);
+    executeRun(db as never, "INSERT INTO widgets (id, label) VALUES (?, ?)", ["w-1", "Alpha"]);
 
-    expect(db.open).toBe(false);
+    expect(prepare).toHaveBeenCalledWith("INSERT INTO widgets (id, label) VALUES (?, ?)");
+    expect(run).toHaveBeenCalledWith("w-1", "Alpha");
+  });
+
+  it("queries all rows and one row through prepared statements", () => {
+    const { db, prepare, all, get } = createMockDb();
+    all.mockReturnValue([{ id: "w-1" }]);
+    get.mockReturnValue({ id: "w-2" });
+
+    expect(queryAll(db as never, "SELECT id FROM widgets")).toEqual([{ id: "w-1" }]);
+    expect(queryOne(db as never, "SELECT id FROM widgets WHERE id = ?", ["w-2"])).toEqual({ id: "w-2" });
+    expect(prepare).toHaveBeenNthCalledWith(1, "SELECT id FROM widgets");
+    expect(prepare).toHaveBeenNthCalledWith(2, "SELECT id FROM widgets WHERE id = ?");
+    expect(get).toHaveBeenCalledWith("w-2");
+  });
+
+  it("wraps work in a transaction and returns its result", () => {
+    const { db, transactionWrapper } = createMockDb();
+    const work = vi.fn(() => "done");
+
+    const result = runInTransaction(db as never, work);
+
+    expect(transactionWrapper).toHaveBeenCalledWith(work);
+    expect(work).toHaveBeenCalled();
+    expect(result).toBe("done");
   });
 });
