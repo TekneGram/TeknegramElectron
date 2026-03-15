@@ -23,6 +23,9 @@ export function mapBackendError(dto: BackendErrorDto): AppError {
     case "DB_CONNECTION_FAILED": return { kind: "processing", userMessage: dto.message, debugId: dto.correlationId };
     case "DB_QUERY_FAILED": return { kind: "processing", userMessage: dto.message, debugId: dto.correlationId };
     case "DB_CONSTRAINT_VIOLATION": return { kind: "processing", userMessage: dto.message, debugId: dto.correlationId };
+    case "RESOURCE_NOT_FOUND": return { kind: "validation", userMessage: dto.message, debugId: dto.correlationId };
+    case "FS_NOT_FOUND": return { kind: "processing", userMessage: dto.message, debugId: dto.correlationId };
+    case "FS_WRITE_FAILED": return { kind: "processing", userMessage: dto.message, debugId: dto.correlationId };
     case "IPC_CHANNEL_NOT_FOUND": return { kind: "infrastructure", userMessage: dto.message, debugId: dto.correlationId };
     case "IPC_HANDLER_FAILED": return { kind: "infrastructure", userMessage: dto.message, debugId: dto.correlationId };
     case "NETWORK_UNAVAILABLE": return { kind: "infrastructure", userMessage: dto.message, debugId: dto.correlationId };

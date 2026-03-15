@@ -112,6 +112,9 @@ describe("runtimePaths", () => {
     expect(runtimePaths.getCorpusBinariesDir("%%%sample---name%%%")).toBe(
       path.join("/repo/electron/bin/corpus-binaries", "sample---name")
     );
+    expect(runtimePaths.getCorpusDeletionStagingDir(" project 01 ")).toBe(
+      path.join("/repo/electron/bin/generated-data", "pending-delete", "project_01")
+    );
   });
 
   it("rejects empty and fully invalid resource ids", async () => {

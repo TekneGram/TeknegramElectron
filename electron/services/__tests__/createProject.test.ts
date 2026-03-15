@@ -46,6 +46,7 @@ vi.mock("@electron/services/logger", () => ({
   logger: {
     info: loggerInfoMock,
     warn: loggerWarnMock,
+    error: vi.fn(),
   },
 }));
 

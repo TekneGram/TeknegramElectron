@@ -1,20 +1,26 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { queryAllMock, executeRunMock } = vi.hoisted(() => ({
+const { queryAllMock, executeRunMock, queryOneMock } = vi.hoisted(() => ({
   queryAllMock: vi.fn(),
   executeRunMock: vi.fn(),
+  queryOneMock: vi.fn(),
 }));
 
 vi.mock("../sqlite", () => ({
   queryAll: queryAllMock,
   executeRun: executeRunMock,
+  queryOne: queryOneMock,
 }));
 
 import {
+  deleteProjectRow,
+  findProjectRowByUuid,
+  findProjectDeleteTargetRow,
   insertCorpus,
   insertCorpusFilePath,
   insertProject,
   listProjectRows,
+  updateProjectNameRow,
 } from "../repositories/projectRepositories";
 
 describe("projectRepositories", () => {
@@ -96,6 +102,58 @@ describe("projectRepositories", () => {
         "/tmp/corpus.bin",
         "2024-01-04T00:00:00.000Z",
       ],
+    );
+  });
+
+  it("queries the delete target row with the expected join", () => {
+    const row = {
+      project_uuid: "11111111-1111-1111-1111-111111111111",
+      corpus_uuid: "22222222-2222-2222-2222-222222222222",
+      binary_files_path: "/tmp/corpus-a",
+    };
+    queryOneMock.mockReturnValue(row);
+
+    expect(findProjectDeleteTargetRow(db as never, row.project_uuid)).toEqual(row);
+    expect(queryOneMock).toHaveBeenCalledWith(
+      db,
+      expect.stringContaining("INNER JOIN corpora"),
+      [row.project_uuid]
+    );
+  });
+
+  it("queries a project row by uuid", () => {
+    const row = {
+      uuid: "11111111-1111-1111-1111-111111111111",
+      project_name: "Corpus A",
+      created_at: "2026-03-11T00:00:00.000Z",
+    };
+    queryOneMock.mockReturnValue(row);
+
+    expect(findProjectRowByUuid(db as never, row.uuid)).toEqual(row);
+    expect(queryOneMock).toHaveBeenCalledWith(
+      db,
+      expect.stringContaining("WHERE uuid = ?"),
+      [row.uuid]
+    );
+  });
+
+  it("delegates project deletes to executeRun with the expected parameters", () => {
+    deleteProjectRow(db as never, "11111111-1111-1111-1111-111111111111");
+
+    expect(executeRunMock).toHaveBeenCalledWith(
+      db,
+      expect.stringContaining("DELETE FROM projects"),
+      ["11111111-1111-1111-1111-111111111111"]
+    );
+  });
+
+  it("delegates project rename updates to executeRun with the expected parameters", () => {
+    updateProjectNameRow(db as never, "11111111-1111-1111-1111-111111111111", "Updated Corpus");
+
+    expect(executeRunMock).toHaveBeenCalledWith(
+      db,
+      expect.stringContaining("UPDATE projects"),
+      ["Updated Corpus", "11111111-1111-1111-1111-111111111111"]
     );
   });
 });

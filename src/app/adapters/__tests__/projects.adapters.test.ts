@@ -49,4 +49,34 @@ describe("projectsAdapter", () => {
     await expect(projectsAdapter.cancelCreateProject(request)).resolves.toBe(result);
     expect(invokeRequestMock).toHaveBeenCalledWith("projects:create:cancel", request);
   });
+
+  it("deletes a project through the projects:delete channel", async () => {
+    const request = { projectUuid: "11111111-1111-1111-1111-111111111111" };
+    const result = {
+      ok: true,
+      value: {
+        projectUuid: "11111111-1111-1111-1111-111111111111",
+        deletedBinaryFilesPath: "/tmp/corpus-a",
+      },
+    };
+    invokeRequestMock.mockResolvedValue(result);
+
+    await expect(projectsAdapter.deleteProject(request)).resolves.toBe(result);
+    expect(invokeRequestMock).toHaveBeenCalledWith("projects:delete", request);
+  });
+
+  it("updates a project name through the projects:update-name channel", async () => {
+    const request = {
+      projectUuid: "11111111-1111-1111-1111-111111111111",
+      projectName: "Updated BAWE",
+    };
+    const result = {
+      ok: true,
+      value: request,
+    };
+    invokeRequestMock.mockResolvedValue(result);
+
+    await expect(projectsAdapter.updateProjectName(request)).resolves.toBe(result);
+    expect(invokeRequestMock).toHaveBeenCalledWith("projects:update-name", request);
+  });
 });

@@ -7,6 +7,8 @@ const {
   listProjectsMock,
   createProjectMock,
   cancelCreateProjectMock,
+  deleteProjectMock,
+  updateProjectNameMock,
 } = vi.hoisted(() => ({
   handleMock: vi.fn(),
   randomUUIDMock: vi.fn(),
@@ -14,6 +16,8 @@ const {
   listProjectsMock: vi.fn(),
   createProjectMock: vi.fn(),
   cancelCreateProjectMock: vi.fn(),
+  deleteProjectMock: vi.fn(),
+  updateProjectNameMock: vi.fn(),
 }));
 
 vi.mock("electron", () => ({
@@ -47,6 +51,14 @@ vi.mock("@electron/services/projects/cancelCreateProject", () => ({
   cancelCreateProject: cancelCreateProjectMock,
 }));
 
+vi.mock("@electron/services/projects/deleteProject", () => ({
+  deleteProject: deleteProjectMock,
+}));
+
+vi.mock("@electron/services/projects/updateProjectName", () => ({
+  updateProjectName: updateProjectNameMock,
+}));
+
 import { RegisterProjectHandlers } from "../registerHandlers/register.projects";
 
 describe("RegisterProjectHandlers", () => {
@@ -57,8 +69,14 @@ describe("RegisterProjectHandlers", () => {
     listProjectsMock.mockReset();
     createProjectMock.mockReset();
     cancelCreateProjectMock.mockReset();
+    deleteProjectMock.mockReset();
+    updateProjectNameMock.mockReset();
     randomUUIDMock.mockReturnValue("cid-projects-123");
   });
+
+  function getHandler(channel: string) {
+    return handleMock.mock.calls.find((call) => call[0] === channel)?.[1];
+  }
 
   it("registers project channels and delegates projects:list with context", async () => {
     const expectedProjects = [{ uuid: "project-1", name: "Alpha" }];
@@ -66,14 +84,16 @@ describe("RegisterProjectHandlers", () => {
 
     RegisterProjectHandlers();
 
-    expect(handleMock).toHaveBeenCalledTimes(3);
+    expect(handleMock).toHaveBeenCalledTimes(5);
     expect(handleMock.mock.calls.map((call) => call[0])).toEqual([
       "projects:list",
       "projects:create",
       "projects:create:cancel",
+      "projects:delete",
+      "projects:update-name",
     ]);
 
-    const listHandler = handleMock.mock.calls[0]?.[1];
+    const listHandler = getHandler("projects:list");
     const result = await listHandler({ sender: { send: vi.fn() } }, null);
 
     expect(listProjectsMock).toHaveBeenCalledWith(
@@ -100,7 +120,7 @@ describe("RegisterProjectHandlers", () => {
 
     RegisterProjectHandlers();
 
-    const createHandler = handleMock.mock.calls[1]?.[1];
+    const createHandler = getHandler("projects:create");
     const result = await createHandler({ sender: { send: vi.fn() } }, rawArgs);
 
     expect(createProjectMock).toHaveBeenCalledWith(
@@ -113,7 +133,7 @@ describe("RegisterProjectHandlers", () => {
   it("returns a validation failure result for invalid create payloads", async () => {
     RegisterProjectHandlers();
 
-    const createHandler = handleMock.mock.calls[1]?.[1];
+    const createHandler = getHandler("projects:create");
     const result = await createHandler({ sender: { send: vi.fn() } }, {
       requestId: "",
       projectName: "Alpha",
@@ -145,7 +165,7 @@ describe("RegisterProjectHandlers", () => {
 
     RegisterProjectHandlers();
 
-    const cancelHandler = handleMock.mock.calls[2]?.[1];
+    const cancelHandler = getHandler("projects:create:cancel");
     const result = await cancelHandler({ sender: { send: vi.fn() } }, rawArgs);
 
     expect(cancelCreateProjectMock).toHaveBeenCalledWith(
@@ -158,7 +178,7 @@ describe("RegisterProjectHandlers", () => {
   it("returns a validation failure result for invalid cancel payloads", async () => {
     RegisterProjectHandlers();
 
-    const cancelHandler = handleMock.mock.calls[2]?.[1];
+    const cancelHandler = getHandler("projects:create:cancel");
     const result = await cancelHandler({ sender: { send: vi.fn() } }, { requestId: "" });
 
     expect(cancelCreateProjectMock).not.toHaveBeenCalled();
@@ -169,6 +189,93 @@ describe("RegisterProjectHandlers", () => {
       expect(result.error.details).toContain("requestId: Too small");
     }
     expect(loggerErrorMock).toHaveBeenCalledWith("IPC failed: projects:create:cancel", {
+      correlationId: "cid-projects-123",
+      error: expect.objectContaining({
+        code: "VALIDATION_INVALID_PAYLOAD",
+        correlationId: "cid-projects-123",
+      }),
+    });
+  });
+
+  it("validates delete payloads before delegating to the service", async () => {
+    const rawArgs = { projectUuid: "11111111-1111-4111-8111-111111111111" };
+    const serviceResult = {
+      projectUuid: rawArgs.projectUuid,
+      deletedBinaryFilesPath: "/tmp/corpus-a",
+    };
+    deleteProjectMock.mockResolvedValue(serviceResult);
+
+    RegisterProjectHandlers();
+
+    const deleteHandler = getHandler("projects:delete");
+    const result = await deleteHandler({ sender: { send: vi.fn() } }, rawArgs);
+
+    expect(deleteProjectMock).toHaveBeenCalledWith(
+      rawArgs,
+      expect.objectContaining({ correlationId: "cid-projects-123", sendEvent: expect.any(Function) })
+    );
+    expect(result).toEqual({ ok: true, data: serviceResult });
+  });
+
+  it("returns a validation failure result for invalid delete payloads", async () => {
+    RegisterProjectHandlers();
+
+    const deleteHandler = getHandler("projects:delete");
+    const result = await deleteHandler({ sender: { send: vi.fn() } }, { projectUuid: "bad-uuid" });
+
+    expect(deleteProjectMock).not.toHaveBeenCalled();
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error.code).toBe("VALIDATION_INVALID_PAYLOAD");
+      expect(result.error.correlationId).toBe("cid-projects-123");
+      expect(result.error.details).toContain("projectUuid: Invalid UUID");
+    }
+    expect(loggerErrorMock).toHaveBeenCalledWith("IPC failed: projects:delete", {
+      correlationId: "cid-projects-123",
+      error: expect.objectContaining({
+        code: "VALIDATION_INVALID_PAYLOAD",
+        correlationId: "cid-projects-123",
+      }),
+    });
+  });
+
+  it("validates update-name payloads before delegating to the service", async () => {
+    const rawArgs = {
+      projectUuid: "11111111-1111-4111-8111-111111111111",
+      projectName: "Updated BAWE",
+    };
+    const serviceResult = rawArgs;
+    updateProjectNameMock.mockResolvedValue(serviceResult);
+
+    RegisterProjectHandlers();
+
+    const updateHandler = getHandler("projects:update-name");
+    const result = await updateHandler({ sender: { send: vi.fn() } }, rawArgs);
+
+    expect(updateProjectNameMock).toHaveBeenCalledWith(
+      rawArgs,
+      expect.objectContaining({ correlationId: "cid-projects-123", sendEvent: expect.any(Function) })
+    );
+    expect(result).toEqual({ ok: true, data: serviceResult });
+  });
+
+  it("returns a validation failure result for invalid update-name payloads", async () => {
+    RegisterProjectHandlers();
+
+    const updateHandler = getHandler("projects:update-name");
+    const result = await updateHandler({ sender: { send: vi.fn() } }, {
+      projectUuid: "bad-uuid",
+      projectName: "",
+    });
+
+    expect(updateProjectNameMock).not.toHaveBeenCalled();
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error.code).toBe("VALIDATION_INVALID_PAYLOAD");
+      expect(result.error.correlationId).toBe("cid-projects-123");
+      expect(result.error.details).toContain("projectUuid: Invalid UUID");
+    }
+    expect(loggerErrorMock).toHaveBeenCalledWith("IPC failed: projects:update-name", {
       correlationId: "cid-projects-123",
       error: expect.objectContaining({
         code: "VALIDATION_INVALID_PAYLOAD",

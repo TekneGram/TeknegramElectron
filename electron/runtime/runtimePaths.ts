@@ -68,6 +68,10 @@ export function getCorpusBinariesDir(corpus_name: string): string {
     return path.join(getCorpusBinariesRoot(), sanitizeResource(corpus_name))
 }
 
+export function getCorpusDeletionStagingDir(projectUuid: string): string {
+    return path.join(getGeneratedDataRoot(), "pending-delete", sanitizeResource(projectUuid));
+}
+
 // udpipe model
 export function getUdpipeModelPath(): string {
     return app.isPackaged
