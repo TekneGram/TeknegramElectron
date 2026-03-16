@@ -37,6 +37,66 @@
     align-items: center;
 }
 
+.header-navigation-pane {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  height: var(--control-height-xs);
+  padding: 0 0.22rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 92%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface-muted) 82%, transparent);
+  box-shadow: var(--shadow-elevation-xs);
+}
+
+.header-navigation-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--motion-duration-fast) var(--motion-ease-standard),
+    color var(--motion-duration-fast) var(--motion-ease-standard),
+    transform var(--motion-duration-fast) var(--motion-ease-standard);
+}
+
+.header-navigation-button svg {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
+}
+
+.header-navigation-button:hover:not(:disabled) {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  transform: translateY(-1px);
+}
+
+.header-navigation-button.is-active {
+  color: var(--color-action-primary-text);
+  background: color-mix(in srgb, var(--color-action-primary-bg) 88%, var(--color-surface));
+}
+
+.header-navigation-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.header-navigation-button:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.header-actions {
+  gap: 0.45rem;
+}
+
 .sidebar {
   position: fixed;
   top: var(--header-height);
@@ -345,13 +405,12 @@
   color: var(--color-text);
   display: grid;
   align-content: start;
-  gap: 1.4rem;
+  gap: 1rem;
 }
 
 .main-view-settings-header {
   display: grid;
-  gap: 0.45rem;
-  max-width: 58rem;
+  gap: 0.3rem;
 }
 
 .main-view-settings-eyebrow {
@@ -371,12 +430,6 @@
   color: var(--color-text);
 }
 
-.main-view-settings-copy {
-  margin: 0;
-  max-width: 62ch;
-  color: var(--color-text-muted);
-  font-size: 0.98rem;
-}
 
 .projects-screen-header,
 .projects-grid {
