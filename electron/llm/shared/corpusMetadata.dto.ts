@@ -93,7 +93,7 @@ export type LlmProviderRequest = {
     systemPrompt: string;
     responseFormatName: string;
     responseSchema: Record<string, unknown>;
-    inputTest: string;
+    inputText: string;
 };
 
 export type LlmProviderResponse = {
@@ -108,5 +108,5 @@ export type LlmProviderResponse = {
 };
 
 export type LlmProviderClient = {
-    generateStructuredResponsed(request: LlmProviderRequest): Promise<LlmProviderResponse>;
+    generateStructuredResponse(request: LlmProviderRequest): Promise<LlmProviderResponse>;
 }
