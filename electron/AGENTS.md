@@ -11,6 +11,9 @@
   Native process capability flow
   - services/* -> services/nativeProcessFactory.ts / services/nativeProcessRunner.ts -> native executable
 
+  Reusable LLM subsystem flow
+  - services/* -> llm/controllers/* -> llm/operations/* -> llm/providers/* -> external LLM provider
+
   Shared type layer
   - ipc/contracts/* defines the request, response, and event shapes used across the boundary
 
@@ -56,6 +59,19 @@
   - Keep adapters thin and capability-focused.
   - Do not put business logic, IPC registration, or DB logic here.
 
+`llm/`
+  - Own reusable LLM-specific backend pipelines used by many services.
+  - controllers/* is the orchestration entrypoint for LLM use cases.
+  - operations/* contains use-case-specific LLM workflows below controllers.
+  - policies/* centralizes provider/model defaults, limits, and fallback rules.
+  - providers/* isolates provider-specific HTTP clients and provider registries.
+  - schemas/* validates structured LLM outputs.
+  - shared/* defines LLM subsystem DTOs and shared types.
+  - tools/* contains tool/function-calling loop types and implementations.
+  - Keep this subsystem independent from IPC and renderer concerns.
+  - Retrieve credentials through injected interfaces; concrete secret storage belongs outside this subsystem.
+  - Do not put Electron UI/platform calls directly in LLM controllers or operations.
+
 `ipc/`
   - Own the transport boundary between renderer and Electron main.
   - contracts/* defines request/response/event DTOs.
@@ -78,7 +94,7 @@
   - Own backend use-case orchestration.
   - Accept typed request data and RequestContext when needed.
   - Validate runtime/business constraints beyond IPC shape validation.
-  - Call repositories, runtime helpers, native process runners, and infrastructure ports/adapters.
+  - Call repositories, runtime helpers, native process runners, LLM controllers, and infrastructure ports/adapters.
   - Define transaction boundaries.
   - Log meaningful backend events.
   - Return typed response DTOs.
@@ -94,6 +110,7 @@
 A compact summary for the whole backend is:
   - `ipc/` = transport boundary
   - `services/` = orchestration
+  - `llm/` = reusable LLM subsystem
   - `db/` = persistence
   - `runtime/` = path/storage policy
   - `infrastructure/` = Electron/platform capability boundary
