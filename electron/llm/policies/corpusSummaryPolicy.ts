@@ -15,6 +15,7 @@ export type CorpusSummaryResolvedPolicy = {
     responseFormatName: string;
 };
 
+// Policy makes the final decision about the model even if the user requests a specific model.
 export function resolveCorpusSummaryPolicy(preferredModel?: string): CorpusSummaryResolvedPolicy {
     return {
         provider: DEFAULT_PROVIDER,
