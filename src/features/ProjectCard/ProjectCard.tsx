@@ -87,20 +87,21 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                             </div>
                         ) : null
                     }
-                    <div className="project-card-footer">
-                        <div className="project-card-actions">
-                            <button
-                                type="button"
-                                className="project-card-delete-button"
-                                onClick={openConfirmation}
-                                disabled={isConfirming}
-                            >
-                                Delete
-                            </button>
-                            <button type="button" className="project-enter-button">
-                                Enter Project
-                            </button>
-                        </div>
+                </div>
+                <div className="project-card-footer">
+                    <div className="project-card-footer-divider" aria-hidden="true" />
+                    <div className="project-card-actions">
+                        <button
+                            type="button"
+                            className="project-card-delete-button"
+                            onClick={openConfirmation}
+                            disabled={isConfirming}
+                        >
+                            Delete
+                        </button>
+                        <button type="button" className="project-enter-button">
+                            Enter Project
+                        </button>
                     </div>
                 </div>
             </div>

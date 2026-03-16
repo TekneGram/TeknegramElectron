@@ -129,6 +129,34 @@
     color: var(--color-text-muted);
 }
 
+.llm-settings-masked-key-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    width: fit-content;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-text-muted);
+    font: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.llm-settings-masked-key-button:hover {
+    color: var(--color-text);
+}
+
+.llm-settings-masked-key-button:focus-visible {
+    outline: 2px solid var(--color-focus-ring-soft);
+    outline-offset: 3px;
+    border-radius: var(--radius-md);
+}
+
+.llm-settings-masked-key-label {
+    font-weight: var(--font-weight-semibold);
+}
+
 .llm-settings-key-input,
 .llm-settings-model-select {
     width: 100%;

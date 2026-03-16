@@ -1,6 +1,7 @@
 import type { RequestContext } from "@electron/core/requestContext";
 import { raiseAppError } from "@electron/core/appException";
 import { createAppDatabase } from "@electron/db/appDatabase";
+import { getDefaultApiProvider } from "@electron/db/repositories/apiRepositories";
 import {
     findCorpusMetadataRow,
     findProjectCorpusRow,
@@ -15,6 +16,7 @@ import { createCredentialProvider } from "@electron/llm/createCredentialProvider
 import { summarizeCorpusMetadataController } from "@electron/llm/controllers/summarizeCorpusMetadataController";
 import { createLlmProviderRegistry } from "@electron/llm/providers/providerRegistry";
 import type { CorpusMetadataRoot } from "@electron/llm/shared/corpusMetadata.dto";
+import type { LlmProviderName } from "@electron/llm/shared/llmProvider.dto";
 import { secretStorageAdapter } from "@electron/infrastructure/adapters/secretStorage.adapter";
 import { getRuntimeDbPath } from "@electron/runtime/runtimePaths";
 import NativeProcessRunner from "@electron/services/nativeProcessFactory";
@@ -79,9 +81,11 @@ async function buildCorpusMetadata(
 
     const appDatabase = createAppDatabase(getRuntimeDbPath());
     let projectCorpus;
+    let defaultProvider;
 
     try {
         projectCorpus = findProjectCorpusRow(appDatabase.db, request.projectUuid);
+        defaultProvider = getDefaultApiProvider(appDatabase.db);
 
         if (!projectCorpus) {
             raiseAppError("RESOURCE_NOT_FOUND", "Project corpus could not be found.");
@@ -161,7 +165,11 @@ async function buildCorpusMetadata(
     });
 
     const summaryResult = await summarizeCorpusMetadataController(
-        { metadata },
+        {
+            metadata,
+            preferredProvider: defaultProvider?.provider as LlmProviderName | undefined,
+            preferredModel: defaultProvider?.default_model,
+        },
         {
             credentialProvider,
             providerRegistry,
@@ -185,6 +193,8 @@ async function buildCorpusMetadata(
             projectUuid: request.projectUuid,
             corpusUuid: projectCorpus.corpus_uuid,
             llmCode: summaryResult.error.code,
+            llmMessage: summaryResult.error.message,
+            llmDetails: summaryResult.error.details,
         });
 
         emitProgress(request.projectUuid, {

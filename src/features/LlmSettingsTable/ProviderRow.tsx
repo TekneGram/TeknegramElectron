@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import type { ApiProviderModelItem, ApiProviderSettingsItem, LlmProviderName } from "@/app/ports/settings.ports";
 
 type ProviderRowProps = {
@@ -29,8 +30,29 @@ const ProviderRow = ({
     onSetDefault,
     onModelChange,
 }: ProviderRowProps) => {
+    const [isEditingKey, setIsEditingKey] = useState(!provider.hasStoredKey);
     const saveDisabled = apiKeyDraft.trim().length === 0 || isSaving;
     const rowBusy = isSaving || isDeleting || isUpdatingModel || isSettingDefault;
+
+    useEffect(() => {
+        if (!provider.hasStoredKey) {
+            setIsEditingKey(true);
+            return;
+        }
+
+        if (!isSaving && apiKeyDraft.trim() === "") {
+            setIsEditingKey(false);
+        }
+    }, [apiKeyDraft, isSaving, provider.hasStoredKey]);
+
+    function handleStartEditingKey() {
+        setIsEditingKey(true);
+    }
+
+    function handleCancelEditingKey() {
+        onApiKeyDraftChange(provider.provider, "");
+        setIsEditingKey(false);
+    }
 
     return (
         <tr>
@@ -44,30 +66,53 @@ const ProviderRow = ({
 
             <td>
                 <div className="llm-settings-key-stack">
-                    {provider.maskedApiKey ? (
-                        <p className="llm-settings-masked-key">Stored key: {provider.maskedApiKey}</p>
-                    ) : null}
-                    <label>
-                        <span className="llm-settings-visually-hidden">{`API key for ${provider.displayName}`}</span>
-                        <input
-                            className="llm-settings-key-input"
-                            type="password"
-                            value={apiKeyDraft}
-                            onChange={(event) => onApiKeyDraftChange(provider.provider, event.target.value)}
-                            placeholder={provider.hasStoredKey ? "Replace saved API key" : "Add API key"}
-                            autoComplete="off"
-                            spellCheck={false}
-                        />
-                    </label>
-                    <div className="llm-settings-key-actions">
+                    {provider.maskedApiKey && !isEditingKey ? (
                         <button
-                            className="llm-settings-button llm-settings-button-primary"
                             type="button"
-                            disabled={saveDisabled}
-                            onClick={() => void onSaveKey(provider.provider)}
+                            className="llm-settings-masked-key-button"
+                            onClick={handleStartEditingKey}
                         >
-                            {isSaving ? "Saving..." : provider.hasStoredKey ? "Update key" : "Save key"}
+                            <span className="llm-settings-masked-key-label">Stored key:</span> {provider.maskedApiKey}
                         </button>
+                    ) : null}
+                    {isEditingKey ? (
+                        <label>
+                            <span className="llm-settings-visually-hidden">{`API key for ${provider.displayName}`}</span>
+                            <input
+                                className="llm-settings-key-input"
+                                type="password"
+                                value={apiKeyDraft}
+                                onChange={(event) => onApiKeyDraftChange(provider.provider, event.target.value)}
+                                placeholder={provider.hasStoredKey ? "Replace saved API key" : "Add API key"}
+                                autoComplete="off"
+                                spellCheck={false}
+                                autoFocus
+                            />
+                        </label>
+                    ) : null}
+                    <div className="llm-settings-key-actions">
+                        {isEditingKey ? (
+                            <>
+                                <button
+                                    className="llm-settings-button llm-settings-button-primary"
+                                    type="button"
+                                    disabled={saveDisabled}
+                                    onClick={() => void onSaveKey(provider.provider)}
+                                >
+                                    {isSaving ? "Saving..." : provider.hasStoredKey ? "Update key" : "Save key"}
+                                </button>
+                                {provider.hasStoredKey ? (
+                                    <button
+                                        className="llm-settings-button llm-settings-button-ghost"
+                                        type="button"
+                                        disabled={isSaving}
+                                        onClick={handleCancelEditingKey}
+                                    >
+                                        Cancel
+                                    </button>
+                                ) : null}
+                            </>
+                        ) : null}
                         <button
                             className="llm-settings-button llm-settings-button-ghost"
                             type="button"

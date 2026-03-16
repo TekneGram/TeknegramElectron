@@ -72,6 +72,18 @@ export function getApiProviderByName(
     );
 }
 
+export function getDefaultApiProvider(db: SqliteDatabase): ApiProviderRow | undefined {
+    return queryOne<ApiProviderRow>(
+        db,
+        `
+            SELECT provider, display_name, default_model, is_default, has_stored_key, created_at, updated_at
+            FROM api_providers
+            WHERE is_default = 1
+            LIMIT 1
+        `
+    );
+}
+
 export function getApiProviderModelById(
     db: SqliteDatabase,
     provider: string,

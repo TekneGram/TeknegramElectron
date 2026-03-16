@@ -79,6 +79,7 @@ function normalizeControllerError(
       return {
         code: "LLM_RESPONSE_INVALID",
         message: `LLM response failed schema validation: ${error.message}`,
+        details: error.issues.map((issue) => `${issue.path.join(".") || "<root>"}: ${issue.message}`).join("; "),
       };
     }
 
@@ -104,9 +105,16 @@ function normalizeControllerError(
         };
       }
 
-      if (error.message.includes("request failed")) {
+      if (error.message.includes("provider request failed")) {
         return {
           code: "LLM_PROVIDER_FAILED",
+          message: error.message,
+        };
+      }
+
+      if (error.message.includes("request invalid")) {
+        return {
+          code: "LLM_REQUEST_INVALID",
           message: error.message,
         };
       }

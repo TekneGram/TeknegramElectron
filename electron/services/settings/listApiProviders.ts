@@ -59,7 +59,11 @@ function maskApiKey(value: string): string {
         return "*".repeat(trimmed.length);
     }
 
-    return `${trimmed.slice(0, 2)}${"*".repeat(trimmed.length - 4)}${trimmed.slice(-2)}`;
+    if (trimmed.length <= 9) {
+        return `${trimmed.slice(0, 2)}*****${trimmed.slice(-2)}`;
+    }
+
+    return `${trimmed.slice(0, 2)}*****${trimmed.slice(-2)}`;
 }
 
 // export type ApiProvidersDto = {

@@ -77,6 +77,7 @@ export type SummarizeCorpusMetadataBoundaryError = {
         | "LLM_PROVIDER_FAILED"
         | "LLM_POLICY_VIOLATION";
     message: string;
+    details?: string;
 };
 
 export type SummarizeCorpusMetadataBoundaryDto = 
