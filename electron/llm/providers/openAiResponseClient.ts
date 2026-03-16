@@ -2,7 +2,7 @@ import type {
     LlmProviderClient,
     LlmProviderRequest,
     LlmProviderResponse
-} from "../shared/corpusMetadata.dto";
+} from "../shared/llmProvider.dto";
 
 type OpenAiResponsesApiResponse = {
     model?: string;

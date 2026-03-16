@@ -1,3 +1,9 @@
+import type {
+    CredentialProvider,
+    LlmProviderName,
+    LlmProviderRegistry,
+} from "./llmProvider.dto";
+
 export type CorpusMetadataNode = {
     name: string;
     docs: number;
@@ -18,6 +24,7 @@ export type CorpusMetadataRoot = {
 
 export type CorpusMetadataSummaryInput = {
     metadata: CorpusMetadataRoot;
+    preferredProvider?: LlmProviderName;
     preferredModel?: string;
 };
 
@@ -46,13 +53,13 @@ export type CorpusMetadataDerivedSummary = {
 };
 
 export type SummarizeCorpusMetadataProgressEvent = {
-    stage: "credentials" | "prepare_request" | "provider_request" | "normalize_response";
+    stage: "policy" | "credentials" | "prepare_request" | "provider_request" | "normalize_response";
     message: string;
 };
 
 export type CorpusMetadataSummaryResult = {
     summary: string;
-    provider: string;
+    provider: LlmProviderName;
     model: string;
     usage?: {
         inputTokens?: number;
@@ -62,52 +69,22 @@ export type CorpusMetadataSummaryResult = {
     fallbackUsed: false;
 };
 
+export type SummarizeCorpusMetadataBoundaryError = {
+    code:
+        | "LLM_CREDENTIALS_MISSING"
+        | "LLM_REQUEST_INVALID"
+        | "LLM_RESPONSE_INVALID"
+        | "LLM_PROVIDER_FAILED"
+        | "LLM_POLICY_VIOLATION";
+    message: string;
+};
+
 export type SummarizeCorpusMetadataBoundaryDto = 
     | { ok: true; data: CorpusMetadataSummaryResult }
-    | {
-        ok: false;
-        error: {
-            code:
-                | "LLM_CREDENTIALS_MISSING"
-                | "LLM_REQUEST_INVALID"
-                | "LLM_RESPONSE_INVALID"
-                | "LLM_PROVIDER_FAILED"
-                | "LLM_POLICY_VIOLATION";
-            message: string;
-        };
-    };
-
-export type CredentialProvider = {
-    getApiKey(provider: string): Promise<string | null>;
-};
+    | { ok: false; error: SummarizeCorpusMetadataBoundaryError };
 
 export type SummarizeCorpusMetadataControllerDeps = {
     credentialProvider: CredentialProvider;
-    providerClient: LlmProviderClient;
+    providerRegistry: LlmProviderRegistry;
     onProgress?: (event: SummarizeCorpusMetadataProgressEvent) => void;
 };
-
-export type LlmProviderRequest = {
-    provider: string;
-    apiKey: string;
-    model: string;
-    systemPrompt: string;
-    responseFormatName: string;
-    responseSchema: Record<string, unknown>;
-    inputText: string;
-};
-
-export type LlmProviderResponse = {
-    provider: string;
-    model: string;
-    outputText: string;
-    usage?: {
-        inputTokens?: number;
-        outputTokens?: number;
-        totalTokens?: number;
-    };
-};
-
-export type LlmProviderClient = {
-    generateStructuredResponse(request: LlmProviderRequest): Promise<LlmProviderResponse>;
-}

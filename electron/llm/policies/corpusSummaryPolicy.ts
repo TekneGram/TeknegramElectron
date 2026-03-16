@@ -1,31 +1,39 @@
 import type {
     CorpusMetadataDerivedSummary,
     CorpusMetadataRoot,
-} from "../shared/corpusMetadata.dto"
+} from "../shared/corpusMetadata.dto";
+import type {
+    LlmProviderName,
+    ResolvedCorpusSummaryPolicy,
+} from "../shared/llmProvider.dto";
 
-const DEFAULT_PROVIDER = "openai";
-const DEFAULT_MODEL = "gpt-4.1-mini";
+const DEFAULT_PROVIDER: LlmProviderName = "openai";
+const DEFAULT_MODELS: Record<LlmProviderName, string> = {
+    openai: "gpt-4.1-mini",
+    anthropic: "claude-3-5-sonnet-latest",
+    gemini: "gemini-2.5-pro",
+};
 const MAX_DEPTH = 2;
 const MAX_NESTED_PREVIEW = 8;
 
-export type CorpusSummaryResolvedPolicy = {
-    provider: string;
-    model: string;
-    systemPrompt: string;
-    responseFormatName: string;
-};
-
 // Policy makes the final decision about the model even if the user requests a specific model.
-export function resolveCorpusSummaryPolicy(preferredModel?: string): CorpusSummaryResolvedPolicy {
+export function resolveCorpusSummaryPolicy(args: {
+    preferredProvider?: LlmProviderName;
+    preferredModel?: string;
+}): ResolvedCorpusSummaryPolicy {
+    
+    const provider = args.preferredProvider ?? DEFAULT_PROVIDER;
+    const model = args.preferredModel?.trim() || DEFAULT_MODELS[provider];
+    
     return {
-        provider: DEFAULT_PROVIDER,
-        model: preferredModel?.trim() || DEFAULT_MODEL,
+        provider,
+        model,
         responseFormatName: "corpus_metadata_summary",
         systemPrompt: [
             "You summarize corpus metadata for end users.",
-            "Return a concise overview in 2 or 2 sentences.",
-            "Focus on scale, structure and notable disciplinary composition.",
-            "Do not invent facts.",
+            "Return a concise overview in 2 or 3 sentences.",
+            "Focus on scale, structure, and notable disciplinary composition.",
+            "Do not invent facts or infer unavailable information.",
             "Return valid JSON only."
         ].join(" "),
     };
@@ -66,7 +74,7 @@ export function enforceMetadataDepthLimit(metadata: CorpusMetadataRoot): void {
         for (const child of topLevel.subcorpora) {
             if (child.subcorpora.length > 0) {
                 throw new Error(
-                    `<etadata exceeds supported depth of ${MAX_DEPTH}. Found nested entries. under "${child.name}".`,
+                    `Metadata exceeds supported depth of ${MAX_DEPTH}. Found nested entries under "${child.name}".`,
                 );
             }
         }

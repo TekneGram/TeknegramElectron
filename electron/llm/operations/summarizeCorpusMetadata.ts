@@ -3,21 +3,25 @@ import { corpusSummaryResponseSchema } from "../schemas/corpusSummaryResponseSch
 import {
     deriveCorpusMetadataSummary,
     enforceMetadataDepthLimit,
-    resolveCorpusSummaryPolicy,
 } from "../policies/corpusSummaryPolicy";
 import type {
     CorpusMetadataSummaryInput,
     CorpusMetadataSummaryResult,
-    LlmProviderClient
 } from "../shared/corpusMetadata.dto";
+import type {
+    LlmProviderRegistry,
+    ResolvedCorpusSummaryPolicy,
+} from "../shared/llmProvider.dto";
 
-export async function summarizeCorpusMetadataOperations(args: {
+export async function summarizeCorpusMetadataOperation(args: {
     input: CorpusMetadataSummaryInput;
+    resolvedPolicy: ResolvedCorpusSummaryPolicy;
     apiKey: string;
-    providerClient: LlmProviderClient;
+    providerRegistry: LlmProviderRegistry;
     onProgress?: (event: { stage: "prepare_request" | "provider_request" | "normalize_response"; message: string }) => void;
 }): Promise<CorpusMetadataSummaryResult> {
-    const { input, apiKey, providerClient, onProgress } = args;
+    
+    const { input, resolvedPolicy, apiKey, providerRegistry, onProgress } = args;
 
     enforceMetadataDepthLimit(input.metadata);
 
@@ -26,25 +30,26 @@ export async function summarizeCorpusMetadataOperations(args: {
         message: "Preparing compact corpus metadata summary."
     });
 
-    const policy = resolveCorpusSummaryPolicy(input.preferredModel);
     const derivedSummary = deriveCorpusMetadataSummary(input.metadata);
 
+    const providerClient = providerRegistry.getClient(resolvedPolicy.provider);
+
     const providerRequest = {
-        provider: policy.provider,
+        provider: resolvedPolicy.provider,
         apiKey,
-        model: policy.model,
-        systemPrompt: policy.systemPrompt,
-        responseFormatName: policy.responseFormatName,
+        model: resolvedPolicy.model,
+        systemPrompt: resolvedPolicy.systemPrompt,
+        responseFormatName: resolvedPolicy.responseFormatName,
         responseSchema: z.toJSONSchema(corpusSummaryResponseSchema),
         inputText: JSON.stringify({
-            task: "Summarize this corpus metadata in 2 or 2 sentences for an end user.",
+            task: "Summarize this corpus metadata in 2 or 3 sentences for an end user.",
             corpusMetadata: derivedSummary,
         }),
     };
 
     onProgress?.({
         stage: "provider_request",
-        message: "Sending corpus metadata to LLM"
+        message: `Sending corpus metadata to provider "${resolvedPolicy.provider}".`
     });
 
     const providerResponse = await providerClient.generateStructuredResponse(providerRequest);
