@@ -1,7 +1,7 @@
 import type { CredentialProvider, LlmProviderName } from "./shared/llmProvider.dto";
 import type { SecretStoragePort } from "@electron/infrastructure/ports/secretStorage.port";
 
-function getProviderSecretKey(provider: LlmProviderName): string {
+export function getProviderSecretKey(provider: LlmProviderName): string {
     switch (provider) {
         case "openai":
             return "llm.openai.apiKey";

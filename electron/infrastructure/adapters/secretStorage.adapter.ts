@@ -1,7 +1,7 @@
 import { safeStorage } from 'electron';
 import fs from "node:fs/promises";
 import path from "node:path";
-import type { SecretStoragePort } from "../ports/secreteStorage.port";
+import type { SecretStoragePort } from "../ports/secretStorage.port";
 import { getSecretsPath } from "@electron/runtime/runtimePaths";
 
 type StoredSecretsFile = Record<string, string>;

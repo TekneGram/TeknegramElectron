@@ -106,7 +106,7 @@ export function setDefaultApiProvider(
         db,
         `
             UPDATE api_providers
-            SET is_default = 1, update_at = ?
+            SET is_default = 1, updated_at = ?
             WHERE provider = ?
         `,
         [row.updated_at, row.provider]
