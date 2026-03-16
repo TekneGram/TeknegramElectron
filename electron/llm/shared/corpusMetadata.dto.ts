@@ -25,6 +25,7 @@ export type CorpusMetadataDerivedSummary = {
     corpusName: string;
     totalDocs: number;
     totalLemmas: number;
+    totalTypes: number;
     totalWords: number;
     topLevelSubcorporaCount: number;
     topLevelSubcorpora: Array<{
