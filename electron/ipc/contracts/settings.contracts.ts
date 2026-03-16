@@ -13,6 +13,18 @@ export type ApiProvidersResponse = {
 
 export type ListApiProvidersRequest = null;
 
+export type ApiProviderModelDto = {
+    provider: "openai" | "anthropic" | "gemini";
+    modelId: string;
+    displayName: string;
+};
+
+export type ListApiProviderModelsRequest = null;
+
+export type ListApiProviderModelsResponse = {
+    models: ApiProviderModelDto[];
+};
+
 export type SaveApiProviderKeyRequest = {
     provider: "openai" | "anthropic" | "gemini";
     apiKey: string;
@@ -39,4 +51,14 @@ export type SetDefaultApiProviderRequest = {
 export type SetDefaultApiProviderResponse = {
     provider: "openai" | "anthropic" | "gemini";
     isDefault: true;
+};
+
+export type UpdateApiProviderModelRequest = {
+    provider: "openai" | "anthropic" | "gemini";
+    modelId: string;
+};
+
+export type UpdateApiProviderModelResponse = {
+    provider: "openai" | "anthropic" | "gemini";
+    modelId: string;
 };

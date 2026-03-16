@@ -11,6 +11,14 @@ export type ApiProviderRow = {
     updated_at: string;
 }
 
+export type ApiProviderModelRow = {
+    provider: string;
+    model_id: string;
+    display_name: string;
+    created_at: string;
+    updated_at: string;
+}
+
 export type UpdateApiProviderModelRow = {
     provider: string;
     default_model: string;
@@ -38,6 +46,17 @@ export function listApiProvidersRows(db: SqliteDatabase): ApiProviderRow[] {
     );
 }
 
+export function listApiProviderModelsRows(db: SqliteDatabase): ApiProviderModelRow[] {
+    return queryAll<ApiProviderModelRow>(
+        db,
+        `
+            SELECT provider, model_id, display_name, created_at, updated_at
+            FROM api_provider_models
+            ORDER BY provider ASC, display_name ASC
+        `
+    );
+}
+
 export function getApiProviderByName(
     db: SqliteDatabase,
     provider: string
@@ -50,6 +69,22 @@ export function getApiProviderByName(
             WHERE provider = ?
         `,
         [provider]
+    );
+}
+
+export function getApiProviderModelById(
+    db: SqliteDatabase,
+    provider: string,
+    modelId: string
+): ApiProviderModelRow | undefined {
+    return queryOne<ApiProviderModelRow>(
+        db,
+        `
+            SELECT provider, model_id, display_name, created_at, updated_at
+            FROM api_provider_models
+            WHERE provider = ? AND model_id = ?
+        `,
+        [provider, modelId]
     );
 }
 

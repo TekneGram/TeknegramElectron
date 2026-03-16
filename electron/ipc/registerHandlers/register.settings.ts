@@ -2,10 +2,13 @@ import { safeHandle } from "../safeHandle";
 import { validateOrThrow } from "../validate";
 
 import { deleteApiProviderKey } from "@electron/services/settings/deleteApiProviderKey";
+import { listApiProviderModels } from "@electron/services/settings/listApiProviderModels";
 import { listApiProviders } from "@electron/services/settings/listApiProviders";
 import { saveApiProviderKey } from "@electron/services/settings/saveApiProviderKey";
 import { setDefaultApiProvider } from "@electron/services/settings/setDefaultApiProvider";
+import { updateApiProviderModel } from "@electron/services/settings/updateApiProviderModel";
 import type {
+    ListApiProviderModelsResponse,
     ApiProvidersResponse,
     DeleteApiProviderKeyRequest,
     DeleteApiProviderKeyResponse,
@@ -13,11 +16,14 @@ import type {
     SaveApiProviderKeyResponse,
     SetDefaultApiProviderRequest,
     SetDefaultApiProviderResponse,
+    UpdateApiProviderModelRequest,
+    UpdateApiProviderModelResponse,
 } from "../contracts/settings.contracts";
 import {
     deleteApiProviderKeySchema,
     saveApiProviderKeySchema,
     setDefaultApiProviderSchema,
+    updateApiProviderModelSchema,
 } from "../validationSchemas/settings.schemas";
 
 import { createCredentialProvider } from "@electron/llm/createCredentialProvider";
@@ -30,6 +36,13 @@ export function registerSettingsHandlers(): void {
         "settings:api-providers:list",
         async (_event, _rawArgs, ctx) => {
             return listApiProviders(ctx, credentialProvider);
+        }
+    );
+
+    safeHandle<null, ListApiProviderModelsResponse>(
+        "settings:api-providers:list-models",
+        async (_event, _rawArgs, ctx) => {
+            return listApiProviderModels(ctx);
         }
     );
 
@@ -54,6 +67,14 @@ export function registerSettingsHandlers(): void {
         async (_event, rawArgs, ctx) => {
             const args = validateOrThrow(setDefaultApiProviderSchema, rawArgs);
             return setDefaultApiProvider(args, ctx);
+        }
+    );
+
+    safeHandle<UpdateApiProviderModelRequest, UpdateApiProviderModelResponse>(
+        "settings:api-providers:update-model",
+        async (_event, rawArgs, ctx) => {
+            const args = validateOrThrow(updateApiProviderModelSchema, rawArgs);
+            return updateApiProviderModel(args, ctx);
         }
     );
 }

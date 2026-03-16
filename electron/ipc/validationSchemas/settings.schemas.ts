@@ -3,6 +3,7 @@ import type {
     DeleteApiProviderKeyRequest,
     SaveApiProviderKeyRequest,
     SetDefaultApiProviderRequest,
+    UpdateApiProviderModelRequest,
 } from "../contracts/settings.contracts";
 
 const providerSchema = z.enum(["openai", "anthropic", "gemini"]);
@@ -18,4 +19,9 @@ export const deleteApiProviderKeySchema: z.ZodType<DeleteApiProviderKeyRequest> 
 
 export const setDefaultApiProviderSchema: z.ZodType<SetDefaultApiProviderRequest> = z.object({
     provider: providerSchema,
+});
+
+export const updateApiProviderModelSchema: z.ZodType<UpdateApiProviderModelRequest> = z.object({
+    provider: providerSchema,
+    modelId: z.string().min(1),
 });

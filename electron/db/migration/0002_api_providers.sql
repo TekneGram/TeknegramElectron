@@ -21,6 +21,6 @@ INSERT INTO api_providers (
     created_at,
     updated_at
 ) VALUES 
-    ('openai', "OpenAi", "gpt-4.1-mini", 1, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    ('anthropic', "Anthropic", "claude-3-5-sonnet-latest", 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-    ('gemini', "Google Gemini", "gemini-2.5-pro", 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    ('openai', 'OpenAI', 'gpt-5-mini', 1, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('anthropic', 'Anthropic', 'claude-sonnet-4-6', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('gemini', 'Google Gemini', 'gemini-2.5-flash', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
