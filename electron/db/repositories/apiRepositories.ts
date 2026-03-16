@@ -28,7 +28,7 @@ export type SetDefaultApiProviderRow = {
     updated_at: string;
 }
 
-export function listApiProviders(db: SqliteDatabase): ApiProviderRow[] {
+export function listApiProvidersRows(db: SqliteDatabase): ApiProviderRow[] {
     return queryAll<ApiProviderRow>(
         db,
         `SELECT provider, display_name, default_model, is_default, has_stored_key, created_at, updated_at
