@@ -9,6 +9,8 @@ import type {
     CancelCreateProjectResponse,
     DeleteProjectRequest,
     DeleteProjectResponse,
+    GetCorpusMetadataRequest,
+    GetCorpusMetadataResponse,
     UpdateProjectNameRequest,
     UpdateProjectNameResponse,
 } from "../contracts/projects.contracts";
@@ -16,10 +18,12 @@ import { createProject } from "@electron/services/projects/createProject";
 import { cancelCreateProject } from "@electron/services/projects/cancelCreateProject";
 import { deleteProject } from "@electron/services/projects/deleteProject";
 import { updateProjectName } from "@electron/services/projects/updateProjectName";
+import { getCorpusMetadata } from "@electron/services/projects/getCorpusMetadata";
 import {
     createProjectSchema,
     cancelCreateProjectSchema,
     deleteProjectSchema,
+    getCorpusMetadataSchema,
     updateProjectNameSchema,
 } from "../validationSchemas/projects.schemas";
 
@@ -60,6 +64,14 @@ export function RegisterProjectHandlers(): void {
         async (_event, rawArgs, ctx) => {
             const args = validateOrThrow(updateProjectNameSchema, rawArgs);
             return updateProjectName(args, ctx);
+        }
+    );
+
+    safeHandle<GetCorpusMetadataRequest, GetCorpusMetadataResponse>(
+        "projects:get-corpus-metadata",
+        async (_event, rawArgs, ctx) => {
+            const args = validateOrThrow(getCorpusMetadataSchema, rawArgs);
+            return getCorpusMetadata(args, ctx);
         }
     );
 }

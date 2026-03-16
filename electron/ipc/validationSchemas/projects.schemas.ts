@@ -3,6 +3,7 @@ import type {
     CancelCreateProjectRequest,
     CreateProjectRequest,
     DeleteProjectRequest,
+    GetCorpusMetadataRequest,
     UpdateProjectNameRequest,
 } from "../contracts/projects.contracts";
 
@@ -25,4 +26,9 @@ export const deleteProjectSchema: z.ZodType<DeleteProjectRequest> = z.object({
 export const updateProjectNameSchema: z.ZodType<UpdateProjectNameRequest> = z.object({
     projectUuid: z.string().uuid(),
     projectName: z.string().min(1),
+});
+
+export const getCorpusMetadataSchema: z.ZodType<GetCorpusMetadataRequest> = z.object({
+    requestId: z.string().min(1),
+    projectUuid: z.string().uuid(),
 });

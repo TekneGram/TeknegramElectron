@@ -9,6 +9,7 @@ const {
   cancelCreateProjectMock,
   deleteProjectMock,
   updateProjectNameMock,
+  getCorpusMetadataMock,
 } = vi.hoisted(() => ({
   handleMock: vi.fn(),
   randomUUIDMock: vi.fn(),
@@ -18,6 +19,7 @@ const {
   cancelCreateProjectMock: vi.fn(),
   deleteProjectMock: vi.fn(),
   updateProjectNameMock: vi.fn(),
+  getCorpusMetadataMock: vi.fn(),
 }));
 
 vi.mock("electron", () => ({
@@ -59,6 +61,10 @@ vi.mock("@electron/services/projects/updateProjectName", () => ({
   updateProjectName: updateProjectNameMock,
 }));
 
+vi.mock("@electron/services/projects/getCorpusMetadata", () => ({
+  getCorpusMetadata: getCorpusMetadataMock,
+}));
+
 import { RegisterProjectHandlers } from "../registerHandlers/register.projects";
 
 describe("RegisterProjectHandlers", () => {
@@ -71,6 +77,7 @@ describe("RegisterProjectHandlers", () => {
     cancelCreateProjectMock.mockReset();
     deleteProjectMock.mockReset();
     updateProjectNameMock.mockReset();
+    getCorpusMetadataMock.mockReset();
     randomUUIDMock.mockReturnValue("cid-projects-123");
   });
 
@@ -84,13 +91,14 @@ describe("RegisterProjectHandlers", () => {
 
     RegisterProjectHandlers();
 
-    expect(handleMock).toHaveBeenCalledTimes(5);
+    expect(handleMock).toHaveBeenCalledTimes(6);
     expect(handleMock.mock.calls.map((call) => call[0])).toEqual([
       "projects:list",
       "projects:create",
       "projects:create:cancel",
       "projects:delete",
       "projects:update-name",
+      "projects:get-corpus-metadata",
     ]);
 
     const listHandler = getHandler("projects:list");
@@ -276,6 +284,55 @@ describe("RegisterProjectHandlers", () => {
       expect(result.error.details).toContain("projectUuid: Invalid UUID");
     }
     expect(loggerErrorMock).toHaveBeenCalledWith("IPC failed: projects:update-name", {
+      correlationId: "cid-projects-123",
+      error: expect.objectContaining({
+        code: "VALIDATION_INVALID_PAYLOAD",
+        correlationId: "cid-projects-123",
+      }),
+    });
+  });
+
+  it("validates corpus metadata payloads before delegating to the service", async () => {
+    const rawArgs = {
+      requestId: "req-meta-1",
+      projectUuid: "11111111-1111-4111-8111-111111111111",
+    };
+    const serviceResult = {
+      projectUuid: rawArgs.projectUuid,
+      summary: "This corpus has 10 documents, 20 lemmas, 30 types and 40 words.",
+      source: "cache",
+    };
+    getCorpusMetadataMock.mockResolvedValue(serviceResult);
+
+    RegisterProjectHandlers();
+
+    const metadataHandler = getHandler("projects:get-corpus-metadata");
+    const result = await metadataHandler({ sender: { send: vi.fn() } }, rawArgs);
+
+    expect(getCorpusMetadataMock).toHaveBeenCalledWith(
+      rawArgs,
+      expect.objectContaining({ correlationId: "cid-projects-123", sendEvent: expect.any(Function) })
+    );
+    expect(result).toEqual({ ok: true, data: serviceResult });
+  });
+
+  it("returns a validation failure result for invalid corpus metadata payloads", async () => {
+    RegisterProjectHandlers();
+
+    const metadataHandler = getHandler("projects:get-corpus-metadata");
+    const result = await metadataHandler({ sender: { send: vi.fn() } }, {
+      requestId: "",
+      projectUuid: "bad-uuid",
+    });
+
+    expect(getCorpusMetadataMock).not.toHaveBeenCalled();
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error.code).toBe("VALIDATION_INVALID_PAYLOAD");
+      expect(result.error.correlationId).toBe("cid-projects-123");
+      expect(result.error.details).toContain("requestId: Too small");
+    }
+    expect(loggerErrorMock).toHaveBeenCalledWith("IPC failed: projects:get-corpus-metadata", {
       correlationId: "cid-projects-123",
       error: expect.objectContaining({
         code: "VALIDATION_INVALID_PAYLOAD",

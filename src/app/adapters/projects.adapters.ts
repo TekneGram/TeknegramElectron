@@ -6,6 +6,8 @@ import type {
     CancelCreateProjectResponse,
     DeleteProjectRequest,
     DeleteProjectResponse,
+    GetCorpusMetadataRequest,
+    GetCorpusMetadataResponse,
     UpdateProjectNameRequest,
     UpdateProjectNameResponse,
     ProjectsPort } from "@/app/ports/projects.ports";
@@ -30,5 +32,9 @@ export const projectsAdapter: ProjectsPort = {
 
     async updateProjectName(request: UpdateProjectNameRequest) {
         return invokeRequest<UpdateProjectNameRequest, UpdateProjectNameResponse>("projects:update-name", request);
+    },
+
+    async getCorpusMetadata(request: GetCorpusMetadataRequest) {
+        return invokeRequest<GetCorpusMetadataRequest, GetCorpusMetadataResponse>("projects:get-corpus-metadata", request);
     }
 }

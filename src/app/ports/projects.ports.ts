@@ -49,10 +49,22 @@ export interface UpdateProjectNameResponse {
     projectName: string;
 }
 
+export interface GetCorpusMetadataRequest {
+    requestId: string;
+    projectUuid: string;
+}
+
+export interface GetCorpusMetadataResponse {
+    projectUuid: string;
+    summary: string;
+    source: "cache" | "generated" | "fallback";
+}
+
 export interface ProjectsPort {
     listProjects(): Promise<AppResult<ProjectListItem[]>>
     createProject(request: CreateProjectRequest): Promise<AppResult<CreateProjectResponse>>
     cancelCreateProject(request: CancelCreateProjectRequest): Promise<AppResult<CancelCreateProjectResponse>>
     deleteProject(request: DeleteProjectRequest): Promise<AppResult<DeleteProjectResponse>>
     updateProjectName(request: UpdateProjectNameRequest): Promise<AppResult<UpdateProjectNameResponse>>
+    getCorpusMetadata(request: GetCorpusMetadataRequest): Promise<AppResult<GetCorpusMetadataResponse>>
 }

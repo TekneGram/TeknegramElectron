@@ -24,12 +24,27 @@ const flowState = vi.hoisted(() => ({
   confirmDelete: vi.fn(),
 }));
 
+const corpusMetadataState = vi.hoisted(() => ({
+  summary: "This corpus has 2766 documents, 116223 lemmas, 125083 types and 6505803 words.",
+  source: "cache" as "cache" | "generated" | "fallback" | undefined,
+  isLoading: false,
+  isError: false,
+  error: null as Error | null,
+  progressMessage: "Preparing corpus metadata summary...",
+  progressStage: "idle",
+  percent: undefined as number | undefined,
+}));
+
 vi.mock("../hooks/useDeleteProjectFlow", () => ({
   useDeleteProjectFlow: () => flowState,
 }));
 
 vi.mock("../hooks/useProjectNameEditFlow", () => ({
   useProjectNameEditFlow: () => renameFlowState,
+}));
+
+vi.mock("../hooks/useProjectCorpusMetadata", () => ({
+  useProjectCorpusMetadata: () => corpusMetadataState,
 }));
 
 import ProjectCard from "../ProjectCard";
@@ -53,6 +68,14 @@ describe("ProjectCard", () => {
     renameFlowState.isSaving = false;
     renameFlowState.draftName = "BAWE";
     renameFlowState.canConfirm = false;
+    corpusMetadataState.summary = "This corpus has 2766 documents, 116223 lemmas, 125083 types and 6505803 words.";
+    corpusMetadataState.source = "cache";
+    corpusMetadataState.isLoading = false;
+    corpusMetadataState.isError = false;
+    corpusMetadataState.error = null;
+    corpusMetadataState.progressMessage = "Preparing corpus metadata summary...";
+    corpusMetadataState.progressStage = "idle";
+    corpusMetadataState.percent = undefined;
   });
 
   it("renders the delete button and enter button", () => {
@@ -61,6 +84,18 @@ describe("ProjectCard", () => {
     expect(screen.getByRole("heading", { name: "BAWE" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Delete" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Enter Project" })).toBeTruthy();
+    expect(screen.getByText("This corpus has 2766 documents, 116223 lemmas, 125083 types and 6505803 words.")).toBeTruthy();
+  });
+
+  it("shows inline corpus metadata progress while loading", () => {
+    corpusMetadataState.isLoading = true;
+    corpusMetadataState.progressMessage = "Computing corpus metadata.";
+    corpusMetadataState.percent = 42;
+
+    render(<ProjectCard project={project} />);
+
+    expect(screen.getByText("Computing corpus metadata.")).toBeTruthy();
+    expect(screen.getByText("42%")).toBeTruthy();
   });
 
   it("starts editing when the project title is clicked", () => {

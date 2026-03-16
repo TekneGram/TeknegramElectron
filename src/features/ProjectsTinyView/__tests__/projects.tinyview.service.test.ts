@@ -23,6 +23,7 @@ describe("listProjects", () => {
       cancelCreateProject: vi.fn(),
       deleteProject: vi.fn(),
       updateProjectName: vi.fn(),
+      getCorpusMetadata: vi.fn(),
     };
 
     await expect(listProjects(port)).resolves.toEqual(projects);
@@ -43,6 +44,7 @@ describe("listProjects", () => {
       cancelCreateProject: vi.fn(),
       deleteProject: vi.fn(),
       updateProjectName: vi.fn(),
+      getCorpusMetadata: vi.fn(),
     };
 
     await expect(listProjects(port)).rejects.toThrow("Failed to load projects");

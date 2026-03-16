@@ -7,6 +7,8 @@ import type {
   CreateProjectResponse,
   DeleteProjectRequest,
   DeleteProjectResponse,
+  GetCorpusMetadataRequest,
+  GetCorpusMetadataResponse,
   ProjectListItem,
   ProjectsPort,
   UpdateProjectNameRequest,
@@ -71,6 +73,17 @@ describe("projects port contracts", () => {
       projectName: "Updated Corpus Builder",
     };
 
+    const getCorpusMetadataRequest: GetCorpusMetadataRequest = {
+      requestId: "req-meta-1",
+      projectUuid: "11111111-1111-1111-1111-111111111111",
+    };
+
+    const getCorpusMetadataResponse: GetCorpusMetadataResponse = {
+      projectUuid: "11111111-1111-1111-1111-111111111111",
+      summary: "This corpus has 10 documents, 20 lemmas, 30 types and 40 words.",
+      source: "cache",
+    };
+
     expectTypeOf(projectListItem).toEqualTypeOf<ProjectListItem>();
     expectTypeOf(createRequest).toEqualTypeOf<CreateProjectRequest>();
     expectTypeOf(createRequestWithoutRules).toEqualTypeOf<CreateProjectRequest>();
@@ -81,6 +94,8 @@ describe("projects port contracts", () => {
     expectTypeOf(deleteResponse).toEqualTypeOf<DeleteProjectResponse>();
     expectTypeOf(updateProjectNameRequest).toEqualTypeOf<UpdateProjectNameRequest>();
     expectTypeOf(updateProjectNameResponse).toEqualTypeOf<UpdateProjectNameResponse>();
+    expectTypeOf(getCorpusMetadataRequest).toEqualTypeOf<GetCorpusMetadataRequest>();
+    expectTypeOf(getCorpusMetadataResponse).toEqualTypeOf<GetCorpusMetadataResponse>();
   });
 
   it("requires all ProjectsPort methods to return AppResult-wrapped promises", async () => {
@@ -133,6 +148,17 @@ describe("projects port contracts", () => {
           },
         };
       },
+      async getCorpusMetadata(request) {
+        void request;
+        return {
+          ok: true,
+          value: {
+            projectUuid: "11111111-1111-1111-1111-111111111111",
+            summary: "This corpus has 10 documents, 20 lemmas, 30 types and 40 words.",
+            source: "cache",
+          },
+        };
+      },
     };
 
     const listResult = await port.listProjects();
@@ -150,12 +176,17 @@ describe("projects port contracts", () => {
       projectUuid: "11111111-1111-1111-1111-111111111111",
       projectName: "Updated Corpus Builder",
     });
+    const getCorpusMetadataResult = await port.getCorpusMetadata({
+      requestId: "req-meta-1",
+      projectUuid: "11111111-1111-1111-1111-111111111111",
+    });
 
     expectTypeOf(listResult).toEqualTypeOf<AppResult<ProjectListItem[]>>();
     expectTypeOf(createResult).toEqualTypeOf<AppResult<CreateProjectResponse>>();
     expectTypeOf(cancelResult).toEqualTypeOf<AppResult<CancelCreateProjectResponse>>();
     expectTypeOf(deleteResult).toEqualTypeOf<AppResult<DeleteProjectResponse>>();
     expectTypeOf(updateProjectNameResult).toEqualTypeOf<AppResult<UpdateProjectNameResponse>>();
+    expectTypeOf(getCorpusMetadataResult).toEqualTypeOf<AppResult<GetCorpusMetadataResponse>>();
   });
 
   it("rejects invalid project contract shapes", () => {

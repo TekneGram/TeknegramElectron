@@ -32,6 +32,7 @@ describe("submitUpdateProjectName", () => {
         ok: true,
         value: request,
       }),
+      getCorpusMetadata: vi.fn(),
     };
 
     await expect(submitUpdateProjectName(port, request)).resolves.toEqual(request);
@@ -52,6 +53,7 @@ describe("submitUpdateProjectName", () => {
           userMessage: "Name is required",
         },
       }),
+      getCorpusMetadata: vi.fn(),
     };
 
     await expect(submitUpdateProjectName(port, request)).rejects.toBeInstanceOf(FrontAppError);

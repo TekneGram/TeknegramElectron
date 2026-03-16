@@ -40,3 +40,14 @@ export type UpdateProjectNameResponse = {
     projectUuid: string;
     projectName: string;
 }
+
+export type GetCorpusMetadataRequest = {
+    requestId: string;
+    projectUuid: string;
+}
+
+export type GetCorpusMetadataResponse = {
+    projectUuid: string;
+    summary: string;
+    source: "cache" | "generated" | "fallback";
+}
