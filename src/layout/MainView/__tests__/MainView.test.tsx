@@ -72,7 +72,7 @@ describe("MainView", () => {
       isLoading: true,
     });
 
-    render(<MainView modalIsOpen={false} onOpenModal={onOpenModal} onCloseModal={onCloseModal} />);
+    render(<MainView modalIsOpen={false} onOpenModal={onOpenModal} onCloseModal={onCloseModal} route="auto" />);
 
     expect(screen.getByText("Loading!")).toBeTruthy();
   });
@@ -82,7 +82,7 @@ describe("MainView", () => {
       isError: true,
     });
 
-    render(<MainView modalIsOpen={false} onOpenModal={onOpenModal} onCloseModal={onCloseModal} />);
+    render(<MainView modalIsOpen={false} onOpenModal={onOpenModal} onCloseModal={onCloseModal} route="auto" />);
 
     expect(screen.getByText("Something went badly wrong!")).toBeTruthy();
   });
@@ -92,7 +92,7 @@ describe("MainView", () => {
       data: [],
     });
 
-    render(<MainView modalIsOpen={false} onOpenModal={onOpenModal} onCloseModal={onCloseModal} />);
+    render(<MainView modalIsOpen={false} onOpenModal={onOpenModal} onCloseModal={onCloseModal} route="auto" />);
 
     expect(screen.getByText("Teknegram")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Start New Project" })).toBeTruthy();
@@ -104,7 +104,7 @@ describe("MainView", () => {
       data: [],
     });
 
-    render(<MainView modalIsOpen={true} onOpenModal={onOpenModal} onCloseModal={onCloseModal} />);
+    render(<MainView modalIsOpen={true} onOpenModal={onOpenModal} onCloseModal={onCloseModal} route="auto" />);
 
     expect(screen.getByTestId("create-project-modal")).toBeTruthy();
     expect(createProjectModalMock).toHaveBeenCalledWith(
@@ -122,7 +122,7 @@ describe("MainView", () => {
       ],
     });
 
-    render(<MainView modalIsOpen={false} onOpenModal={onOpenModal} onCloseModal={onCloseModal} />);
+    render(<MainView modalIsOpen={false} onOpenModal={onOpenModal} onCloseModal={onCloseModal} route="auto" />);
 
     await waitFor(() => {
       expect(screen.getByTestId("projects-list")).toBeTruthy();
@@ -154,7 +154,7 @@ describe("MainView", () => {
       data: [],
     });
 
-    render(<MainView modalIsOpen={true} onOpenModal={onOpenModal} onCloseModal={onCloseModal} />);
+    render(<MainView modalIsOpen={true} onOpenModal={onOpenModal} onCloseModal={onCloseModal} route="auto" />);
 
     fireEvent.click(screen.getByRole("button", { name: "complete project creation" }));
 
@@ -191,7 +191,7 @@ describe("MainView", () => {
       data: [],
     });
 
-    render(<MainView modalIsOpen={true} onOpenModal={onOpenModal} onCloseModal={onCloseModal} />);
+    render(<MainView modalIsOpen={true} onOpenModal={onOpenModal} onCloseModal={onCloseModal} route="auto" />);
 
     fireEvent.click(screen.getByRole("button", { name: "complete project creation" }));
 

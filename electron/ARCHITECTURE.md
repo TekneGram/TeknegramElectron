@@ -8,6 +8,7 @@ The `electron/` folder contains the main-process backend for the app. It owns:
 - database initialization, migrations, and repositories
 - runtime path resolution
 - native executable orchestration
+- reusable LLM orchestration and provider pipelines
 - backend logging
 - Electron-side infrastructure boundaries for platform APIs
 
@@ -30,7 +31,7 @@ Services should:
 - accept typed request data
 - accept `RequestContext` when request-scoped logging/events are needed
 - validate runtime and business constraints
-- call repositories, runtime helpers, native runners, and infrastructure adapters
+- call repositories, runtime helpers, native runners, LLM controllers, and infrastructure adapters
 - define transaction boundaries
 - return typed response data
 
@@ -39,6 +40,34 @@ Services should not:
 - register IPC handlers
 - contain raw SQL unless there is a strong reason
 - hardcode runtime paths
+
+### `electron/llm/*`
+Reusable LLM subsystem.
+
+- `controllers/*` provides LLM orchestration entrypoints used by backend services
+- `operations/*` implements use-case-specific LLM workflows below controllers
+- `policies/*` centralizes provider/model defaults, limits, fallback rules, and other decision logic
+- `providers/*` isolates provider-specific HTTP clients and provider registries
+- `schemas/*` validates structured LLM outputs
+- `shared/*` defines LLM subsystem DTOs and shared types
+- `tools/*` contains tool/function-calling loop types and implementations
+
+Use this layer when backend features need:
+
+- external LLM summarization or interpretation
+- provider-agnostic model selection and request shaping
+- structured response validation
+- reusable tool/function-calling loops
+- a subsystem that can be shared by many services
+
+Rules:
+
+- keep `llm/*` independent from IPC and renderer concerns
+- do not register IPC handlers here
+- do not access Electron UI/system APIs directly here
+- retrieve credentials through injected interfaces rather than direct storage calls in controllers/operations
+- keep provider-specific transport details in `providers/*`
+- prefer structured JSON responses validated by `schemas/*`
 
 ### `electron/infrastructure/*`
 Electron-side platform boundary.
@@ -87,9 +116,20 @@ Typical flow from renderer to backend:
 3. `electron/ipc/registerHandlers.ts` dispatches to domain registration modules in `electron/ipc/registerHandlers/*`.
 4. IPC layer validates payload shape with Zod.
 5. A service in `electron/services/*` executes the use case.
-6. The service calls repositories, runtime helpers, native executables, and infrastructure adapters as needed.
+6. The service calls repositories, runtime helpers, native executables, LLM controllers, and infrastructure adapters as needed.
 7. `safeHandle` wraps the result into `Result<T>`.
 8. Frontend adapter maps backend result/error into frontend `AppResult<T>`.
+
+When an LLM-backed feature is involved, the service typically delegates to the LLM subsystem like this:
+
+1. service gathers validated domain data
+2. service calls an LLM controller in `electron/llm/controllers/*`
+3. controller resolves provider/model policy and credentials
+4. operation prepares the provider request
+5. provider client calls the external LLM
+6. schema validation normalizes the structured response
+7. controller returns a typed result or normalized LLM failure
+8. service decides how that result fits the wider use case
 
 ## IPC
 Files:
@@ -241,6 +281,7 @@ Rules:
 - generated writable data goes under `userData` in production
 - packaged resources are read-only
 - services should ask runtime helpers for paths, not hardcode them
+- if secret material is stored in encrypted files, `runtimePaths.ts` should define those writable locations
 
 ## Native Executables
 Files:
@@ -264,6 +305,56 @@ Development executable location:
 - `electron/bin/executables/<platform>/`
 
 Production path resolution is handled through `runtimePaths.ts`.
+
+## LLM Subsystem
+Files:
+
+- `electron/llm/controllers/*`
+- `electron/llm/operations/*`
+- `electron/llm/policies/*`
+- `electron/llm/providers/*`
+- `electron/llm/schemas/*`
+- `electron/llm/shared/*`
+- `electron/llm/tools/*`
+
+Purpose:
+
+- provide a reusable backend subsystem for LLM-backed capabilities
+- keep provider-specific request/response details out of feature services
+- support policy-driven provider/model selection
+- validate structured LLM responses before they flow back into services
+- prepare for future tool/function-calling workflows without mixing that logic into unrelated services
+
+Typical dependency direction:
+
+- `services/*` -> `llm/controllers/*`
+- `llm/controllers/*` -> `llm/operations/*`, `llm/policies/*`, injected credential provider, injected provider registry
+- `llm/operations/*` -> `llm/policies/*`, `llm/providers/*`, `llm/schemas/*`, `llm/shared/*`
+- `llm/providers/*` -> external LLM APIs
+
+Secrets:
+
+- LLM controllers should depend on injected credential providers rather than direct storage access
+- concrete secret storage should live outside `llm/*`, typically in `electron/infrastructure/*` when it depends on
+  Electron or OS facilities
+- LLM code must never log or return raw API keys
+
+Progress:
+
+- LLM controllers and operations should expose progress through typed callbacks or another injected abstraction
+- services may bridge those progress callbacks into `RequestContext.sendEvent(...)` when request-scoped renderer
+  updates are needed
+
+Example:
+
+1. a service gathers native-process output or corpus metadata
+2. it calls an LLM controller such as `summarizeCorpusMetadataController(...)`
+3. policy resolves provider and model defaults
+4. credentials are retrieved through an injected `CredentialProvider`
+5. the operation builds a structured provider request
+6. a provider client such as an OpenAI adapter performs the HTTP call
+7. response JSON is validated with a Zod schema
+8. the typed result returns to the calling service
 
 ## Native JSON Contract
 Electron-native communication uses:
@@ -289,9 +380,10 @@ When adding a new backend feature:
 3. Add repository functions if DB work is needed.
 4. Add or extend infrastructure ports/adapters in `electron/infrastructure/*` if the feature needs Electron/platform APIs.
 5. Add a service in `electron/services/<feature>/*`.
-6. Register the IPC handler in a relevant file under `electron/ipc/registerHandlers/*`.
-7. Ensure `electron/ipc/registerHandlers.ts` composes the new registration module.
-8. Add frontend port + adapter.
+6. If the feature uses a reusable LLM workflow, call an LLM controller from `electron/llm/*` instead of embedding provider logic directly in the service.
+7. Register the IPC handler in a relevant file under `electron/ipc/registerHandlers/*`.
+8. Ensure `electron/ipc/registerHandlers.ts` composes the new registration module.
+9. Add frontend port + adapter.
 
 ## Example: `projects:create`
 The `projects:create` flow should look like this:

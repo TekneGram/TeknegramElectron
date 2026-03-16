@@ -1,0 +1,356 @@
+.llm-settings-card {
+    width: 100%;
+    position: relative;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-5xl);
+    background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-surface) 96%, transparent),
+        color-mix(in srgb, var(--color-surface-muted) 92%, transparent)
+    );
+    box-shadow: var(--shadow-elevation-lg);
+    overflow: hidden;
+}
+
+.llm-settings-card::before {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: 23px;
+    border: 1px solid var(--color-panel-highlight);
+    pointer-events: none;
+}
+
+.llm-settings-card-header {
+    position: relative;
+    padding: 1.3rem 1.45rem 1rem;
+    border-bottom: 1px solid var(--color-panel-border-subtle);
+    background: color-mix(in srgb, var(--color-surface) 94%, var(--color-surface-muted));
+}
+
+.llm-settings-card-header h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    line-height: 1.1;
+    letter-spacing: var(--letter-spacing-display-tight);
+    color: var(--color-text);
+}
+
+.llm-settings-card-header p {
+    margin: 0.55rem 0 0;
+    max-width: 60ch;
+    color: var(--color-text-muted);
+    font-size: 0.97rem;
+}
+
+.llm-settings-table-shell {
+    overflow-x: auto;
+}
+
+.llm-settings-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 980px;
+}
+
+.llm-settings-table thead th {
+    text-align: left;
+    font-size: var(--font-size-label-md);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--letter-spacing-label);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    background: color-mix(in srgb, var(--color-control-surface-subtle) 92%, transparent);
+    padding: 0.95rem 1.2rem;
+}
+
+.llm-settings-table tbody tr {
+    background: transparent;
+}
+
+.llm-settings-table tbody tr + tr td {
+    border-top: 1px solid var(--color-panel-border-subtle);
+}
+
+.llm-settings-table td {
+    vertical-align: top;
+    padding: 1.2rem;
+}
+
+.llm-settings-provider-cell {
+    min-width: 170px;
+}
+
+.llm-settings-provider-name {
+    display: block;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.llm-settings-provider-slug {
+    display: block;
+    margin-top: 0.22rem;
+    font-size: 0.84rem;
+    color: var(--color-text-muted);
+    text-transform: lowercase;
+}
+
+.llm-settings-provider-status {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 0.65rem;
+    padding: 0.26rem 0.5rem;
+    border: 1px solid color-mix(in srgb, #6cc8a1 30%, var(--color-border));
+    border-radius: var(--radius-pill);
+    font-size: 0.78rem;
+    font-weight: var(--font-weight-semibold);
+    color: color-mix(in srgb, #7ce0b4 72%, var(--color-text));
+    background: color-mix(in srgb, #6cc8a1 12%, var(--color-surface));
+}
+
+.llm-settings-provider-status.is-missing {
+    border-color: color-mix(in srgb, #d5a35c 34%, var(--color-border));
+    color: color-mix(in srgb, #e9c98f 78%, var(--color-text));
+    background: color-mix(in srgb, #d5a35c 14%, var(--color-surface));
+}
+
+.llm-settings-key-stack,
+.llm-settings-model-stack,
+.llm-settings-default-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.llm-settings-masked-key {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.llm-settings-key-input,
+.llm-settings-model-select {
+    width: 100%;
+    min-height: var(--control-height-field);
+    padding: 0.58rem 0.9rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-input-border);
+    background: var(--color-input-bg);
+    color: var(--color-text);
+    font: inherit;
+    box-sizing: border-box;
+    transition:
+        border-color 160ms ease,
+        background-color 160ms ease,
+        box-shadow 160ms ease,
+        transform 160ms ease;
+}
+
+.llm-settings-key-input::placeholder {
+    color: var(--color-field-placeholder);
+}
+
+.llm-settings-key-input:hover,
+.llm-settings-model-select:hover {
+    border-color: var(--color-field-hover-border);
+}
+
+.llm-settings-model-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 2.7rem;
+    background-image:
+        linear-gradient(45deg, transparent 50%, var(--color-text-muted) 50%),
+        linear-gradient(135deg, var(--color-text-muted) 50%, transparent 50%);
+    background-position:
+        calc(100% - 18px) calc(50% - 3px),
+        calc(100% - 12px) calc(50% - 3px);
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+}
+
+.llm-settings-key-input:focus-visible,
+.llm-settings-model-select:focus-visible {
+    outline: none;
+    border-color: var(--color-field-focus-border);
+    box-shadow: 0 0 0 3px var(--color-focus-ring-shadow-strong);
+}
+
+.llm-settings-key-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+}
+
+.llm-settings-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-pill);
+    min-height: var(--control-height-sm);
+    padding: 0.42rem 0.82rem;
+    border: 1px solid var(--color-border);
+    font: inherit;
+    font-weight: var(--font-weight-semibold);
+    font-size: 0.9rem;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+        transform 120ms ease,
+        opacity 120ms ease,
+        background-color 120ms ease,
+        border-color 120ms ease,
+        color 120ms ease,
+        box-shadow 120ms ease;
+}
+
+.llm-settings-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.llm-settings-button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.llm-settings-button-primary {
+    border-color: var(--color-action-primary-border);
+    background: linear-gradient(
+        135deg,
+        var(--color-action-primary-start),
+        var(--color-action-primary-end)
+    );
+    color: var(--color-action-primary-text);
+    box-shadow:
+        var(--shadow-interactive),
+        var(--shadow-inset-highlight-soft);
+}
+
+.llm-settings-button-primary:hover:not(:disabled) {
+    background: linear-gradient(
+        135deg,
+        var(--color-action-primary-hover-start),
+        var(--color-action-primary-hover-end)
+    );
+    box-shadow:
+        var(--shadow-interactive-hover),
+        var(--shadow-inset-highlight-soft-hover);
+}
+
+.llm-settings-button-primary:active:not(:disabled) {
+    transform: translateY(0);
+    background: linear-gradient(
+        135deg,
+        var(--color-action-primary-active-start),
+        var(--color-action-primary-active-end)
+    );
+    box-shadow:
+        var(--shadow-interactive-active),
+        var(--shadow-inset-highlight-soft-active);
+}
+
+.llm-settings-button-secondary,
+.llm-settings-button-ghost {
+    background: var(--color-control-surface);
+    color: var(--color-text);
+}
+
+.llm-settings-button-secondary:hover:not(:disabled),
+.llm-settings-button-ghost:hover:not(:disabled) {
+    background: var(--color-control-hover-surface);
+    border-color: var(--color-control-hover-border);
+}
+
+.llm-settings-button-secondary:active:not(:disabled),
+.llm-settings-button-ghost:active:not(:disabled) {
+    transform: translateY(0);
+    background: var(--color-control-active-surface);
+}
+
+.llm-settings-button-ghost {
+    color: color-mix(in srgb, var(--color-error-text) 76%, var(--color-text));
+    border-color: color-mix(in srgb, var(--color-error-border) 82%, var(--color-border));
+    background: color-mix(in srgb, var(--color-error-surface) 34%, var(--color-control-surface));
+}
+
+.llm-settings-button-ghost:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--color-error-border) 92%, var(--color-border));
+    background: color-mix(in srgb, var(--color-error-surface) 46%, var(--color-control-hover-surface));
+}
+
+.llm-settings-radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+}
+
+.llm-settings-radio input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1rem;
+    height: 1rem;
+    margin: 0;
+    border: 1px solid var(--color-input-border);
+    border-radius: 50%;
+    background: var(--color-input-bg);
+    box-shadow: inset 0 0 0 0 color-mix(in srgb, var(--color-text) 0%, transparent);
+    transition:
+        border-color 120ms ease,
+        box-shadow 120ms ease,
+        background-color 120ms ease,
+        opacity 120ms ease;
+}
+
+.llm-settings-radio input:checked {
+    border-color: var(--color-accent);
+    box-shadow: inset 0 0 0 4px var(--color-accent);
+}
+
+.llm-settings-radio input:focus-visible {
+    outline: none;
+    box-shadow:
+        inset 0 0 0 4px var(--color-accent),
+        0 0 0 3px var(--color-focus-ring-shadow-soft);
+}
+
+.llm-settings-radio input:disabled {
+    opacity: 0.55;
+}
+
+.llm-settings-state {
+    padding: 1.4rem 1.5rem;
+    color: var(--color-text-muted);
+}
+
+.llm-settings-state.is-error {
+    color: var(--color-error-text);
+}
+
+.llm-settings-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media (max-width: 900px) {
+    .llm-settings-card-header {
+        padding: 1.1rem 1rem 0.9rem;
+    }
+
+    .llm-settings-table thead th,
+    .llm-settings-table td {
+        padding-inline: 0.9rem;
+    }
+}

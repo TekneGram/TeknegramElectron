@@ -5,11 +5,14 @@ import CreateProjectModal from '@/features/CreateProjectModal/CreateProjectModal
 import { useState, useEffect } from 'react';
 import CreateSuccessTransition from './MainView/CreateSuccessTransition';
 import ProjectsList from './MainView/ProjectsList';
+import SettingsView from './MainView/SettingsView';
+import type { MainViewRoute } from './MainView/mainViewRoute';
 
 interface MainViewProps {
     modalIsOpen: boolean;
     onOpenModal: () => void;
     onCloseModal: () => void;
+    route: MainViewRoute;
 }
 
 type MainViewState = 
@@ -17,7 +20,7 @@ type MainViewState =
         | { kind: "create-success-transition" }
         | { kind: "projects-list" };
 
-const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsOpen }) => {
+const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsOpen, route }) => {
 
     const { data, isLoading, isError, refetch } = useListProjectsQuery();
     const [viewState, setViewState] = useState<MainViewState>({ kind: "welcome" });
@@ -73,74 +76,26 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
         };
     }, [viewState.kind, refetch]);
 
-    // A transition screen after successfully creating a project.
+    let content: React.ReactNode;
+
     if (viewState.kind === "create-success-transition") {
-        return(
-            <CreateSuccessTransition />
-        );
-    }
-
-    // Screen to show when loading the projects
-    if (isLoading) {
-        return(<p>Loading!</p>);
-    }
-
-    // Screen to show if there was an error loading the projects
-    if (isError) {
-        return(<p>Something went badly wrong!</p>);
-    }
-
-    // const data2 = [
-    //         {
-    //             projectName: "BAWE Project",
-    //             uuid: "123-123-123-123-123-123",
-    //             createdAt: "some data"
-    //         },
-    //         {
-    //             projectName: "BNC Project",
-    //             uuid: "123-123-123-123-123-124",
-    //             createdAt: "some data"
-    //         },
-    //         {
-    //             projectName: "CEFR Levels Corpus",
-    //             uuid: "123-123-123-123-123-125",
-    //             createdAt: "some data"
-    //         },
-    //         {
-    //             projectName: "CEFR Levels Corpus",
-    //             uuid: "123-123-123-123-123-126",
-    //             createdAt: "some data"
-    //         },
-    //         {
-    //             projectName: "CEFR Levels Corpus",
-    //             uuid: "123-123-123-123-123-127",
-    //             createdAt: "some data"
-    //         },
-    //         {
-    //             projectName: "CEFR Levels Corpus",
-    //             uuid: "123-123-123-123-123-128",
-    //             createdAt: "some data"
-    //         },
-    //         {
-    //             projectName: "CEFR Levels Corpus",
-    //             uuid: "123-123-123-123-123-129",
-    //             createdAt: "some data"
-    //         },
-    //         {
-    //             projectName: "CEFR Levels Corpus",
-    //             uuid: "123-123-123-123-123-130",
-    //             createdAt: "some data"
-    //         },
-    //         {
-    //             projectName: "CEFR Levels Corpus",
-    //             uuid: "123-123-123-123-123-131",
-    //             createdAt: "some data"
-    //         }
-    //     ]
-
-    if (viewState.kind === "welcome") {
-        
-        return(
+        content = <CreateSuccessTransition />;
+    } else if (isLoading) {
+        if (route === "settings") {
+            content = <SettingsView />;
+        } else {
+            content = <p>Loading!</p>;
+        }
+    } else if (isError) {
+        if (route === "settings") {
+            content = <SettingsView />;
+        } else {
+            content = <p>Something went badly wrong!</p>;
+        }
+    } else if (route === "settings") {
+        content = <SettingsView />;
+    } else if (viewState.kind === "welcome") {
+        content = (
             <section className="main-view-welcome">
                 <div className="main-view-welcome-card">
                     <div className="title">
@@ -167,33 +122,25 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
                         </button>
                     </div>
                 </div>
-                {
-                    modalIsOpen ? <CreateProjectModal onClose={onCloseModal} onSuccessfulCreation={handleSuccessfulCreation} /> : <></>
-                }
             </section>
-            
         );
-    }
-        
-    
-    // To the projects list screen
-    if (viewState.kind === "projects-list") {
+    } else if (route === "projects" || viewState.kind === "projects-list") {
         if (!data || data.length === 0) {
-            return null;
+            content = null;
+        } else {
+            content = <ProjectsList projectsData={data} />;
         }
-
-        return (
-            <>
-            <ProjectsList projectsData={data} />
-            {
-                modalIsOpen ? <CreateProjectModal onClose={onCloseModal} onSuccessfulCreation={handleSuccessfulCreation} /> : <></>
-            }
-            </>
-        )
+    } else {
+        content = <></>;
     }
 
     return (
-        <></>
+        <>
+            {content}
+            {modalIsOpen ? (
+                <CreateProjectModal onClose={onCloseModal} onSuccessfulCreation={handleSuccessfulCreation} />
+            ) : null}
+        </>
     );
 };
 
