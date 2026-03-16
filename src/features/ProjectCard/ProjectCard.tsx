@@ -1,5 +1,6 @@
 import type { ProjectListItem } from "@/app/ports/projects.ports";
 import { useDeleteProjectFlow } from "./hooks/useDeleteProjectFlow";
+import { useProjectCorpusMetadata } from "./hooks/useProjectCorpusMetadata";
 import { useProjectNameEditFlow } from "./hooks/useProjectNameEditFlow";
 import ProjectCardTitleEditor from "./ProjectCardTitleEditor";
 import "./projectCard.css";
@@ -33,6 +34,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         cancelConfirmation,
         confirmDelete,
     } = useDeleteProjectFlow({ projectUuid: project.uuid });
+    const {
+        summary,
+        isLoading: isCorpusMetadataLoading,
+        isError: isCorpusMetadataError,
+        progressMessage,
+        percent,
+    } = useProjectCorpusMetadata({ projectUuid: project.uuid });
 
     const shellClassName = [
         "project-card-shell",
@@ -59,22 +67,41 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                 </div>
                 <div className="project-card-body">
                     <p className="project-card-copy">
-                        Later, put some more interesting text here, e.g., last accessed, or metadata on the corpus or some recent results and stats.
+                        {
+                            isCorpusMetadataLoading
+                                ? progressMessage
+                                : isCorpusMetadataError
+                                    ? "Corpus metadata summary is unavailable right now."
+                                    : summary
+                        }
                     </p>
-                    <div className="project-card-footer">
-                        <div className="project-card-actions">
-                            <button
-                                type="button"
-                                className="project-card-delete-button"
-                                onClick={openConfirmation}
-                                disabled={isConfirming}
-                            >
-                                Delete
-                            </button>
-                            <button type="button" className="project-enter-button">
-                                Enter Project
-                            </button>
-                        </div>
+                    {
+                        isCorpusMetadataLoading ? (
+                            <div className="project-card-metadata-progress" aria-live="polite">
+                                <span className="project-card-metadata-spinner" aria-hidden="true" />
+                                {
+                                    percent !== undefined ? (
+                                        <span className="project-card-metadata-percent">{percent}%</span>
+                                    ) : null
+                                }
+                            </div>
+                        ) : null
+                    }
+                </div>
+                <div className="project-card-footer">
+                    <div className="project-card-footer-divider" aria-hidden="true" />
+                    <div className="project-card-actions">
+                        <button
+                            type="button"
+                            className="project-card-delete-button"
+                            onClick={openConfirmation}
+                            disabled={isConfirming}
+                        >
+                            Delete
+                        </button>
+                        <button type="button" className="project-enter-button">
+                            Enter Project
+                        </button>
                     </div>
                 </div>
             </div>

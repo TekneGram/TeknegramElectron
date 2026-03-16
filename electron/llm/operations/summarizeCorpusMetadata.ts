@@ -20,7 +20,6 @@ export async function summarizeCorpusMetadataOperation(args: {
     providerRegistry: LlmProviderRegistry;
     onProgress?: (event: { stage: "prepare_request" | "provider_request" | "normalize_response"; message: string }) => void;
 }): Promise<CorpusMetadataSummaryResult> {
-    
     const { input, resolvedPolicy, apiKey, providerRegistry, onProgress } = args;
 
     enforceMetadataDepthLimit(input.metadata);
@@ -52,7 +51,22 @@ export async function summarizeCorpusMetadataOperation(args: {
         message: `Sending corpus metadata to provider "${resolvedPolicy.provider}".`
     });
 
-    const providerResponse = await providerClient.generateStructuredResponse(providerRequest);
+    let providerResponse;
+
+    try {
+        providerResponse = await providerClient.generateStructuredResponse(providerRequest);
+    } catch (error) {
+        const diagnostics = [
+            `provider=${resolvedPolicy.provider}`,
+            `model=${resolvedPolicy.model}`,
+            `responseFormat=${resolvedPolicy.responseFormatName}`,
+            `inputChars=${providerRequest.inputText.length}`,
+            `topLevelSubcorpora=${derivedSummary.topLevelSubcorporaCount}`,
+        ].join(", ");
+
+        const baseMessage = error instanceof Error ? error.message : "Unknown provider error.";
+        throw new Error(`${baseMessage} [request diagnostics: ${diagnostics}]`);
+    }
 
     onProgress?.({
         stage: "normalize_response",

@@ -476,7 +476,7 @@
 
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 320px));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 352px), 352px));
   gap: var(--space-5);
   justify-content: start;
 }
@@ -529,23 +529,6 @@
   z-index: 1;
 }
 
-.project-card {
-  position: relative;
-  z-index: 2;
-  min-height: 250px;
-  height: 100%;
-  padding: clamp(1.2rem, 2.5vw, 1.5rem) clamp(1.2rem, 2.5vw, 1.5rem) clamp(1.55rem, 3vw, 1.9rem);
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: var(--space-5);
-  border-radius: var(--radius-5xl);
-  background: transparent;
-  box-shadow: inset 0 1px 0 color-mix(in srgb, white 18%, transparent);
-  transition:
-    transform var(--motion-duration-fast) var(--motion-ease-standard),
-    box-shadow var(--motion-duration-fast) var(--motion-ease-standard);
-}
-
 .project-card-shell:hover {
   box-shadow: 0 22px 46px color-mix(in srgb, var(--color-text) 14%, transparent);
 }
@@ -559,135 +542,6 @@
 .project-card-shell:hover::before,
 .project-card-shell:focus-within::before {
   opacity: 1;
-}
-
-.project-card-header {
-  display: grid;
-  gap: var(--space-2);
-}
-
-.project-card-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: fit-content;
-  min-height: 20px;
-  padding: 0 0.85rem;
-  border: 1px solid color-mix(in srgb, var(--color-action-primary-border) 80%, transparent);
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--color-action-primary-bg) 84%, var(--color-surface));
-  color: var(--color-action-primary-text);
-  font-size: var(--font-size-label-sm);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: var(--letter-spacing-label);
-  text-transform: uppercase;
-}
-
-.project-card-header h2,
-.project-card-copy,
-.project-card-meta {
-  margin: 0;
-}
-
-.project-card-header h2 {
-  font-family: var(--font-display);
-  font-size: clamp(1.35rem, 2vw, 1.7rem);
-  line-height: 1.02;
-  letter-spacing: -0.03em;
-}
-
-.project-card-body {
-  display: grid;
-  grid-template-rows: 1fr auto;
-  align-content: stretch;
-  gap: var(--space-5);
-  min-height: 0;
-  padding-bottom: var(--space-5);
-}
-
-.project-card-copy {
-  color: var(--color-text-muted);
-  font-size: 0.98rem;
-  line-height: 1.58;
-  max-width: 60ch;
-}
-
-.project-card-footer {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-  padding-top: var(--space-4);
-  padding-bottom: var(--space-6);
-  border-top: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
-  margin-top: auto;
-}
-
-.project-card-meta {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-label-md);
-  font-weight: var(--font-weight-medium);
-}
-
-.project-enter-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 140px;
-  height: var(--control-height-lg);
-  padding: 0 1rem;
-  border: 1px solid var(--color-action-primary-border);
-  border-radius: var(--radius-pill);
-  background:
-    linear-gradient(
-      135deg,
-      var(--color-action-primary-start),
-      var(--color-action-primary-end)
-    );
-  color: var(--color-action-primary-text);
-  font: inherit;
-  font-weight: var(--font-weight-semibold);
-  cursor: pointer;
-  box-shadow:
-    var(--shadow-interactive),
-    var(--shadow-inset-highlight-soft);
-  transition:
-    transform var(--motion-duration-fast) var(--motion-ease-standard),
-    box-shadow var(--motion-duration-fast) var(--motion-ease-standard),
-    background-color var(--motion-duration-fast) var(--motion-ease-standard);
-  margin-left: auto;
-}
-
-.project-enter-button:hover {
-  transform: translateY(-1px);
-  box-shadow:
-    var(--shadow-interactive-hover),
-    var(--shadow-inset-highlight-soft-hover);
-  background:
-    linear-gradient(
-      135deg,
-      var(--color-action-primary-hover-start),
-      var(--color-action-primary-hover-end)
-    );
-}
-
-.project-enter-button:active {
-  transform: translateY(0);
-  box-shadow:
-    var(--shadow-interactive-active),
-    var(--shadow-inset-highlight-soft-active);
-  background:
-    linear-gradient(
-      135deg,
-      var(--color-action-primary-active-start),
-      var(--color-action-primary-active-end)
-    );
-}
-
-.project-enter-button:focus-visible {
-  outline: 2px solid var(--color-focus-ring-soft);
-  outline-offset: 3px;
 }
 
 .main-view-transition-copy {

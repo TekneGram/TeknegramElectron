@@ -117,6 +117,7 @@ describe("invokeRequest", () => {
       api: {
         invoke,
         onProjectCreationProgress: vi.fn(),
+        onProjectCorpusMetadataProgress: vi.fn(),
       },
     });
   });

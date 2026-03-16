@@ -11,8 +11,8 @@ export const corpusSummaryResponseSchema = z.object({
                 .map((part) => part.trim())
                 .filter(Boolean).length;
             
-            return sentenceCount >= 2 && sentenceCount <= 3;
-        }, "Summary must contain 2 or 3 sentences."),
+            return sentenceCount >= 2 && sentenceCount <= 10;
+        }, "Summary must contain between 2 and 10 sentences."),
 });
 
 export type CorpusSummaryResponseDto = z.infer<typeof corpusSummaryResponseSchema>;

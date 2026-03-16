@@ -25,6 +25,7 @@ describe("submitDeleteProject", () => {
       cancelCreateProject: vi.fn(),
       deleteProject: vi.fn().mockResolvedValue({ ok: true, value: response }),
       updateProjectName: vi.fn(),
+      getCorpusMetadata: vi.fn(),
     };
 
     await expect(submitDeleteProject(port, request)).resolves.toEqual(response);
@@ -45,6 +46,7 @@ describe("submitDeleteProject", () => {
         },
       }),
       updateProjectName: vi.fn(),
+      getCorpusMetadata: vi.fn(),
     };
 
     await expect(submitDeleteProject(port, request)).rejects.toBeInstanceOf(FrontAppError);

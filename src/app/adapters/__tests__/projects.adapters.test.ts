@@ -79,4 +79,23 @@ describe("projectsAdapter", () => {
     await expect(projectsAdapter.updateProjectName(request)).resolves.toBe(result);
     expect(invokeRequestMock).toHaveBeenCalledWith("projects:update-name", request);
   });
+
+  it("gets corpus metadata through the projects:get-corpus-metadata channel", async () => {
+    const request = {
+      requestId: "req-1",
+      projectUuid: "11111111-1111-1111-1111-111111111111",
+    };
+    const result = {
+      ok: true,
+      value: {
+        projectUuid: request.projectUuid,
+        summary: "This corpus has 10 documents, 20 lemmas, 30 types and 40 words.",
+        source: "cache",
+      },
+    };
+    invokeRequestMock.mockResolvedValue(result);
+
+    await expect(projectsAdapter.getCorpusMetadata(request)).resolves.toBe(result);
+    expect(invokeRequestMock).toHaveBeenCalledWith("projects:get-corpus-metadata", request);
+  });
 });
