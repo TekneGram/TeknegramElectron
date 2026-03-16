@@ -1,39 +1,15 @@
-import { dialog, BrowserWindow } from "electron";
-import type {
-    PickSemanticsRulesFileRequest,
-    PickSemanticsRulesFileResponse
-} from "@electron/ipc/contracts/system.contracts";
+import { PickSemanticsRulesFileRequest, PickSemanticsRulesFileResponse } from '@electron/ipc/contracts/system.contracts';
+import type { SystemDialogsPort } from '@electron/infrastructure/ports/systemDialogs.port';
 
 export async function pickSemanticsRulesFile(
-    _request: PickSemanticsRulesFileRequest
+    _request: PickSemanticsRulesFileRequest,
+    dialogs: SystemDialogsPort
 ): Promise<PickSemanticsRulesFileResponse> {
     void _request;
-    const focusedWindow = BrowserWindow.getFocusedWindow();
 
-    const result = focusedWindow
-        ? await dialog.showOpenDialog(focusedWindow, {
-            properties: ["openFile"],
-            title: "Select semantics rules tsv file",
-            buttonLabel: "Choose Semantics Rules TSV file",
-            filters: [
-                { name: "TSV Files", extensions: ["tsv"]}
-            ],
-        })
-        : await dialog.showOpenDialog({
-            properties: ["openFile"],
-            title: "Select semantics rules tsv file",
-            buttonLabel: "Choose Semantics Rules TSV file",
-            filters: [
-                { name: "TSV Files", extensions: ["tsv"]}
-            ],
-        })
-
-    if (result.canceled || result.filePaths.length === 0) {
-        return { filePath: null };
-    }
+    const result = await dialogs.openSemanticsRulesFileDialog();
 
     return {
-        filePath: result.filePaths[0],
-    }
-    
+        filePath: result.filePath,
+    };
 }

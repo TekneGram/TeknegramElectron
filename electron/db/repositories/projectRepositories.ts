@@ -1,10 +1,33 @@
-import { queryAll, executeRun } from "../sqlite";
+import { queryAll, executeRun, queryOne } from "../sqlite";
 import type { SqliteDatabase } from "../sqlite";
 
 type ProjectRow = {
     uuid: string;
     project_name: string;
     created_at: string;
+};
+
+export type ProjectCorpusRow = {
+    project_uuid: string;
+    corpus_uuid: string;
+    corpus_name: string;
+    binary_files_path: string;
+};
+
+export type CorpusMetadataRow = {
+    corpus_uuid: string;
+    metadata_json: string;
+    summary_text: string;
+    llm_provider: string | null;
+    llm_model: string | null;
+    created_at: string;
+    updated_at: string;
+};
+
+export type ProjectDeleteTargetRow = {
+    project_uuid: string;
+    corpus_uuid: string;
+    binary_files_path: string;
 };
 
 export function listProjectRows(db: SqliteDatabase): ProjectRow[] {
@@ -15,6 +38,119 @@ export function listProjectRows(db: SqliteDatabase): ProjectRow[] {
             FROM projects
             ORDER BY created_at DESC
         `
+    );
+}
+
+export function findProjectRowByUuid(db: SqliteDatabase, projectUuid: string): ProjectRow | undefined {
+    return queryOne<ProjectRow>(
+        db,
+        `
+            SELECT uuid, project_name, created_at
+            FROM projects
+            WHERE uuid = ?
+            LIMIT 1
+        `,
+        [projectUuid]
+    );
+}
+
+export function findProjectDeleteTargetRow(db: SqliteDatabase, projectUuid: string): ProjectDeleteTargetRow | undefined {
+    return queryOne<ProjectDeleteTargetRow>(
+        db,
+        `
+            SELECT
+                p.uuid AS project_uuid,
+                c.uuid AS corpus_uuid,
+                cfp.binary_files_path AS binary_files_path
+            FROM projects p
+            INNER JOIN corpora c ON c.project_uuid = p.uuid
+            INNER JOIN corpus_files_path cfp ON cfp.corpus_uuid = c.uuid
+            WHERE p.uuid = ?
+            LIMIT 1
+        `,
+        [projectUuid]
+    );
+}
+
+export function findProjectCorpusRow(db: SqliteDatabase, projectUuid: string): ProjectCorpusRow | undefined {
+    return queryOne<ProjectCorpusRow>(
+        db,
+        `
+            SELECT
+                p.uuid AS project_uuid,
+                c.uuid AS corpus_uuid,
+                c.corpus_name AS corpus_name,
+                cfp.binary_files_path AS binary_files_path
+            FROM projects p
+            INNER JOIN corpora c ON c.project_uuid = p.uuid
+            INNER JOIN corpus_files_path cfp ON cfp.corpus_uuid = c.uuid
+            WHERE p.uuid = ?
+            LIMIT 1
+        `,
+        [projectUuid]
+    );
+}
+
+export function findCorpusMetadataRow(db: SqliteDatabase, corpusUuid: string): CorpusMetadataRow | undefined {
+    return queryOne<CorpusMetadataRow>(
+        db,
+        `
+            SELECT
+                corpus_uuid,
+                metadata_json,
+                summary_text,
+                llm_provider,
+                llm_model,
+                created_at,
+                updated_at
+            FROM corpus_metadata
+            WHERE corpus_uuid = ?
+            LIMIT 1
+        `,
+        [corpusUuid]
+    );
+}
+
+export type UpsertCorpusMetadataRow = {
+    corpus_uuid: string;
+    metadata_json: string;
+    summary_text: string;
+    llm_provider: string | null;
+    llm_model: string | null;
+    created_at: string;
+    updated_at: string;
+};
+
+export function upsertCorpusMetadata(db: SqliteDatabase, row: UpsertCorpusMetadataRow): void {
+    executeRun(
+        db,
+        `
+            INSERT INTO corpus_metadata (
+                corpus_uuid,
+                metadata_json,
+                summary_text,
+                llm_provider,
+                llm_model,
+                created_at,
+                updated_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(corpus_uuid) DO UPDATE SET
+                metadata_json = excluded.metadata_json,
+                summary_text = excluded.summary_text,
+                llm_provider = excluded.llm_provider,
+                llm_model = excluded.llm_model,
+                updated_at = excluded.updated_at
+        `,
+        [
+            row.corpus_uuid,
+            row.metadata_json,
+            row.summary_text,
+            row.llm_provider,
+            row.llm_model,
+            row.created_at,
+            row.updated_at,
+        ]
     );
 }
 
@@ -68,5 +204,28 @@ export function insertCorpusFilePath(db: SqliteDatabase, row: NewCorpusFilesPath
             VALUES (?, ?, ?, ?)
         `,
         [row.uuid, row.corpus_uuid, row.binary_files_path, row.created_at]
+    );
+}
+
+export function deleteProjectRow(db: SqliteDatabase, projectUuid: string): void {
+    executeRun(
+        db,
+        `
+            DELETE FROM projects
+            WHERE uuid = ?
+        `,
+        [projectUuid]
+    );
+}
+
+export function updateProjectNameRow(db: SqliteDatabase, projectUuid: string, projectName: string): void {
+    executeRun(
+        db,
+        `
+            UPDATE projects
+            SET project_name = ?
+            WHERE uuid = ?
+        `,
+        [projectName, projectUuid]
     );
 }

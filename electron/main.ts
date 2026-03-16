@@ -5,7 +5,7 @@ import path from 'node:path';
 
 import { bootstrapStorage } from './runtime/bootstrapStorage';
 import { getGeneratedDataRoot, getRuntimeDbPath } from "./runtime/runtimePaths"; 
-
+import { initializeDatabase } from './db/initializeDatabase';
 import { registerHandlers } from './ipc/registerHandlers';
 
 //const require = createRequire(import.meta.url)
@@ -33,6 +33,10 @@ let win: BrowserWindow | null
 
 function createWindow() {
   win = new BrowserWindow({
+    width: 1440,
+    height: 960,
+    minWidth: 1200,
+    minHeight: 780,
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
@@ -72,12 +76,12 @@ app.on('activate', () => {
 
 app.whenReady().then(() => {
   bootstrapStorage();
-
+  initializeDatabase();
+  
   // Pass runtime writable paths to child processes/services.
   process.env.RUNTIME_DB_PATH = getRuntimeDbPath();
   process.env.GENERATED_DATA_ROOT = getGeneratedDataRoot();
 
   registerHandlers();
-
   createWindow();
 })

@@ -5,11 +5,14 @@ import CreateProjectModal from '@/features/CreateProjectModal/CreateProjectModal
 import { useState, useEffect } from 'react';
 import CreateSuccessTransition from './MainView/CreateSuccessTransition';
 import ProjectsList from './MainView/ProjectsList';
+import SettingsView from './MainView/SettingsView';
+import type { MainViewRoute } from './MainView/mainViewRoute';
 
 interface MainViewProps {
     modalIsOpen: boolean;
     onOpenModal: () => void;
     onCloseModal: () => void;
+    route: MainViewRoute;
 }
 
 type MainViewState = 
@@ -17,13 +20,28 @@ type MainViewState =
         | { kind: "create-success-transition" }
         | { kind: "projects-list" };
 
-const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsOpen }) => {
+const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsOpen, route }) => {
 
     const { data, isLoading, isError, refetch } = useListProjectsQuery();
     const [viewState, setViewState] = useState<MainViewState>({ kind: "welcome" });
 
+    useEffect(() => {
+        if (isLoading || isError) {
+            return;
+        }
+
+        if (viewState.kind === "create-success-transition") {
+            return;
+        }
+
+        const nextKind = data && data.length > 0 ? "projects-list" : "welcome";
+
+        if (viewState.kind !== nextKind) {
+            setViewState({ kind: nextKind });
+        }
+    }, [data, isLoading, isError, viewState.kind]);
+
     function handleSuccessfulCreation() {
-        onCloseModal(); // Close the modal if a project is successfully created.
         setViewState({ kind: "create-success-transition" });
     }
 
@@ -32,92 +50,52 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
     useEffect(() => {
         if(viewState.kind !== "create-success-transition") return;
 
-        const timeoutId = window.setTimeout(() => {
-            refetch();
-        }, 1000);
+        let cancelled = false;
 
-        return() => window.clearTimeout(timeoutId);
-    }, [viewState, refetch]);
+        const timeoutId = window.setTimeout(async () => {
+            const result = await refetch();
 
-    // Observe viewState to reach the projects-list screen
-    useEffect(() => {
-        if (viewState.kind !== "create-success-transition") {
-            return;
-        }
+            if (cancelled) {
+                return;
+            }
 
-        if (data !== undefined && data.length > 0) {
-            setViewState({ kind: "projects-list" });
-        }
-    }, [viewState, data]);
+            const refreshedData = result.data;
 
-    // Screen to show when loading the projects
-    if (isLoading) {
-        return(<p>Loading!</p>);
-    }
+            if (refreshedData !== undefined && refreshedData.length > 0) {
+                setViewState({ kind: "projects-list" });
+                return;
+            }
+            
+            setViewState({ kind: "welcome" });
 
-    // Screen to show if there was an error loading the projects
-    if (isError) {
-        return(<p>Something went badly wrong!</p>);
-    }
+        }, 4000);
 
-    // A transition screen after successfully creating a project.
+        return() => {
+            cancelled = true;
+            window.clearTimeout(timeoutId);
+        };
+    }, [viewState.kind, refetch]);
+
+    let content: React.ReactNode;
+
     if (viewState.kind === "create-success-transition") {
-        return(
-            <CreateSuccessTransition />
-        );
-    }
-
-    // const data2 = [
-    //         {
-    //             projectName: "BAWE Project",
-    //             uuid: "123-123-123-123-123-123",
-    //             createdAt: "some data"
-    //         },
-    //         {
-    //             projectName: "BNC Project",
-    //             uuid: "123-123-123-123-123-124",
-    //             createdAt: "some data"
-    //         },
-    //         {
-    //             projectName: "CEFR Levels Corpus",
-    //             uuid: "123-123-123-123-123-125",
-    //             createdAt: "some data"
-    //         },
-    //         {
-    //             projectName: "CEFR Levels Corpus",
-    //             uuid: "123-123-123-123-123-126",
-    //             createdAt: "some data"
-    //         },
-    //         {
-    //             projectName: "CEFR Levels Corpus",
-    //             uuid: "123-123-123-123-123-127",
-    //             createdAt: "some data"
-    //         },
-    //         {
-    //             projectName: "CEFR Levels Corpus",
-    //             uuid: "123-123-123-123-123-128",
-    //             createdAt: "some data"
-    //         },
-    //         {
-    //             projectName: "CEFR Levels Corpus",
-    //             uuid: "123-123-123-123-123-129",
-    //             createdAt: "some data"
-    //         },
-    //         {
-    //             projectName: "CEFR Levels Corpus",
-    //             uuid: "123-123-123-123-123-130",
-    //             createdAt: "some data"
-    //         },
-    //         {
-    //             projectName: "CEFR Levels Corpus",
-    //             uuid: "123-123-123-123-123-131",
-    //             createdAt: "some data"
-    //         }
-    //     ]
-
-    if (data === undefined || data.length === 0) {
-        
-        return(
+        content = <CreateSuccessTransition />;
+    } else if (isLoading) {
+        if (route === "settings") {
+            content = <SettingsView />;
+        } else {
+            content = <p>Loading!</p>;
+        }
+    } else if (isError) {
+        if (route === "settings") {
+            content = <SettingsView />;
+        } else {
+            content = <p>Something went badly wrong!</p>;
+        }
+    } else if (route === "settings") {
+        content = <SettingsView />;
+    } else if (viewState.kind === "welcome") {
+        content = (
             <section className="main-view-welcome">
                 <div className="main-view-welcome-card">
                     <div className="title">
@@ -144,40 +122,25 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
                         </button>
                     </div>
                 </div>
-                {
-                    modalIsOpen ? <CreateProjectModal onClose={onCloseModal} onSuccessfulCreation={handleSuccessfulCreation} /> : <></>
-                }
             </section>
-            
         );
+    } else if (route === "projects" || viewState.kind === "projects-list") {
+        if (!data || data.length === 0) {
+            content = null;
+        } else {
+            content = <ProjectsList projectsData={data} />;
+        }
+    } else {
+        content = <></>;
     }
-        
-    
-    // To the projects list screen
-    if (data.length >= 1) {
-        return (
-            <>
-            <ProjectsList projectsData={data} />
-            {
-                modalIsOpen ? <CreateProjectModal onClose={onCloseModal} onSuccessfulCreation={handleSuccessfulCreation} /> : <></>
-            }
-            </>
-        )
-    }
-    // if (viewState.kind === "projects-list") {
-    //     return (
-    //         <>
-    //         <ProjectsList projectsData={data} />
-    //         {
-    //             modalIsOpen ? <CreateProjectModal onClose={onCloseModal} onSuccessfulCreation={handleSuccessfulCreation} /> : <></>
-    //         }
-    //         </>
-            
-    //     )
-    // }
 
     return (
-        <></>
+        <>
+            {content}
+            {modalIsOpen ? (
+                <CreateProjectModal onClose={onCloseModal} onSuccessfulCreation={handleSuccessfulCreation} />
+            ) : null}
+        </>
     );
 };
 

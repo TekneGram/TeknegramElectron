@@ -1,6 +1,9 @@
 /// <reference types="vite-plugin-electron/electron-env" />
 
-import { ProjectCreationProgressEvent } from "./ipc/contracts/progress.event.contracts";
+import {
+  ProjectCreationProgressEvent,
+  ProjectCorpusMetadataProgressEvent,
+} from "./ipc/contracts/progress.event.contracts";
 type Unsubscribe = () => void;
 
 declare global {
@@ -31,6 +34,9 @@ declare global {
       invoke<T>(channel: string, payload?: unknown): Promise<T>;
       onProjectCreationProgress(
         listener: (event: ProjectCreationProgressEvent) => void
+      ): Unsubscribe;
+      onProjectCorpusMetadataProgress(
+        listener: (event: ProjectCorpusMetadataProgressEvent) => void
       ): Unsubscribe;
     };
   }

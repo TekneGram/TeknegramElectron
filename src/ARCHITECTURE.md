@@ -41,6 +41,9 @@ Cross-cutting frontend infrastructure.
 - `src/app/types/*`
   - shared frontend types such as `AppResult`, theme types, etc.
 
+- `src/app/errors/*`
+  - shared error class that extends Error.
+
 ## Feature Structure
 Feature code lives under `src/features/*`.
 
@@ -48,6 +51,7 @@ Each feature can contain:
 
 - UI components
 - request hooks
+- React Query hooks
 - feature-local services
 - feature-local CSS
 - local UI state hooks

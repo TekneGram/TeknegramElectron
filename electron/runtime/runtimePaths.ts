@@ -68,6 +68,10 @@ export function getCorpusBinariesDir(corpus_name: string): string {
     return path.join(getCorpusBinariesRoot(), sanitizeResource(corpus_name))
 }
 
+export function getCorpusDeletionStagingDir(projectUuid: string): string {
+    return path.join(getGeneratedDataRoot(), "pending-delete", sanitizeResource(projectUuid));
+}
+
 // udpipe model
 export function getUdpipeModelPath(): string {
     return app.isPackaged
@@ -91,6 +95,15 @@ export function getExecutablePath(executableName: string): string {
         : path.join(process.cwd(), "electron", "bin", "executables");
 
     return path.join(baseDir, platform, exe);
+}
+
+// Use for secrets
+export function getConfigDir(): string {
+    return path.join(getUserDataRoot(), "config");
+}
+
+export function getSecretsPath(): string {
+    return path.join(getConfigDir(), "secrets.json");
 }
 
 // app.getPath('userData'); // use for all writable runtime data (SQLite files, generated binaries)

@@ -1,0 +1,101 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+const { invokeRequestMock } = vi.hoisted(() => ({
+  invokeRequestMock: vi.fn(),
+}));
+
+vi.mock("../invokeRequest", () => ({
+  invokeRequest: invokeRequestMock,
+}));
+
+import { projectsAdapter } from "../projects.adapters";
+
+describe("projectsAdapter", () => {
+  beforeEach(() => {
+    invokeRequestMock.mockReset();
+  });
+
+  it("lists projects through the projects:list channel", async () => {
+    const result = {
+      ok: true,
+      value: [{ uuid: "project-1", projectName: "BAWE", createdAt: "2026-03-11T00:00:00.000Z" }],
+    };
+    invokeRequestMock.mockResolvedValue(result);
+
+    await expect(projectsAdapter.listProjects()).resolves.toBe(result);
+    expect(invokeRequestMock).toHaveBeenCalledWith("projects:list", null);
+  });
+
+  it("creates a project through the projects:create channel", async () => {
+    const request = {
+      requestId: "req-1",
+      projectName: "BAWE",
+      corpusName: "Corpus",
+      folderPath: "/tmp/corpus",
+      semanticsRulesPath: "/tmp/rules.json",
+    };
+    const result = { ok: true, value: { projectUuid: "project-1" } };
+    invokeRequestMock.mockResolvedValue(result);
+
+    await expect(projectsAdapter.createProject(request)).resolves.toBe(result);
+    expect(invokeRequestMock).toHaveBeenCalledWith("projects:create", request);
+  });
+
+  it("cancels project creation through the projects:create:cancel channel", async () => {
+    const request = { requestId: "req-1" };
+    const result = { ok: true, value: { requestId: "req-1", message: "Cancelled" } };
+    invokeRequestMock.mockResolvedValue(result);
+
+    await expect(projectsAdapter.cancelCreateProject(request)).resolves.toBe(result);
+    expect(invokeRequestMock).toHaveBeenCalledWith("projects:create:cancel", request);
+  });
+
+  it("deletes a project through the projects:delete channel", async () => {
+    const request = { projectUuid: "11111111-1111-1111-1111-111111111111" };
+    const result = {
+      ok: true,
+      value: {
+        projectUuid: "11111111-1111-1111-1111-111111111111",
+        deletedBinaryFilesPath: "/tmp/corpus-a",
+      },
+    };
+    invokeRequestMock.mockResolvedValue(result);
+
+    await expect(projectsAdapter.deleteProject(request)).resolves.toBe(result);
+    expect(invokeRequestMock).toHaveBeenCalledWith("projects:delete", request);
+  });
+
+  it("updates a project name through the projects:update-name channel", async () => {
+    const request = {
+      projectUuid: "11111111-1111-1111-1111-111111111111",
+      projectName: "Updated BAWE",
+    };
+    const result = {
+      ok: true,
+      value: request,
+    };
+    invokeRequestMock.mockResolvedValue(result);
+
+    await expect(projectsAdapter.updateProjectName(request)).resolves.toBe(result);
+    expect(invokeRequestMock).toHaveBeenCalledWith("projects:update-name", request);
+  });
+
+  it("gets corpus metadata through the projects:get-corpus-metadata channel", async () => {
+    const request = {
+      requestId: "req-1",
+      projectUuid: "11111111-1111-1111-1111-111111111111",
+    };
+    const result = {
+      ok: true,
+      value: {
+        projectUuid: request.projectUuid,
+        summary: "This corpus has 10 documents, 20 lemmas, 30 types and 40 words.",
+        source: "cache",
+      },
+    };
+    invokeRequestMock.mockResolvedValue(result);
+
+    await expect(projectsAdapter.getCorpusMetadata(request)).resolves.toBe(result);
+    expect(invokeRequestMock).toHaveBeenCalledWith("projects:get-corpus-metadata", request);
+  });
+});
