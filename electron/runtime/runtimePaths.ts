@@ -97,6 +97,15 @@ export function getExecutablePath(executableName: string): string {
     return path.join(baseDir, platform, exe);
 }
 
+// Use for secrets
+export function getConfigDir(): string {
+    return path.join(getUserDataRoot(), "config");
+}
+
+export function getSecretsPath(): string {
+    return path.join(getConfigDir(), "secrets.json");
+}
+
 // app.getPath('userData'); // use for all writable runtime data (SQLite files, generated binaries)
 // process.resourcesPath // for packaged read-only assets (shipped executables, seed DB)
 // app.isPackaged // to choose between dev asset and packaged asset source.
