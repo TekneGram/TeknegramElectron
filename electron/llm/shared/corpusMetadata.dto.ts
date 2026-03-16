@@ -70,6 +70,7 @@ export type SummarizeCorpusMetadataBoundaryDto =
             code:
                 | "LLM_CREDENTIALS_MISSING"
                 | "LLM_REQUEST_INVALID"
+                | "LLM_RESPONSE_INVALID"
                 | "LLM_PROVIDER_FAILED"
                 | "LLM_POLICY_VIOLATION";
             message: string;
