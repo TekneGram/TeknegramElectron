@@ -31,6 +31,8 @@ type ValidatedCreateProjectRequest = {
     corpusName: string;
     folderPath: string;
     semanticsRulesPath?: string;
+    postingFormat?: "raw" | "compressed";
+    emitNgramPositions?: boolean;
 };
 
 export async function createProject(request: CreateProjectRequest, ctx: RequestContext): Promise<CreateProjectResponse> {
@@ -78,6 +80,8 @@ export async function createProject(request: CreateProjectRequest, ctx: RequestC
         inputPath: validatedRequest.folderPath,
         outputDir: corpusBinariesDir,
         semanticsRulesPath: validatedRequest.semanticsRulesPath ?? "",
+        postingFormat: validatedRequest.postingFormat ?? "raw",
+        emitNgramPositions: validatedRequest.emitNgramPositions ?? true,
     };
     const requestJSON = JSON.stringify(nativeRequest);
 
@@ -241,7 +245,9 @@ function validateCreateProjectRequest(request: CreateProjectRequest): ValidatedC
         projectName: projectName,
         corpusName: corpusName,
         folderPath: folderPath,
-        semanticsRulesPath: semanticsRulesPath
+        semanticsRulesPath: semanticsRulesPath,
+        postingFormat: request.postingFormat,
+        emitNgramPositions: request.emitNgramPositions,
     };
     
 }

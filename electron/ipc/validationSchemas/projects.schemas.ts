@@ -13,6 +13,8 @@ export const createProjectSchema: z.ZodType<CreateProjectRequest> = z.object({
     corpusName: z.string().min(1),
     folderPath: z.string().min(1),
     semanticsRulesPath: z.string().min(1).optional(),
+    postingFormat: z.enum(["raw", "compressed"]).optional(),
+    emitNgramPositions: z.boolean().optional(),
 });
 
 export const cancelCreateProjectSchema: z.ZodType<CancelCreateProjectRequest> = z.object({

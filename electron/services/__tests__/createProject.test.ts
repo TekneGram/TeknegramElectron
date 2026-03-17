@@ -192,6 +192,8 @@ describe("createProject", () => {
         inputPath: "/input/corpus",
         outputDir: "/tmp/binaries/corpus-a",
         semanticsRulesPath: "/rules/semantics.tsv",
+        postingFormat: "raw",
+        emitNgramPositions: true,
       })
     );
     expect(sendEventMock).toHaveBeenCalledWith(PROJECTS_CREATE_PROGRESS_CHANNEL, {
@@ -252,6 +254,50 @@ describe("createProject", () => {
       code: "VALIDATION_MISSING_FIELD",
       message: "Project name cannot be empty",
     });
+  });
+
+  it("forwards explicit posting format and n-gram position flags to the native build request", async () => {
+    const runner = {
+      runProcess: vi.fn().mockResolvedValue({
+        stdout: "",
+        stderr: "",
+        exitCode: 0,
+        messages: [],
+        result: { outputDir: "/tmp/binaries/corpus-a" },
+      }),
+      cancelProcess: vi.fn(),
+    };
+    const closeMock = vi.fn();
+
+    createRunnerMock.mockReturnValue(runner);
+    createAppDatabaseMock.mockReturnValue({ db: { kind: "db" }, close: closeMock });
+
+    await createProject(
+      {
+        requestId: "req-flags",
+        projectName: "Project A",
+        corpusName: "Corpus A",
+        folderPath: "/input/corpus",
+        postingFormat: "compressed",
+        emitNgramPositions: false,
+      },
+      {
+        correlationId: "cid-flags",
+        sendEvent: vi.fn(),
+      }
+    );
+
+    expect(runner.runProcess).toHaveBeenCalledWith(
+      JSON.stringify({
+        command: "buildCorpus",
+        modelPath: "/tmp/models/model.udpipe",
+        inputPath: "/input/corpus",
+        outputDir: "/tmp/binaries/corpus-a",
+        semanticsRulesPath: "",
+        postingFormat: "compressed",
+        emitNgramPositions: false,
+      })
+    );
   });
 
   it("rejects when corpus name is empty", async () => {
