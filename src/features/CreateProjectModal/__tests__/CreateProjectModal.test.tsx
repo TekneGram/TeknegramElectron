@@ -82,6 +82,42 @@ describe("CreateProjectModal", () => {
       corpusName: "Corpus",
       folderPath: "/tmp/corpus",
       semanticsRulesPath: "/tmp/rules.tsv",
+      postingFormat: "raw",
+      emitNgramPositions: true,
+    });
+  });
+
+  it("renders compact corpus build options and submits their selected values", async () => {
+    const user = userEvent.setup();
+
+    render(<CreateProjectModal onClose={onClose} onSuccessfulCreation={onSuccessfulCreation} />);
+
+    await user.type(screen.getByLabelText("Project Name"), "Project");
+    await user.type(screen.getByLabelText("Corpus Name"), "Corpus");
+
+    fireEvent.drop(screen.getByText("Drop corpus folder here").closest(".corpus-folder-dropzone")!, {
+      dataTransfer: {
+        files: [{ path: "/tmp/corpus" }],
+      },
+    });
+
+    const compressCheckbox = screen.getByLabelText("Compress");
+    const ngramPositionsCheckbox = screen.getByLabelText("Emit n-gram positions");
+
+    expect(compressCheckbox).toHaveProperty("checked", false);
+    expect(ngramPositionsCheckbox).toHaveProperty("checked", true);
+
+    await user.click(compressCheckbox);
+    await user.click(ngramPositionsCheckbox);
+    await user.click(screen.getByRole("button", { name: "create project" }));
+
+    expect(submitCreateProject).toHaveBeenCalledWith({
+      projectName: "Project",
+      corpusName: "Corpus",
+      folderPath: "/tmp/corpus",
+      semanticsRulesPath: undefined,
+      postingFormat: "compressed",
+      emitNgramPositions: false,
     });
   });
 

@@ -6,12 +6,16 @@ const useCreateProjectForm = () => {
     const [corpusName, setCorpusName] = useState<string>("");
     const [folderPath, setFolderPath] = useState<string>("");
     const [semanticsRulesPath, setSemanticsRulesPath] = useState<string>("");
+    const [compress, setCompress] = useState<boolean>(false);
+    const [emitNgramPositions, setEmitNgramPositions] = useState<boolean>(true);
 
     const resetForm = () => {
         setProjectName("");
         setCorpusName("");
         setFolderPath("");
         setSemanticsRulesPath("");
+        setCompress(false);
+        setEmitNgramPositions(true);
     }
 
     const trimmedProjectName = projectName.trim();
@@ -40,12 +44,16 @@ const useCreateProjectForm = () => {
             corpusName,
             folderPath,
             semanticsRulesPath,
+            compress,
+            emitNgramPositions,
         },
         setters: {
             setProjectName,
             setCorpusName,
             setFolderPath,
             setSemanticsRulesPath,
+            setCompress,
+            setEmitNgramPositions,
         },
         errors,
         canSubmit,

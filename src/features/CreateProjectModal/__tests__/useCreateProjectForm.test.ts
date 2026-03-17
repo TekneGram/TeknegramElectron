@@ -11,6 +11,8 @@ describe("useCreateProjectForm", () => {
       corpusName: "",
       folderPath: "",
       semanticsRulesPath: "",
+      compress: false,
+      emitNgramPositions: true,
     });
     expect(result.current.canSubmit).toBe(false);
     expect(result.current.errors.projectName).toBe("Project name is required.");
@@ -70,6 +72,8 @@ describe("useCreateProjectForm", () => {
       result.current.setters.setCorpusName("Corpus");
       result.current.setters.setFolderPath("/tmp/corpus");
       result.current.setters.setSemanticsRulesPath("/tmp/rules.tsv");
+      result.current.setters.setCompress(true);
+      result.current.setters.setEmitNgramPositions(false);
     });
 
     act(() => {
@@ -81,6 +85,8 @@ describe("useCreateProjectForm", () => {
       corpusName: "",
       folderPath: "",
       semanticsRulesPath: "",
+      compress: false,
+      emitNgramPositions: true,
     });
   });
 });

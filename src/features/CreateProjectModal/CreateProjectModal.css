@@ -132,6 +132,100 @@
     padding: 1.25rem 0 1rem;
 }
 
+.create-project-options {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 0.2rem;
+    padding-top: 0.55rem;
+    border-top: 1px solid var(--color-panel-border-subtle);
+}
+
+.create-project-option-row {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 1.75rem;
+}
+
+.create-project-option-checkbox {
+    width: 0.9rem;
+    height: 0.9rem;
+    margin: 0;
+    accent-color: var(--color-action-primary-start);
+    cursor: pointer;
+}
+
+.create-project-option-checkbox:disabled {
+    cursor: default;
+}
+
+.create-project-option-tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.create-project-option-label {
+    color: var(--color-text-muted);
+    font-size: 0.84rem;
+    line-height: 1.2;
+    cursor: pointer;
+}
+
+.create-project-option-tooltip-trigger {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 0.16rem;
+}
+
+.create-project-option-tooltip-trigger:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.create-project-option-tooltip-content {
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 0.55rem);
+    width: min(260px, 70vw);
+    padding: 0.6rem 0.7rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--color-surface) 94%, black 6%);
+    color: var(--color-text);
+    box-shadow: var(--shadow-elevation-lg);
+    font-size: 0.76rem;
+    line-height: 1.35;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+    transition:
+        opacity 140ms ease,
+        transform 140ms ease,
+        visibility 140ms ease;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.create-project-option-tooltip-content::after {
+    content: "";
+    position: absolute;
+    left: 0.85rem;
+    top: 100%;
+    border-width: 7px 6px 0 6px;
+    border-style: solid;
+    border-color: color-mix(in srgb, var(--color-surface) 94%, black 6%) transparent transparent transparent;
+}
+
+.create-project-option-tooltip:hover .create-project-option-tooltip-content,
+.create-project-option-tooltip-trigger:focus + .create-project-option-tooltip-content,
+.create-project-option-tooltip-trigger:focus-visible + .create-project-option-tooltip-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
 .create-project-modal-footer {
     display: flex;
     align-items: center;
