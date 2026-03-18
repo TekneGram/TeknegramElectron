@@ -2,3 +2,7 @@
 	path = native/corpus_builder
 	url = https://github.com/TekneGram/corpus_engine.git
 	branch = main
+[submodule "native/corpus_lexbuns"]
+	path = native/corpus_lexbuns
+	url = https://github.com/TekneGram/corpus_lexbuns.git
+	branch = main
