@@ -3,19 +3,19 @@ import CreateProjectModal from '@/features/CreateProjectModal/CreateProjectModal
 import { useState } from 'react';
 import SettingsView from './MainView/SettingsView';
 import HomeView from './MainView/HomeView';
-import type { MainViewRoute } from './MainView/mainViewRoute';
+import { useNavigation } from '@/app/providers/useNavigation';
 
 interface MainViewProps {
     modalIsOpen: boolean;
     onOpenModal: () => void;
     onCloseModal: () => void;
-    route: MainViewRoute;
 }
 
-const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsOpen, route }) => {
+const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsOpen }) => {
     const [projectCreationCount, setProjectCreationCount] = useState(0);
+    const { navigationState } = useNavigation();
 
-    const content = route === "settings"
+    const content = navigationState.kind === "settings"
         ? <SettingsView />
         : <HomeView onOpenModal={onOpenModal} projectCreationCount={projectCreationCount} />;
 
