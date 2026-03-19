@@ -10,8 +10,8 @@ const ProjectsList: React.FC<ProjectsListProps> = ({ projectsData }) => {
 
     const { dispatch } = useNavigation();
 
-    const handleNavigateToActivities = (projectId: string) => {
-        dispatch({ type: "enter-activities", projectId: projectId });
+    const handleNavigateToActivities = (projectId: string, projectName: string) => {
+        dispatch({ type: "enter-activities", projectId: projectId, projectName: projectName });
     };
 
     return (

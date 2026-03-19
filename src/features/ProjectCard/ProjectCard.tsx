@@ -7,7 +7,7 @@ import "./projectCard.css";
 
 type ProjectCardProps = {
     project: ProjectListItem;
-    onNavigateToActivities: (projectId: string) => void;
+    onNavigateToActivities: (projectId: string, projectName: string) => void;
 };
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project, onNavigateToActivities}) => {
@@ -103,7 +103,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onNavigateToActiviti
                         <button 
                             type="button" 
                             className="project-enter-button"
-                            onClick={() => {onNavigateToActivities(project.uuid)}}
+                            onClick={() => {onNavigateToActivities(project.uuid, project.projectName)}}
                         >
                             Enter Project
                         </button>

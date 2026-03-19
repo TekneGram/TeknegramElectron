@@ -1,14 +1,27 @@
-
+import { useNavigation } from "@/app/providers/useNavigation";
 import ExploreActivitiesIcon from "./icons/ExploreActivitiesIcon";
 import LexicalBundlesActivitiesIcon from "./icons/LexicalBundlesActivitiesIcon";
 
 const ActivitiesView = () => {
+
+    const { navigationState } = useNavigation();
+
+    if (navigationState.kind !== "activities") {
+         return null;
+    }
+
+    // Extract the selected projectId for this particular screen.
+    const { projectId, projectName } = navigationState;
+
     function handleStartExploreActivity() {
         // local activities state will replace this placeholder flow
     }
 
     function handleStartLexicalBundlesActivity() {
         // local activities state will replace this placeholder flow
+        projectId;
+        // Send the projectId to the backend to start a new activity
+        
     }
 
     return(
@@ -20,7 +33,7 @@ const ActivitiesView = () => {
                             <h1>Exploration Activities</h1>
                         </div>
                         <div className="welcome-message">
-                            <p>Explore and analyze your corpus in depth with these activities</p>
+                            <p>Explore and analyze your corpus in depth with these activities in <strong>{projectName}</strong></p>
                         </div>
                     </div>
                     <div className="logo-area">
@@ -48,7 +61,7 @@ const ActivitiesView = () => {
                             <h1>Lexical Bundles</h1>
                         </div>
                         <div className="welcome-message">
-                            <p>Use scientific computing techniques to extract lexical bundles from your corpus</p>
+                            <p>Use scientific computing techniques to extract lexical bundles from <strong>{projectName}</strong></p>
                         </div>
                     </div>
                     <div className="logo-area">
