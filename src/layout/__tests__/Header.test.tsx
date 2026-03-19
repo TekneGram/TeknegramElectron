@@ -22,9 +22,8 @@ vi.mock("@/features/ThemeToggle/ThemeToggle", () => ({
 
 vi.mock("../Header/NavigationPane", () => ({
   default: (props: {
-    currentRoute: "auto" | "projects" | "settings";
-    hasProjects: boolean;
-    onNavigateProjects: () => void;
+    currentRoute: "home" | "settings";
+    onNavigateHome: () => void;
     onNavigateSettings: () => void;
   }) => {
     navigationPaneMock(props);
@@ -34,7 +33,7 @@ vi.mock("../Header/NavigationPane", () => ({
 
 describe("Header", () => {
   const onOpenModal = vi.fn();
-  const onNavigateProjects = vi.fn();
+  const onNavigateHome = vi.fn();
   const onNavigateSettings = vi.fn();
 
   beforeEach(() => {
@@ -46,8 +45,7 @@ describe("Header", () => {
       <Header
         onOpenModal={onOpenModal}
         currentRoute="settings"
-        hasProjects
-        onNavigateProjects={onNavigateProjects}
+        onNavigateHome={onNavigateHome}
         onNavigateSettings={onNavigateSettings}
       />,
     );
@@ -59,8 +57,7 @@ describe("Header", () => {
     expect(themeToggleMock).toHaveBeenCalled();
     expect(navigationPaneMock).toHaveBeenCalledWith(expect.objectContaining({
       currentRoute: "settings",
-      hasProjects: true,
-      onNavigateProjects,
+      onNavigateHome,
       onNavigateSettings,
     }));
   });

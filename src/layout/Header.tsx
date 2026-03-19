@@ -7,16 +7,14 @@ import type { MainViewRoute } from './MainView/mainViewRoute';
 interface HeaderProps {
     onOpenModal: () => void;
     currentRoute: MainViewRoute;
-    hasProjects: boolean;
-    onNavigateProjects: () => void;
+    onNavigateHome: () => void;
     onNavigateSettings: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
     onOpenModal,
     currentRoute,
-    hasProjects,
-    onNavigateProjects,
+    onNavigateHome,
     onNavigateSettings,
 }) => {
     return (
@@ -29,8 +27,7 @@ const Header: React.FC<HeaderProps> = ({
             <div className="header-actions">
                 <NavigationPane
                     currentRoute={currentRoute}
-                    hasProjects={hasProjects}
-                    onNavigateProjects={onNavigateProjects}
+                    onNavigateHome={onNavigateHome}
                     onNavigateSettings={onNavigateSettings}
                 />
                 <ThemeToggle />

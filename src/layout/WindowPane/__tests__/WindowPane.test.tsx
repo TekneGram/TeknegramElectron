@@ -27,7 +27,7 @@ vi.mock("../../Sidebar", () => ({
 }));
 
 vi.mock("../../MainView", () => ({
-  default: (props: { modalIsOpen: boolean; onOpenModal: () => void; onCloseModal: () => void }) => {
+  default: (props: { modalIsOpen: boolean; onOpenModal: () => void; onCloseModal: () => void; route: "home" | "settings" }) => {
     mainViewMock(props);
     return <div data-testid="main-view" />;
   },
@@ -72,6 +72,7 @@ describe("WindowPane", () => {
         modalIsOpen: true,
         onOpenModal: openModal,
         onCloseModal: closeModal,
+        route: "home",
       }),
     );
     expect(chatInterfaceMock).toHaveBeenCalled();

@@ -1,1 +1,1 @@
-export type MainViewRoute = "auto" | "projects" | "settings";
+export type MainViewRoute = "home" | "settings";
