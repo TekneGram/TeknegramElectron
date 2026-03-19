@@ -5,6 +5,8 @@ import MainView from "../../MainView";
 const createProjectModalMock = vi.fn();
 const homeViewMock = vi.fn();
 const settingsViewMock = vi.fn();
+const activitiesViewMock = vi.fn();
+const useNavigationMock = vi.fn();
 
 vi.mock("@/features/CreateProjectModal/CreateProjectModal", () => ({
   default: (props: { onClose: () => void; onSuccessfulCreation: () => void }) => {
@@ -17,6 +19,10 @@ vi.mock("@/features/CreateProjectModal/CreateProjectModal", () => ({
       </div>
     );
   },
+}));
+
+vi.mock("@/app/providers/useNavigation", () => ({
+  useNavigation: () => useNavigationMock(),
 }));
 
 vi.mock("../HomeView", () => ({
@@ -33,16 +39,26 @@ vi.mock("../SettingsView", () => ({
   },
 }));
 
+vi.mock("../ActivitiesView", () => ({
+  default: () => {
+    activitiesViewMock();
+    return <div data-testid="activities-view" />;
+  },
+}));
+
 describe("MainView", () => {
   const onOpenModal = vi.fn();
   const onCloseModal = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
+    useNavigationMock.mockReturnValue({
+      navigationState: { kind: "home" },
+    });
   });
 
   it("renders the home view for the home route", () => {
-    render(<MainView modalIsOpen={false} onOpenModal={onOpenModal} onCloseModal={onCloseModal} route="home" />);
+    render(<MainView modalIsOpen={false} onOpenModal={onOpenModal} onCloseModal={onCloseModal} />);
 
     expect(screen.getByTestId("home-view")).toBeTruthy();
     expect(homeViewMock).toHaveBeenCalledWith(
@@ -54,15 +70,31 @@ describe("MainView", () => {
   });
 
   it("renders the settings view for the settings route", () => {
-    render(<MainView modalIsOpen={false} onOpenModal={onOpenModal} onCloseModal={onCloseModal} route="settings" />);
+    useNavigationMock.mockReturnValue({
+      navigationState: { kind: "settings" },
+    });
+
+    render(<MainView modalIsOpen={false} onOpenModal={onOpenModal} onCloseModal={onCloseModal} />);
 
     expect(screen.getByTestId("settings-view")).toBeTruthy();
     expect(settingsViewMock).toHaveBeenCalled();
     expect(screen.queryByTestId("home-view")).toBeNull();
   });
 
+  it("renders the activities view for the activities route", () => {
+    useNavigationMock.mockReturnValue({
+      navigationState: { kind: "activities", projectId: "project-1" },
+    });
+
+    render(<MainView modalIsOpen={false} onOpenModal={onOpenModal} onCloseModal={onCloseModal} />);
+
+    expect(screen.getByTestId("activities-view")).toBeTruthy();
+    expect(activitiesViewMock).toHaveBeenCalled();
+    expect(screen.queryByTestId("home-view")).toBeNull();
+  });
+
   it("renders the modal when requested", () => {
-    render(<MainView modalIsOpen={true} onOpenModal={onOpenModal} onCloseModal={onCloseModal} route="home" />);
+    render(<MainView modalIsOpen={true} onOpenModal={onOpenModal} onCloseModal={onCloseModal} />);
 
     expect(screen.getByTestId("create-project-modal")).toBeTruthy();
     expect(createProjectModalMock).toHaveBeenCalledWith(
@@ -74,14 +106,18 @@ describe("MainView", () => {
   });
 
   it("renders the modal over the settings route as well", () => {
-    render(<MainView modalIsOpen={true} onOpenModal={onOpenModal} onCloseModal={onCloseModal} route="settings" />);
+    useNavigationMock.mockReturnValue({
+      navigationState: { kind: "settings" },
+    });
+
+    render(<MainView modalIsOpen={true} onOpenModal={onOpenModal} onCloseModal={onCloseModal} />);
 
     expect(screen.getByTestId("settings-view")).toBeTruthy();
     expect(screen.getByTestId("create-project-modal")).toBeTruthy();
   });
 
   it("increments the home project creation signal when the modal reports success", () => {
-    render(<MainView modalIsOpen={true} onOpenModal={onOpenModal} onCloseModal={onCloseModal} route="home" />);
+    render(<MainView modalIsOpen={true} onOpenModal={onOpenModal} onCloseModal={onCloseModal} />);
 
     fireEvent.click(screen.getByRole("button", { name: "complete project creation" }));
 

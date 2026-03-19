@@ -12,10 +12,10 @@ const ProjectsList: React.FC<ProjectsListProps> = ({ projectsData }) => {
 
     const handleNavigateToActivities = (projectId: string) => {
         dispatch({ type: "enter-activities", projectId: projectId });
-    }
+    };
 
     return (
-        <section className="projects-screen">
+        <section className="projects-screen main-view-grid-surface">
             <div className="projects-screen-header">
                 <div className="projects-screen-header-copy">
                     <p className="projects-screen-eyebrow">Projects</p>
@@ -34,7 +34,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({ projectsData }) => {
                             project={project}
                             onNavigateToActivities={handleNavigateToActivities}
                         />
-                        )
+                        );
                     })
                 }
             </div>

@@ -1,4 +1,4 @@
-import CreateProjectIcon from "./CreateProjectIcon";
+import CreateProjectIcon from "../icons/CreateProjectIcon";
 
 interface CreateProjectButtonProps {
     onClickCreate: () => void;

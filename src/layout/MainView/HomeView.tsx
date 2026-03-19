@@ -1,4 +1,4 @@
-import TeknegramIcon from './TeknegramIcon';
+import TeknegramIcon from './icons/TeknegramIcon';
 import { useListProjectsQuery } from '@/features/ProjectsTinyView/hooks/useProjectsQuery';
 import { useEffect, useRef, useState } from 'react';
 import CreateSuccessTransition from './CreateSuccessTransition';
@@ -95,7 +95,7 @@ const HomeView: React.FC<HomeViewProps> = ({ onOpenModal, projectCreationCount }
     }
 
     return (
-        <section className="main-view-welcome">
+        <section className="main-view-welcome main-view-grid-surface">
             <div className="main-view-welcome-card">
                 <div className="title">
                     <h1>Teknegram</h1>
