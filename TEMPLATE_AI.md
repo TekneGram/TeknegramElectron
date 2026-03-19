@@ -530,3 +530,108 @@ I asked it to guide me in doing this refactor myself for the learning experience
   10. Clean up props and tests.
 
   If you want, next I can help you design the actual route type and action type before you start coding.
+
+  › Okay, at the moment, I have the following ideas in mind for navigation states: home, settings, activities with projectId (allows us
+  to reach projects, corpora and corpus_files_path tables in electron/db/migration/0001_core_entities.sql). I also need another screen
+  called analyses which would need an activitiesId (from activities table in electron/db/migration/0004_corpus_metadata.sql) and this
+  should allow me to reach hte analysis table, too. I also have app/providers where I can write the code for navigation state. Where
+  should I write step 1 code?
+
+
+• I’m checking the existing app/providers structure so I can suggest a placement that fits the current codebase instead of inventing a
+  new layout arbitrarily.
+
+• Explored
+  └ List app
+    List app
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+• I found an existing pattern in src/app/providers: ThemeProvider.tsx, theme-context.ts, and useTheme.ts. I’m reading the local app
+  guidance so I can map your navigation code onto that same structure cleanly.
+
+• Explored
+  └ Read AGENTS.md, ThemeProvider.tsx, theme-context.ts, useTheme.ts
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+• Yes. src/app/providers is the right area for this.
+
+  For step 1 specifically, I would put the route type, action type, initial state, and reducer in a new pure module, not inside a
+  component. The cleanest place is something like:
+
+  - src/app/providers/navigation-state.ts
+
+  That file should contain:
+
+  - AppRoute type
+  - NavigationAction type
+  - initialNavigationState
+  - navigationReducer
+
+  Given your current routes, the route type likely wants to look conceptually like:
+
+  - { kind: "home" }
+  - { kind: "settings" }
+  - { kind: "activities"; projectId: string }
+  - { kind: "analyses"; activityId: string }
+
+  Then after step 1, I would add the rest alongside it in the same folder:
+
+  - src/app/providers/navigation-context.ts
+  - src/app/providers/NavigationProvider.tsx
+  - src/app/providers/useNavigation.ts
+
+  That matches the pattern already used by theme:
+
+  - src/app/providers/theme-context.ts
+  - src/app/providers/ThemeProvider.tsx
+  - src/app/providers/useTheme.ts
+
+  So my recommendation is:
+
+  - Step 1 code goes in a new pure file: src/app/providers/navigation-state.ts
+  - Do not put the reducer directly into WindowPane or MainView
+  - Do not put route types inside ProjectCard or MainView anymore
+
+  If you want, next I can help you write the exact TypeScript types for that AppRoute and NavigationAction before you start coding.
+
+
+› Actually, there is an app/types folder where this might be appropriate. What do you think, briefly?
+
+
+• Briefly: put the route state and reducer in src/app/providers, not src/app/types.
+
+  src/app/types is better for small shared data shapes with no behavior. Your navigation model is not just a type anymore; it is a piece
+  of cross-cutting state with reducer logic and provider wiring. Keeping the type next to the reducer/provider in app/providers will be
+  easier to maintain.
+
+  If you later find a truly reusable standalone type, you can extract just that type into app/types, but I would not start there.
+
+› Please check src/app/providers/navigation-state.ts and tell me what you think of my type definition.
+
+
+• I’m opening your new navigation state file to review the route type and check whether it matches the app-wide routing model you
+  described.
+
+• Explored
+  └ Read navigation-state.ts
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+• The shape is right. A discriminated union with kind plus route-specific ids is exactly what you want for this reducer-driven
+  navigation.
+
+  One small correction: the object members should use semicolons, not commas, in a TypeScript object type. So lines src/app/providers/
+  navigation-state.ts:4 should be:
+
+  - { kind: "activities"; projectId: string }
+  - { kind: "analyses"; activityId: string }
+
+  Conceptually, though, this is a good definition:
+
+  - home and settings are simple routes
+  - activities carries projectId
+  - analyses carries activityId
+
+  That is a solid starting point for useReducer.
