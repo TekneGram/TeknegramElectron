@@ -51,3 +51,12 @@ The main design decisions ahead are about where complexity is allowed to live. A
   - define stable typed contracts at the IPC and service boundaries
   - create a strong result model for search, analysis, and chat so UI components consume normalized data, not
     backend-shaped payloads
+
+  electron/llm folder
+  - controllers/ orchestrate the pipeline
+  - operations/ define user-facing/backend-facing LLM use cases
+  - providers/ contain provider adapters and provider-specific mapping
+  - policies/ hold retry, fallback, truncation, cache/session, and model-selection logic
+  - tools/ hold function-calling/tool loop logic
+  - schemas/ validate structured LLM inputs/outputs
+  - shared/ holds types and reusable builders

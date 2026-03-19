@@ -194,7 +194,7 @@
   overflow: hidden;
 }
 
-.main-view-welcome::before {
+.main-view-grid-surface::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -205,6 +205,19 @@
   background-size: auto, 32px 32px, 32px 32px;
   opacity: 0.4;
   pointer-events: none;
+}
+
+.main-view-activities-empty {
+  min-height: 100vh;
+  padding: calc(var(--header-height) + 0.9rem) 1.35rem calc(var(--chat-height) + 1.1rem)
+    calc(var(--sidebar-width) + 1.85rem);
+  box-sizing: border-box;
+  background: var(--color-bg);
+  color: var(--color-text);
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .main-view-transition {
@@ -218,36 +231,6 @@
   place-items: center;
   position: relative;
   overflow: hidden;
-}
-
-.main-view-transition::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(
-      circle at 50% 35%,
-      color-mix(in srgb, var(--color-accent) 14%, transparent),
-      transparent 42%
-    ),
-    linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--color-accent) 8%, transparent),
-      transparent 48%
-    ),
-    linear-gradient(
-      to right,
-      color-mix(in srgb, var(--color-border) 28%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--color-border) 28%, transparent) 1px,
-      transparent 1px
-    );
-  background-size: auto, auto, 32px 32px, 32px 32px;
-  opacity: 0.48;
-  pointer-events: none;
 }
 
 .main-view-transition-card {
@@ -372,25 +355,6 @@
   gap: var(--space-6);
   position: relative;
   overflow: hidden;
-}
-
-.projects-screen::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(
-      circle at 18% 16%,
-      color-mix(in srgb, var(--color-accent) 10%, transparent),
-      transparent 28%
-    ),
-    linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--color-border) 18%, transparent),
-      transparent 40%
-    );
-  pointer-events: none;
-  opacity: 0.8;
 }
 
 .main-view-settings {
@@ -662,6 +626,58 @@
   text-align: center;
 }
 
+.main-view-activities-empty-grid {
+  position: relative;
+  z-index: 1;
+  width: min(1120px, 100%);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.5rem);
+  align-items: stretch;
+}
+
+.main-view-activities-card {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  padding: clamp(1.8rem, 3vw, 2.5rem);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-5xl);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 92%, transparent), var(--color-surface-muted));
+  box-shadow:
+    var(--shadow-welcome),
+    var(--shadow-inset-highlight-strong);
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 1.5rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+.main-view-activities-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--color-accent) 9%, transparent), transparent 42%),
+    radial-gradient(circle at top right, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 28%);
+  pointer-events: none;
+}
+
+.main-view-activities-copy {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.main-view-activities-copy .title,
+.main-view-activities-copy .welcome-message {
+  margin: 0;
+}
+
 .logo {
   width: clamp(120px, 18vw, 880px);
   height: auto
@@ -782,6 +798,12 @@
 :root[data-theme="dark"] .project-card-shell:hover .project-card,
 :root[data-theme="dark"] .project-card-shell:focus-within .project-card {
   box-shadow: inset 0 1px 0 color-mix(in srgb, white 14%, transparent);
+}
+
+@media (max-width: 980px) {
+  .main-view-activities-empty-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .chat-interface {

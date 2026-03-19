@@ -16,8 +16,22 @@ interface CreateProjectModalProps {
 const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSuccessfulCreation }) => {
 
     const { values, setters, resetForm, canSubmit } = useCreateProjectForm();
-    const { projectName, corpusName, folderPath, semanticsRulesPath } = values;
-    const { setProjectName, setCorpusName, setFolderPath, setSemanticsRulesPath } = setters;
+    const {
+        projectName,
+        corpusName,
+        folderPath,
+        semanticsRulesPath,
+        compress,
+        emitNgramPositions,
+    } = values;
+    const {
+        setProjectName,
+        setCorpusName,
+        setFolderPath,
+        setSemanticsRulesPath,
+        setCompress,
+        setEmitNgramPositions,
+    } = setters;
 
     const { 
         submitCreateProject, 
@@ -79,6 +93,8 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
             corpusName: corpusName.trim(),
             folderPath: folderPath.trim(),
             semanticsRulesPath: semanticsRulesPath.trim() ? semanticsRulesPath.trim() : undefined,
+            postingFormat: compress ? "compressed" as const : "raw" as const,
+            emitNgramPositions,
         }
 
         submitCreateProject(request);
@@ -178,6 +194,50 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
                             isPickingSemanticsRules={isPickingSemanticsRules}
                             semanticsRulesPath={semanticsRulesPath}
                         />
+                    </div>
+                    <div className="create-project-options" aria-label="Corpus build options">
+                        <div className="create-project-option-row">
+                            <input
+                                id="create-project-compress"
+                                className="create-project-option-checkbox"
+                                type="checkbox"
+                                checked={compress}
+                                onChange={(event) => setCompress(event.target.checked)}
+                                disabled={isPending}
+                            />
+                            <div className="create-project-option-tooltip">
+                                <label
+                                    className="create-project-option-label create-project-option-tooltip-trigger"
+                                    htmlFor="create-project-compress"
+                                >
+                                    Compress
+                                </label>
+                                <div className="create-project-option-tooltip-content" role="tooltip">
+                                    Saves disk space but may slow lookups.
+                                </div>
+                            </div>
+                        </div>
+                        <div className="create-project-option-row">
+                            <input
+                                id="create-project-ngram-positions"
+                                className="create-project-option-checkbox"
+                                type="checkbox"
+                                checked={emitNgramPositions}
+                                onChange={(event) => setEmitNgramPositions(event.target.checked)}
+                                disabled={isPending}
+                            />
+                            <div className="create-project-option-tooltip">
+                                <label
+                                    className="create-project-option-label create-project-option-tooltip-trigger"
+                                    htmlFor="create-project-ngram-positions"
+                                >
+                                    Emit n-gram positions
+                                </label>
+                                <div className="create-project-option-tooltip-content" role="tooltip">
+                                    Takes longer to build and uses more space, but makes n-gram lookup extremely fast.
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className="create-project-modal-footer">

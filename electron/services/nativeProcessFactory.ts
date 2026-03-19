@@ -109,7 +109,7 @@ class NativeProcessRunner<T = unknown> {
                 this.processErrorOutput += data.toString("utf8");
             });
 
-            this.nativeProcess.on("close", (code: number | null) => {
+            this.nativeProcess.on("close", (code: number | null, signal: NodeJS.Signals | null) => {
                 const exitCode = code ?? -1;
 
                 if (this.params.expectJsonLines) {
@@ -144,11 +144,14 @@ class NativeProcessRunner<T = unknown> {
 
                 // Non-zero exit
                 if (exitCode !== 0) {
+                    const exitSummary = signal
+                        ? `Process terminated by signal: ${signal}`
+                        : `Exit code: ${exitCode}`;
                     reject(
                         new AppException(
                             "CPP_PROCESS_NON_ZERO_EXIT",
                             "Native process failed",
-                            this.processErrorOutput || `Exit code: ${exitCode}`,
+                            this.processErrorOutput || this.processOutput || exitSummary,
                             false
                         )
                     );

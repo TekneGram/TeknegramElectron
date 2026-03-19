@@ -1,10 +1,10 @@
 import "@/styles/layout.css"
-import TeknegramIcon from "./TeknegramIcon"
+import TeknegramIcon from "./icons/TeknegramIcon"
 
 const CreateSuccessTransition = () => {
 
     return (
-        <section className="main-view-transition">
+        <section className="main-view-transition main-view-grid-surface">
             <div className="main-view-transition-card">
                 <div className="main-view-transition-badge">Project Created</div>
                 <div className="main-view-brand-icon-shell" aria-hidden="true">

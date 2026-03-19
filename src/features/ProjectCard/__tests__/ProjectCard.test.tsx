@@ -50,6 +50,7 @@ vi.mock("../hooks/useProjectCorpusMetadata", () => ({
 import ProjectCard from "../ProjectCard";
 
 describe("ProjectCard", () => {
+  const onNavigateToActivities = vi.fn();
   const project = {
     uuid: "11111111-1111-1111-1111-111111111111",
     projectName: "BAWE",
@@ -58,6 +59,7 @@ describe("ProjectCard", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    onNavigateToActivities.mockReset();
     flowState.error = null;
     flowState.isConfirming = false;
     flowState.isDeleting = false;
@@ -79,7 +81,7 @@ describe("ProjectCard", () => {
   });
 
   it("renders the delete button and enter button", () => {
-    render(<ProjectCard project={project} />);
+    render(<ProjectCard project={project} onNavigateToActivities={onNavigateToActivities} />);
 
     expect(screen.getByRole("heading", { name: "BAWE" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Delete" })).toBeTruthy();
@@ -92,14 +94,14 @@ describe("ProjectCard", () => {
     corpusMetadataState.progressMessage = "Computing corpus metadata.";
     corpusMetadataState.percent = 42;
 
-    render(<ProjectCard project={project} />);
+    render(<ProjectCard project={project} onNavigateToActivities={onNavigateToActivities} />);
 
     expect(screen.getByText("Computing corpus metadata.")).toBeTruthy();
     expect(screen.getByText("42%")).toBeTruthy();
   });
 
   it("starts editing when the project title is clicked", () => {
-    render(<ProjectCard project={project} />);
+    render(<ProjectCard project={project} onNavigateToActivities={onNavigateToActivities} />);
 
     fireEvent.click(screen.getByRole("button", { name: "BAWE" }));
 
@@ -111,7 +113,7 @@ describe("ProjectCard", () => {
     renameFlowState.draftName = "Edited BAWE";
     renameFlowState.canConfirm = true;
 
-    render(<ProjectCard project={project} />);
+    render(<ProjectCard project={project} onNavigateToActivities={onNavigateToActivities} />);
 
     expect(screen.getByRole("textbox", { name: "Edit project name for BAWE" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Cancel project name edit" }).querySelector("svg")).toBeTruthy();
@@ -119,7 +121,7 @@ describe("ProjectCard", () => {
   });
 
   it("opens the confirmation modal when delete is clicked", () => {
-    render(<ProjectCard project={project} />);
+    render(<ProjectCard project={project} onNavigateToActivities={onNavigateToActivities} />);
 
     fireEvent.click(screen.getByRole("button", { name: "Delete" }));
 
@@ -129,7 +131,7 @@ describe("ProjectCard", () => {
   it("renders cancel and confirm actions while confirming", () => {
     flowState.isConfirming = true;
 
-    render(<ProjectCard project={project} />);
+    render(<ProjectCard project={project} onNavigateToActivities={onNavigateToActivities} />);
 
     expect(screen.getByRole("button", { name: "Cancel" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Confirm" })).toBeTruthy();
@@ -139,7 +141,7 @@ describe("ProjectCard", () => {
     flowState.isConfirming = true;
     flowState.isDeleting = true;
 
-    render(<ProjectCard project={project} />);
+    render(<ProjectCard project={project} onNavigateToActivities={onNavigateToActivities} />);
 
     expect(screen.getByText("Deleting...")).toBeTruthy();
     expect(screen.getByText("Deleting...").closest(".project-card-status-block")).toBeTruthy();
@@ -151,8 +153,16 @@ describe("ProjectCard", () => {
     flowState.isConfirming = true;
     flowState.isConfirmed = true;
 
-    render(<ProjectCard project={project} />);
+    render(<ProjectCard project={project} onNavigateToActivities={onNavigateToActivities} />);
 
     expect(screen.getByText("Delete confirmed")).toBeTruthy();
+  });
+
+  it("calls the activities navigation callback with the project id", () => {
+    render(<ProjectCard project={project} onNavigateToActivities={onNavigateToActivities} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Enter Project" }));
+
+    expect(onNavigateToActivities).toHaveBeenCalledWith(project.uuid);
   });
 });

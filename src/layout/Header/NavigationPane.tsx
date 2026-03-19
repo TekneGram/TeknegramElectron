@@ -1,39 +1,37 @@
-import type { MainViewRoute } from "../MainView/mainViewRoute";
-import ProjectsIcon from "./ProjectsIcon";
+import { useNavigation } from "@/app/providers/useNavigation";
+import HomeIcon from "./HomeIcon";
 import SettingsIcon from "./SettingsIcon";
 
-interface NavigationPaneProps {
-    currentRoute: MainViewRoute;
-    hasProjects: boolean;
-    onNavigateProjects: () => void;
-    onNavigateSettings: () => void;
-}
+const NavigationPane = () => {
 
-const NavigationPane: React.FC<NavigationPaneProps> = ({
-    currentRoute,
-    hasProjects,
-    onNavigateProjects,
-    onNavigateSettings,
-}) => {
+    const { navigationState, dispatch } = useNavigation();
+
+    const handleNavigateHome = () => {
+        dispatch({ type: "go-home" });
+    }
+
+    const handleNavigateSettings = () => {
+        dispatch({ type: "go-settings" });
+    }
+
     return (
         <nav className="header-navigation-pane" aria-label="Main view navigation">
             <button
                 type="button"
-                className={`header-navigation-button ${currentRoute === "projects" ? "is-active" : ""}`}
-                onClick={onNavigateProjects}
-                disabled={!hasProjects}
-                aria-pressed={currentRoute === "projects"}
-                aria-label={hasProjects ? "Show projects view" : "Projects view unavailable"}
-                title={hasProjects ? "Projects" : "Projects unavailable"}
+                className={`header-navigation-button ${navigationState.kind === "home" ? "is-active" : ""}`}
+                onClick={handleNavigateHome}
+                aria-pressed={navigationState.kind === "home"}
+                aria-label="Show home view"
+                title="Home"
             >
-                <ProjectsIcon />
+                <HomeIcon />
             </button>
 
             <button
                 type="button"
-                className={`header-navigation-button ${currentRoute === "settings" ? "is-active" : ""}`}
-                onClick={onNavigateSettings}
-                aria-pressed={currentRoute === "settings"}
+                className={`header-navigation-button ${navigationState.kind === "settings" ? "is-active" : ""}`}
+                onClick={handleNavigateSettings}
+                aria-pressed={navigationState.kind === "settings"}
                 aria-label="Show settings view"
                 title="Settings"
             >

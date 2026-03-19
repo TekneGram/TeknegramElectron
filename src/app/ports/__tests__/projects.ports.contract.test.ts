@@ -29,6 +29,8 @@ describe("projects port contracts", () => {
       corpusName: "Main Corpus",
       folderPath: "/tmp/corpus",
       semanticsRulesPath: "/tmp/rules.tsv",
+      postingFormat: "compressed",
+      emitNgramPositions: false,
     };
 
     const createRequestWithoutRules: CreateProjectRequest = {
