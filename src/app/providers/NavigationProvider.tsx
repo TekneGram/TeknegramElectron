@@ -1,9 +1,28 @@
-import { type ReactNode, useState, useEffect } from 'react';
-import type { NavigationState } from './navigation-state';
+import { type ReactNode, useReducer } from 'react';
+import { NavigationContext, type NavigationContextValue } from './navigation-context';
+import { initialNavigationState, navigationReducer } from './navigation-state';
 
-export function NavigationProvider({ children }: { children: ReactNode }) {
+interface NavigationProviderProps {
+    children: ReactNode;
+}
 
-    const [currentRoute, setCurrentRoute] = useState<NavigationState>({ kind: "home" });
+export function NavigationProvider({ children }: NavigationProviderProps) {
+
+    const [navigationState, dispatch] = useReducer(
+        navigationReducer,
+        initialNavigationState,
+    );
+
+    const value: NavigationContextValue = {
+        navigationState,
+        dispatch,
+    };
+
+    return (
+        <NavigationContext.Provider value={value}>
+            {children}
+        </NavigationContext.Provider>
+    )
 
     
 }
