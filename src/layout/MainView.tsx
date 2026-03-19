@@ -4,6 +4,7 @@ import { useState } from 'react';
 import SettingsView from './MainView/SettingsView';
 import HomeView from './MainView/HomeView';
 import { useNavigation } from '@/app/providers/useNavigation';
+import ActivitiesView from './MainView/ActivitiesView';
 
 interface MainViewProps {
     modalIsOpen: boolean;
@@ -15,9 +16,20 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
     const [projectCreationCount, setProjectCreationCount] = useState(0);
     const { navigationState } = useNavigation();
 
-    const content = navigationState.kind === "settings"
-        ? <SettingsView />
-        : <HomeView onOpenModal={onOpenModal} projectCreationCount={projectCreationCount} />;
+    function renderContent() {
+        switch (navigationState.kind) {
+            case "home":
+                return <HomeView onOpenModal={onOpenModal} projectCreationCount={projectCreationCount} />;
+            case "settings":
+                return <SettingsView />
+            case "activities":
+                return <ActivitiesView />
+            default:
+                return null;
+        }
+    }
+
+    const content = renderContent();
 
     return (
         <>

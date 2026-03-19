@@ -7,8 +7,8 @@ export type NavigationState =
  export type NavigationAction =
  | { type: "go-home" }
  | { type: "go-settings" }
- | { type: "enter-activity"; projectId: string }
- | { type: "open-analysis"; activityId: string };
+ | { type: "enter-activities"; projectId: string }
+ | { type: "open-analyses"; activityId: string };
 
 export const initialNavigationState: NavigationState = { kind: "home" };
 
@@ -21,9 +21,9 @@ export function navigationReducer(
             return { kind: "home" };
         case "go-settings":
             return { kind: "settings" };
-        case "enter-activity":
+        case "enter-activities":
             return { kind: "activities", projectId: action.projectId };
-        case "open-analysis":
+        case "open-analyses":
             return { kind: "analyses", activityId: action.activityId };
         default:
             return state;

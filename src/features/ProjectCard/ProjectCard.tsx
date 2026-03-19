@@ -7,9 +7,10 @@ import "./projectCard.css";
 
 type ProjectCardProps = {
     project: ProjectListItem;
+    onNavigateToActivities: (projectId: string) => void;
 };
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({ project, onNavigateToActivities}) => {
     const {
         error: renameError,
         isEditing,
@@ -99,7 +100,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
                         >
                             Delete
                         </button>
-                        <button type="button" className="project-enter-button">
+                        <button 
+                            type="button" 
+                            className="project-enter-button"
+                            onClick={() => {onNavigateToActivities(project.uuid)}}
+                        >
                             Enter Project
                         </button>
                     </div>

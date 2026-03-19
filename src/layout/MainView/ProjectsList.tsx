@@ -1,10 +1,18 @@
 import { ProjectListItem } from "@/app/ports/projects.ports";
 import ProjectCard from "@/features/ProjectCard/ProjectCard";
+import { useNavigation } from "@/app/providers/useNavigation";
+
 interface ProjectsListProps {
     projectsData: ProjectListItem[];
 }
 
 const ProjectsList: React.FC<ProjectsListProps> = ({ projectsData }) => {
+
+    const { dispatch } = useNavigation();
+
+    const handleNavigateToActivities = (projectId: string) => {
+        dispatch({ type: "enter-activities", projectId: projectId });
+    }
 
     return (
         <section className="projects-screen">
@@ -24,6 +32,7 @@ const ProjectsList: React.FC<ProjectsListProps> = ({ projectsData }) => {
                         <ProjectCard
                             key={project.uuid}
                             project={project}
+                            onNavigateToActivities={handleNavigateToActivities}
                         />
                         )
                     })
