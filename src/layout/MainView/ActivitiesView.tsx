@@ -77,17 +77,8 @@ const ActivitiesView = () => {
                 <p className="activities-screen-eyebrow">Corpus Activities</p>
                 <h1>{activitiesQuery.data?.corpusName ?? projectName}</h1>
                 <p className="activities-screen-intro">
-                    {activities.length} {activities.length === 1 ? "activity" : "activities"} are ready for this corpus.
+                    {activities.length} {activities.length === 1 ? "activity is" : "activities are"} set up for this corpus.
                 </p>
-                <div className="welcome-actions">
-                    <button
-                        type="button"
-                        className="main-view-welcome-button"
-                        onClick={() => { void handleStartLexicalBundlesActivity(); }}
-                    >
-                        Start Lexical Bundles
-                    </button>
-                </div>
             </header>
             <div className="activities-grid">
                 {activities.map((activity) => (
