@@ -6,6 +6,7 @@ const createProjectModalMock = vi.fn();
 const homeViewMock = vi.fn();
 const settingsViewMock = vi.fn();
 const activitiesViewMock = vi.fn();
+const analysisViewMock = vi.fn();
 const useNavigationMock = vi.fn();
 
 vi.mock("@/features/CreateProjectModal/CreateProjectModal", () => ({
@@ -46,6 +47,13 @@ vi.mock("../ActivitiesView", () => ({
   },
 }));
 
+vi.mock("../AnalysisView", () => ({
+  default: () => {
+    analysisViewMock();
+    return <div data-testid="analysis-view" />;
+  },
+}));
+
 describe("MainView", () => {
   const onOpenModal = vi.fn();
   const onCloseModal = vi.fn();
@@ -83,7 +91,7 @@ describe("MainView", () => {
 
   it("renders the activities view for the activities route", () => {
     useNavigationMock.mockReturnValue({
-      navigationState: { kind: "activities", projectId: "project-1" },
+      navigationState: { kind: "activities", projectId: "project-1", projectName: "BAWE" },
     });
 
     render(<MainView modalIsOpen={false} onOpenModal={onOpenModal} onCloseModal={onCloseModal} />);
@@ -91,6 +99,17 @@ describe("MainView", () => {
     expect(screen.getByTestId("activities-view")).toBeTruthy();
     expect(activitiesViewMock).toHaveBeenCalled();
     expect(screen.queryByTestId("home-view")).toBeNull();
+  });
+
+  it("renders the analysis view for the analysis route", () => {
+    useNavigationMock.mockReturnValue({
+      navigationState: { kind: "analysis", projectId: "project-1", activityId: "activity-1", activityType: "lb_activities" },
+    });
+
+    render(<MainView modalIsOpen={false} onOpenModal={onOpenModal} onCloseModal={onCloseModal} />);
+
+    expect(screen.getByTestId("analysis-view")).toBeTruthy();
+    expect(analysisViewMock).toHaveBeenCalled();
   });
 
   it("renders the modal when requested", () => {

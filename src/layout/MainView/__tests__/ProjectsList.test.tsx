@@ -13,12 +13,12 @@ vi.mock("@/app/providers/useNavigation", () => ({
 vi.mock("@/features/ProjectCard/ProjectCard", () => ({
   default: (props: {
     project: { uuid: string; projectName: string };
-    onNavigateToActivities: (projectId: string) => void;
+    onNavigateToActivities: (projectId: string, projectName: string) => void;
   }) => {
     projectCardMock(props);
 
     return (
-      <button onClick={() => props.onNavigateToActivities(props.project.uuid)}>
+      <button onClick={() => props.onNavigateToActivities(props.project.uuid, props.project.projectName)}>
         Enter {props.project.projectName}
       </button>
     );
@@ -53,6 +53,7 @@ describe("ProjectsList", () => {
     expect(dispatchMock).toHaveBeenCalledWith({
       type: "enter-activities",
       projectId: "project-1",
+      projectName: "BAWE",
     });
   });
 });

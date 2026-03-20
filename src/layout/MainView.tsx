@@ -5,6 +5,7 @@ import SettingsView from './MainView/SettingsView';
 import HomeView from './MainView/HomeView';
 import { useNavigation } from '@/app/providers/useNavigation';
 import ActivitiesView from './MainView/ActivitiesView';
+import AnalysisView from './MainView/AnalysisView';
 
 interface MainViewProps {
     modalIsOpen: boolean;
@@ -24,6 +25,8 @@ const MainView: React.FC<MainViewProps> = ({ onOpenModal, onCloseModal, modalIsO
                 return <SettingsView />
             case "activities":
                 return <ActivitiesView />
+            case "analysis":
+                return <AnalysisView />
             default:
                 return null;
         }
