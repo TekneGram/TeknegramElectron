@@ -2,9 +2,10 @@ import { describe, expectTypeOf, it } from "vitest";
 import type {
   ActivitiesPort,
   ActivityDetails,
-  ActivityRequest,
   ActivityResponse,
   ActivityType,
+  CreateActivityRequest,
+  GetActivitiesRequest,
 } from "../activities.ports";
 import type { AppResult } from "@/app/types/result";
 
@@ -12,10 +13,13 @@ describe("activities port contracts", () => {
   it("accepts the expected request and response shapes", () => {
     const activityType: ActivityType = "lb_activities";
 
-    const request: ActivityRequest = {
+    const getRequest: GetActivitiesRequest = {
+      projectId: "project-1",
+    };
+
+    const createRequest: CreateActivityRequest = {
       projectId: "project-1",
       activityType,
-      requestType: "get",
     };
 
     const activity: ActivityDetails = {
@@ -34,7 +38,8 @@ describe("activities port contracts", () => {
       activities: [activity],
     };
 
-    expectTypeOf(request).toEqualTypeOf<ActivityRequest>();
+    expectTypeOf(getRequest).toEqualTypeOf<GetActivitiesRequest>();
+    expectTypeOf(createRequest).toEqualTypeOf<CreateActivityRequest>();
     expectTypeOf(activity).toEqualTypeOf<ActivityDetails>();
     expectTypeOf(response).toEqualTypeOf<ActivityResponse>();
   });
@@ -71,13 +76,10 @@ describe("activities port contracts", () => {
 
     const getResult = await port.getActivities({
       projectId: "project-1",
-      activityType: "lb_activities",
-      requestType: "get",
     });
     const createResult = await port.createActivity({
       projectId: "project-1",
       activityType: "lb_activities",
-      requestType: "create",
     });
 
     expectTypeOf(getResult).toEqualTypeOf<AppResult<ActivityResponse>>();

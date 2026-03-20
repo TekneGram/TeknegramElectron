@@ -1,18 +1,27 @@
 import { safeHandle } from "../safeHandle";
 import { validateOrThrow } from "../validate";
 import type {
-    ActivityRequest,
     ActivityResponse,
+    CreateActivityRequest,
+    GetActivitiesRequest,
 } from "../contracts/activities.contracts";
-import { activityRequestSchema } from "../validationSchemas/activities.schemas";
-import { requestActivities } from "@electron/services/activities/requestActivities";
+import { createActivitySchema, getActivitiesSchema } from "../validationSchemas/activities.schemas";
+import { createActivity, getActivities } from "@electron/services/activities/requestActivities";
 
 export function RegisterActivityHandlers(): void {
-    safeHandle<ActivityRequest, ActivityResponse>(
-        "activities:request",
+    safeHandle<GetActivitiesRequest, ActivityResponse>(
+        "activities:get",
         async (_event, rawArgs, ctx) => {
-            const args = validateOrThrow(activityRequestSchema, rawArgs);
-            return requestActivities(args, ctx);
+            const args = validateOrThrow(getActivitiesSchema, rawArgs);
+            return getActivities(args, ctx);
+        }
+    );
+
+    safeHandle<CreateActivityRequest, ActivityResponse>(
+        "activities:create",
+        async (_event, rawArgs, ctx) => {
+            const args = validateOrThrow(createActivitySchema, rawArgs);
+            return createActivity(args, ctx);
         }
     );
 }

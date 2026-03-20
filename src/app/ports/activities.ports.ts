@@ -1,13 +1,14 @@
 import type { AppResult } from "../types/result";
 
-export type ActivityType = "lb_activities" | "explore_activities"
+export type ActivityType = "lb_activities" | "explore_activities";
 
-export type ActivityRequestType = "get" | "create";
+export type GetActivitiesRequest = {
+    projectId: string;
+};
 
-export type ActivityRequest = {
+export type CreateActivityRequest = {
     projectId: string;
     activityType: ActivityType;
-    requestType: ActivityRequestType;
 };
 
 export type ActivityDetails = {
@@ -27,6 +28,6 @@ export type ActivityResponse = {
 };
 
 export interface ActivitiesPort {
-    getActivities(request: ActivityRequest): Promise<AppResult<ActivityResponse>>;
-    createActivity(request: ActivityRequest): Promise<AppResult<ActivityResponse>>;
+    getActivities(request: GetActivitiesRequest): Promise<AppResult<ActivityResponse>>;
+    createActivity(request: CreateActivityRequest): Promise<AppResult<ActivityResponse>>;
 }

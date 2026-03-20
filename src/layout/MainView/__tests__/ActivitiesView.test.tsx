@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import ActivitiesView from "../ActivitiesView";
 
-const activityCardMock = vi.fn();
+const activitiesMock = vi.fn();
 const dispatchMock = vi.fn();
 const navigationMock = vi.fn();
 const activitiesQueryMock = vi.fn();
@@ -12,23 +12,28 @@ vi.mock("@/app/providers/useNavigation", () => ({
   useNavigation: () => navigationMock(),
 }));
 
-vi.mock("@/features/Activities/hooks/useActivitiesQuery", () => ({
+vi.mock("@/layout/MainView/Activities/hooks/useActivitiesQuery", () => ({
   useActivitiesQuery: (...args: unknown[]) => activitiesQueryMock(...args),
 }));
 
-vi.mock("@/features/Activities/hooks/useCreateActivityMutation", () => ({
+vi.mock("@/layout/MainView/Activities/hooks/useCreateActivityMutation", () => ({
   useCreateActivityMutation: () => createActivityMutationMock(),
 }));
 
-vi.mock("@/features/ActivityCard/ActivityCard", () => ({
-  default: (props: {
-    activityName: string;
-    activityTypeDisplayName: string;
-    description: string;
-  }) => {
-    activityCardMock(props);
-    return <div data-testid="activity-card">{props.activityName}</div>;
+vi.mock("@/layout/MainView/Activities/Activities", () => ({
+  default: (props: { activities: Array<{ activityName: string }>; corpusName: string }) => {
+    activitiesMock(props);
+    return <div data-testid="activities-list">{props.corpusName}:{props.activities.map((activity) => activity.activityName).join(",")}</div>;
   },
+}));
+
+vi.mock("@/layout/MainView/Activities/ActivitiesWelcome", () => ({
+  default: (props: { projectName: string; onStartLexicalBundlesActivity: () => void }) => (
+    <div>
+      <span>{props.projectName}</span>
+      <button onClick={() => { void props.onStartLexicalBundlesActivity(); }}>Start Lexical Bundles</button>
+    </div>
+  ),
 }));
 
 describe("ActivitiesView", () => {
@@ -64,8 +69,7 @@ describe("ActivitiesView", () => {
   it("renders the empty state when no activities exist", () => {
     render(<ActivitiesView />);
 
-    expect(screen.getByText("Exploration Activities")).toBeTruthy();
-    expect(screen.getByText("Lexical Bundles")).toBeTruthy();
+    expect(screen.getByText("Corpus Project")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Start Lexical Bundles" })).toBeTruthy();
   });
 
@@ -79,6 +83,13 @@ describe("ActivitiesView", () => {
         activities: [
           {
             activityId: "activity-1",
+            activityName: "Exploration Activity 1",
+            activityType: "explore_activities",
+            activityTypeDisplayName: "Exploration Activity",
+            description: "Explores corpora through interactive activities and analysis.",
+          },
+          {
+            activityId: "activity-2",
             activityName: "Lexical Bundles Activity 1",
             activityType: "lb_activities",
             activityTypeDisplayName: "Lexical Bundles Activity",
@@ -92,11 +103,11 @@ describe("ActivitiesView", () => {
 
     render(<ActivitiesView />);
 
-    expect(screen.getByText("Main Corpus")).toBeTruthy();
-    expect(screen.getByTestId("activity-card")).toBeTruthy();
-    expect(activityCardMock).toHaveBeenCalledWith(
+    expect(screen.getByTestId("activities-list")).toBeTruthy();
+    expect(screen.getByText("Main Corpus:Exploration Activity 1,Lexical Bundles Activity 1")).toBeTruthy();
+    expect(activitiesMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        activityName: "Lexical Bundles Activity 1",
+        corpusName: "Main Corpus",
       }),
     );
   });
@@ -123,23 +134,19 @@ describe("ActivitiesView", () => {
       activities: [
         {
           activityId: "activity-1",
+          activityName: "Exploration Activity 1",
+          activityType: "explore_activities",
+          activityTypeDisplayName: "Exploration Activity",
+          description: "Explores corpora through interactive activities and analysis.",
+        },
+        {
+          activityId: "activity-2",
           activityName: "Lexical Bundles Activity 1",
           activityType: "lb_activities",
           activityTypeDisplayName: "Lexical Bundles Activity",
           description: "Samples corpora, extracts lexical bundles and analyzes them.",
         },
       ],
-    });
-    activitiesQueryMock.mockReturnValue({
-      data: {
-        corpusId: "corpus-1",
-        projectId: "project-1",
-        corpusName: "Main Corpus",
-        binaryFilesPath: "/tmp/corpus/bin",
-        activities: [],
-      },
-      isLoading: false,
-      isError: false,
     });
 
     render(<ActivitiesView />);
@@ -149,14 +156,13 @@ describe("ActivitiesView", () => {
     expect(mutateAsyncMock).toHaveBeenCalledWith({
       projectId: "project-1",
       activityType: "lb_activities",
-      requestType: "create",
     });
 
     await waitFor(() => {
       expect(dispatchMock).toHaveBeenCalledWith({
         type: "open-analysis",
         projectId: "project-1",
-        activityId: "activity-1",
+        activityId: "activity-2",
         activityType: "lb_activities",
       });
     });

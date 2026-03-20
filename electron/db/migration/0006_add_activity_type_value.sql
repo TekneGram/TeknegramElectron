@@ -8,8 +8,8 @@ INSERT OR IGNORE INTO activity_types (
     updated_at
 ) VALUES (
     'explore_activities',
-    "Corpus exploration activity",
-    "And activity rendered with the Exploration Activities UI",
+    'Corpus exploration activity',
+    'And activity rendered with the Exploration Activities UI',
     CURRENT_TIMESTAMP,
     CURRENT_TIMESTAMP
 );

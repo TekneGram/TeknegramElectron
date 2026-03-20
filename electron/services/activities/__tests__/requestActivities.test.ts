@@ -12,7 +12,7 @@ const {
   countActivityRowsByProjectUuidAndTypeMock,
   insertActivityRowMock,
   insertActivitySummaryRowMock,
-  listActivityDetailsRowsByProjectUuidAndTypeMock,
+  listActivityDetailsRowsByProjectUuidMock,
 } = vi.hoisted(() => ({
   createAppDatabaseMock: vi.fn(),
   closeMock: vi.fn(),
@@ -25,7 +25,7 @@ const {
   countActivityRowsByProjectUuidAndTypeMock: vi.fn(),
   insertActivityRowMock: vi.fn(),
   insertActivitySummaryRowMock: vi.fn(),
-  listActivityDetailsRowsByProjectUuidAndTypeMock: vi.fn(),
+  listActivityDetailsRowsByProjectUuidMock: vi.fn(),
 }));
 
 vi.mock("@electron/db/appDatabase", () => ({
@@ -59,12 +59,12 @@ vi.mock("@electron/db/repositories/activityRepositories", () => ({
   countActivityRowsByProjectUuidAndType: countActivityRowsByProjectUuidAndTypeMock,
   insertActivityRow: insertActivityRowMock,
   insertActivitySummaryRow: insertActivitySummaryRowMock,
-  listActivityDetailsRowsByProjectUuidAndType: listActivityDetailsRowsByProjectUuidAndTypeMock,
+  listActivityDetailsRowsByProjectUuid: listActivityDetailsRowsByProjectUuidMock,
 }));
 
-import { requestActivities } from "../requestActivities";
+import { createActivity, getActivities } from "../requestActivities";
 
-describe("requestActivities", () => {
+describe("activities services", () => {
   const db = { value: "db" };
 
   beforeEach(() => {
@@ -79,7 +79,7 @@ describe("requestActivities", () => {
     countActivityRowsByProjectUuidAndTypeMock.mockReset();
     insertActivityRowMock.mockReset();
     insertActivitySummaryRowMock.mockReset();
-    listActivityDetailsRowsByProjectUuidAndTypeMock.mockReset();
+    listActivityDetailsRowsByProjectUuidMock.mockReset();
     getRuntimeDbPathMock.mockReturnValue("/tmp/runtime.sqlite");
     createAppDatabaseMock.mockReturnValue({
       db,
@@ -95,9 +95,16 @@ describe("requestActivities", () => {
       corpus_name: "BAWE",
       binary_files_path: "/tmp/bawe",
     });
-    listActivityDetailsRowsByProjectUuidAndTypeMock.mockReturnValue([
+    listActivityDetailsRowsByProjectUuidMock.mockReturnValue([
       {
         activity_id: "activity-1",
+        activity_name: "Exploration Activity 1",
+        activity_type: "explore_activities",
+        activity_type_display_name: "Exploration Activity",
+        description: "Explores corpora through interactive activities and analysis.",
+      },
+      {
+        activity_id: "activity-2",
         activity_name: "Lexical Bundles Activity 1",
         activity_type: "lb_activities",
         activity_type_display_name: "Lexical Bundles Activity",
@@ -105,11 +112,9 @@ describe("requestActivities", () => {
       },
     ]);
 
-    const result = await requestActivities(
+    const result = await getActivities(
       {
         projectId: "project-1",
-        activityType: "lb_activities",
-        requestType: "get",
       },
       { correlationId: "cid-1", sendEvent: vi.fn() }
     );
@@ -117,7 +122,7 @@ describe("requestActivities", () => {
     expect(getRuntimeDbPathMock).toHaveBeenCalled();
     expect(createAppDatabaseMock).toHaveBeenCalledWith("/tmp/runtime.sqlite");
     expect(findActivityProjectContextRowByProjectUuidMock).toHaveBeenCalledWith(db, "project-1");
-    expect(listActivityDetailsRowsByProjectUuidAndTypeMock).toHaveBeenCalledWith(db, "project-1", "lb_activities");
+    expect(listActivityDetailsRowsByProjectUuidMock).toHaveBeenCalledWith(db, "project-1");
     expect(result).toEqual({
       projectId: "project-1",
       corpusId: "corpus-1",
@@ -126,6 +131,13 @@ describe("requestActivities", () => {
       activities: [
         {
           activityId: "activity-1",
+          activityName: "Exploration Activity 1",
+          activityType: "explore_activities",
+          activityTypeDisplayName: "Exploration Activity",
+          description: "Explores corpora through interactive activities and analysis.",
+        },
+        {
+          activityId: "activity-2",
           activityName: "Lexical Bundles Activity 1",
           activityType: "lb_activities",
           activityTypeDisplayName: "Lexical Bundles Activity",
@@ -136,7 +148,7 @@ describe("requestActivities", () => {
     expect(closeMock).toHaveBeenCalled();
   });
 
-  it("creates a new activity and returns the refreshed list", async () => {
+  it("creates a new activity and returns the refreshed full list", async () => {
     findActivityProjectContextRowByProjectUuidMock.mockReturnValue({
       project_id: "project-1",
       corpus_id: "corpus-1",
@@ -149,9 +161,16 @@ describe("requestActivities", () => {
       description: "An activity rendered with the Lexical Bundles Activities UI",
     });
     countActivityRowsByProjectUuidAndTypeMock.mockReturnValue(1);
-    listActivityDetailsRowsByProjectUuidAndTypeMock.mockReturnValue([
+    listActivityDetailsRowsByProjectUuidMock.mockReturnValue([
       {
         activity_id: "activity-1",
+        activity_name: "Exploration Activity 1",
+        activity_type: "explore_activities",
+        activity_type_display_name: "Exploration Activity",
+        description: "Explores corpora through interactive activities and analysis.",
+      },
+      {
+        activity_id: "activity-2",
         activity_name: "Lexical Bundles Activity 1",
         activity_type: "lb_activities",
         activity_type_display_name: "Lexical Bundles Activity",
@@ -166,11 +185,10 @@ describe("requestActivities", () => {
       },
     ]);
 
-    const result = await requestActivities(
+    const result = await createActivity(
       {
         projectId: "project-1",
         activityType: "lb_activities",
-        requestType: "create",
       },
       { correlationId: "cid-2", sendEvent: vi.fn() }
     );
@@ -189,8 +207,8 @@ describe("requestActivities", () => {
       activity_uuid: "activity-uuid-1",
       description: "Samples corpora, extracts lexical bundles and analyzes them.",
     }));
-    expect(result.activities).toHaveLength(2);
-    expect(result.activities[1]).toEqual({
+    expect(result.activities).toHaveLength(3);
+    expect(result.activities[2]).toEqual({
       activityId: "activity-uuid-1",
       activityName: "Lexical Bundles Activity 2",
       activityType: "lb_activities",

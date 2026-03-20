@@ -103,10 +103,9 @@ export function countActivityRowsByProjectUuidAndType(
     return row?.activity_count ?? 0;
 }
 
-export function listActivityDetailsRowsByProjectUuidAndType(
+export function listActivityDetailsRowsByProjectUuid(
     db: SqliteDatabase,
     projectUuid: string,
-    activityType: string,
 ): ActivityDetailsRow[] {
     return queryAll<ActivityDetailsRow>(
         db,
@@ -122,10 +121,9 @@ export function listActivityDetailsRowsByProjectUuidAndType(
             INNER JOIN activity_types at ON at.activity_type = a.activity_type
             LEFT JOIN activities_summaries s ON s.activity_uuid = a.uuid
             WHERE c.project_uuid = ?
-              AND a.activity_type = ?
-            ORDER BY a.created_at ASC
+            ORDER BY a.created_at ASC, a.uuid ASC
         `,
-        [projectUuid, activityType]
+        [projectUuid]
     );
 }
 

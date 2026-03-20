@@ -18,7 +18,6 @@ const ActivitiesView = () => {
     const { projectId, projectName } = navigationState;
     const activitiesQuery = useActivitiesQuery({
         projectId,
-        activityType: DEFAULT_ACTIVITY_TYPE,
     });
     const createActivityMutation = useCreateActivityMutation();
     const activities = activitiesQuery.data?.activities ?? [];
@@ -38,7 +37,6 @@ const ActivitiesView = () => {
             const response = await createActivityMutation.mutateAsync({
                 projectId,
                 activityType: DEFAULT_ACTIVITY_TYPE,
-                requestType: "create",
             });
 
             const createdActivity = response.activities.at(-1);

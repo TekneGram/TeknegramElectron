@@ -17,25 +17,19 @@ describe("activities adapter", () => {
 
     await activitiesAdapter.getActivities({
       projectId: "project-1",
-      activityType: "lb_activities",
-      requestType: "get",
     });
 
     await activitiesAdapter.createActivity({
       projectId: "project-1",
       activityType: "lb_activities",
-      requestType: "create",
     });
 
-    expect(invokeMock).toHaveBeenNthCalledWith(1, "activities:request", {
+    expect(invokeMock).toHaveBeenNthCalledWith(1, "activities:get", {
       projectId: "project-1",
-      activityType: "lb_activities",
-      requestType: "get",
     });
-    expect(invokeMock).toHaveBeenNthCalledWith(2, "activities:request", {
+    expect(invokeMock).toHaveBeenNthCalledWith(2, "activities:create", {
       projectId: "project-1",
       activityType: "lb_activities",
-      requestType: "create",
     });
   });
 });
