@@ -50,7 +50,7 @@ describe("ActivitiesWelcome", () => {
     });
   });
 
-  it("shows the confirmation modal when the provider is confirming", () => {
+  it("still renders the activity choices when the provider is confirming", () => {
     useActivityStartMock.mockReturnValue({
       state: {
         phase: "confirming",
@@ -63,7 +63,7 @@ describe("ActivitiesWelcome", () => {
 
     render(<ActivitiesWelcome projectId="project-1" projectName="Corpus Project" />);
 
-    expect(screen.getByRole("dialog")).toBeTruthy();
-    expect(screen.getByText("Start lexical bundles activity?")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Create Activity" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Create Lexical Bundles" })).toBeTruthy();
   });
 });

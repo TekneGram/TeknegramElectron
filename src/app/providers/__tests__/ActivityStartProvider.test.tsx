@@ -47,6 +47,11 @@ describe("ActivityStartProvider", () => {
     vi.clearAllMocks();
     vi.useFakeTimers();
     useNavigationMock.mockReturnValue({
+      navigationState: {
+        kind: "activities",
+        projectId: "project-1",
+        projectName: "Corpus Project",
+      },
       dispatch: dispatchMock,
     });
     useCreateActivityMutationMock.mockReturnValue({
