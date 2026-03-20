@@ -20,10 +20,19 @@ interface ActivityStartProviderProps {
 }
 
 export function ActivityStartProvider({ children }: ActivityStartProviderProps) {
-    const { dispatch } = useNavigation();
+    const { navigationState, dispatch } = useNavigation();
     const createActivityMutation = useCreateActivityMutation();
     const [state, setState] = useState<ActivityStartState>(initialState);
     const timeoutRef = useRef<number | null>(null);
+
+    function cancelPendingAnalysisNavigation() {
+        if(timeoutRef.current !== null) {
+            window.clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+        }
+
+        setState(initialState);
+    }
 
     function openStartModal(args: {
         projectId: string;
@@ -111,6 +120,20 @@ export function ActivityStartProvider({ children }: ActivityStartProviderProps) 
             }
         }
     }, []);
+
+    useEffect(() => {
+        if (state.phase !== "transitioning" || !state.projectId) {
+            return;
+        }
+
+        const stillOnSameActivitiesPage = 
+            navigationState.kind === "activities" && 
+            navigationState.projectId === state.projectId;
+        
+            if (!stillOnSameActivitiesPage) {
+                cancelPendingAnalysisNavigation();
+            }
+    }, [navigationState, state.phase, state.projectId]);
 
     const value: ActivityStartContextValue = {
         state,
