@@ -163,6 +163,6 @@ describe("ProjectCard", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Enter Project" }));
 
-    expect(onNavigateToActivities).toHaveBeenCalledWith(project.uuid);
+    expect(onNavigateToActivities).toHaveBeenCalledWith(project.uuid, project.projectName);
   });
 });

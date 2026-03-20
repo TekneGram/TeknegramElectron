@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ThemeProvider } from './app/providers/ThemeProvider';
 import { NavigationProvider } from './app/providers/NavigationProvider';
+import { ActivityStartProvider } from './app/providers/ActivityStartProvider.tsx';
 
 const queryClient = new QueryClient();
 
@@ -16,7 +17,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <NavigationProvider>
-          <App />
+          <ActivityStartProvider>
+            <App />
+          </ActivityStartProvider>
         </NavigationProvider>
         <ToastContainer position="top-right" autoClose={4000} />
       </ThemeProvider>
