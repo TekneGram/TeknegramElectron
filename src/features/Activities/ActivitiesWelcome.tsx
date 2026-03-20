@@ -1,6 +1,5 @@
 import ExploreActivitiesIcon from "./icons/ExploreActivitiesIcon";
 import LexicalBundlesActivitiesIcon from "./icons/LexicalBundlesActivitiesIcon";
-import ActivitiesStartModal from "./ActivitiesStartModal";
 import { useActivityStart } from "@/app/providers/useActivityStart";
 
 interface ActivitiesWelcomeProps {
@@ -10,15 +9,7 @@ interface ActivitiesWelcomeProps {
 
 const ActivitiesWelcome: React.FC<ActivitiesWelcomeProps> = ({ projectName, projectId }) => {
 
-    const {
-        state,
-        openStartModal,
-        closeStartModal,
-        confirmStartActivity
-    } = useActivityStart();
-
-    const isModalOpen = state.phase === "confirming" || state.phase === "creating";
-    const isSubmitting = state.phase === "creating";
+    const { openStartModal } = useActivityStart();
 
     return(
         <section className="main-view-activities-empty main-view-grid-surface">
@@ -87,15 +78,6 @@ const ActivitiesWelcome: React.FC<ActivitiesWelcomeProps> = ({ projectName, proj
                     </div>
                 </div>
             </div>
-            <ActivitiesStartModal 
-                isOpen={isModalOpen}
-                pendingActivityType={state.pendingActivityType}
-                projectName={projectName}
-                isSubmitting={isSubmitting}
-                onCancel={closeStartModal}
-                onConfirm={confirmStartActivity}
-            />
-            
         </section>
     );
 };

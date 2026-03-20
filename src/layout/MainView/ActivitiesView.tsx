@@ -6,10 +6,13 @@ import Activities from "@/features/Activities/Activities";
 import ActivitiesStartTransition from "@/features/Activities/ActivitiesStartTransition";
 import ActivitiesLoadingTransition from "./ActivitiesLoadingTransition";
 import { useActivityStart } from "@/app/providers/useActivityStart";
+import ActivitiesStartModal from "@/features/Activities/ActivitiesStartModal";
 
 const ActivitiesView = () => {
     const { navigationState } = useNavigation();
-    const { state } = useActivityStart();
+    const { state, closeStartModal, confirmStartActivity } = useActivityStart();
+    const isModalOpen = state.phase === "confirming" || state.phase === "creating";
+    const isSubmitting = state.phase === "creating";
 
     const isActivitiesView = navigationState.kind === "activities";
     const projectId = isActivitiesView ? navigationState.projectId : "";
@@ -63,18 +66,40 @@ const ActivitiesView = () => {
 
     if (activities.length === 0) {
         return (
-            <ActivitiesWelcome 
-                projectName={projectName}
-                projectId={projectId}
-            />
+            <>
+                <ActivitiesWelcome 
+                    projectName={projectName}
+                    projectId={projectId}
+                />
+                <ActivitiesStartModal 
+                    isOpen={isModalOpen}
+                    pendingActivityType={state.pendingActivityType}
+                    projectName={projectName}
+                    isSubmitting={isSubmitting}
+                    onCancel={closeStartModal}
+                    onConfirm={confirmStartActivity}
+                />
+            </>
+            
         )
     }
 
     return (
-        <Activities 
-            activities={activities}
-            corpusName={corpusName}
-        />
+        <>
+            <Activities 
+                activities={activities}
+                corpusName={corpusName}
+            />
+            <ActivitiesStartModal 
+                isOpen={isModalOpen}
+                pendingActivityType={state.pendingActivityType}
+                projectName={projectName}
+                isSubmitting={isSubmitting}
+                onCancel={closeStartModal}
+                onConfirm={confirmStartActivity}
+            />
+        </>
+        
     );
 };
 

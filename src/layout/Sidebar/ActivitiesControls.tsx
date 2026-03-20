@@ -2,20 +2,17 @@ import CreateLBButton from "./buttons/CreateLBButton";
 import CreateExploreActivityButton from "./buttons/CreateExploreActivityButton";
 import { useActivityStart } from "@/app/providers/useActivityStart";
 import { useNavigation } from "@/app/providers/useNavigation";
-import ActivitiesStartModal from "@/features/Activities/ActivitiesStartModal";
 
 const ActivitiesControls = () => {
 
     const { navigationState} = useNavigation();
-    const { state, openStartModal, closeStartModal, confirmStartActivity } = useActivityStart();
+    const { openStartModal } = useActivityStart();
 
     if (navigationState.kind !== "activities") {
         return null;
     }
 
     const { projectId, projectName } = navigationState;
-    const isModalOpen = state.phase === "confirming" || state.phase === "creating";
-    const isSubmitting = state.phase === "creating";
 
     
     function startNewExplorationActivity() {
@@ -38,15 +35,6 @@ const ActivitiesControls = () => {
         <>
             <CreateExploreActivityButton onClickCreate={startNewExplorationActivity} />
             <CreateLBButton onClickCreate={startNewLexicalBundleActivity} />
-
-            <ActivitiesStartModal
-                isOpen={isModalOpen}
-                pendingActivityType={state.pendingActivityType}
-                projectName={projectName}
-                isSubmitting={isSubmitting}
-                onCancel={closeStartModal}
-                onConfirm={confirmStartActivity}
-            />
         </>
     );
 };
