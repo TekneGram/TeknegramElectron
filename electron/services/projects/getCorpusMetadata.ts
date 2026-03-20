@@ -93,7 +93,7 @@ async function buildCorpusMetadata(
 
         const cachedMetadata = findCorpusMetadataRow(appDatabase.db, projectCorpus.corpus_uuid);
 
-        if (cachedMetadata) {
+        if (cachedMetadata && cachedMetadata.llm_provider) {
             logger.info("Returning cached corpus metadata", {
                 correlationId: ctx.correlationId,
                 projectUuid: request.projectUuid,
