@@ -1,6 +1,6 @@
 import type { AppResult } from "../types/result";
 
-export type ActivityType = "lb_activities";
+export type ActivityType = "lb_activities" | "explore_activities"
 
 export type ActivityRequestType = "get" | "create";
 
