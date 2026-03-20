@@ -206,6 +206,22 @@ async function buildCorpusMetadata(
             percent: 100,
         });
 
+        const now = new Date().toISOString();
+        const writeDatabase = createAppDatabase(getRuntimeDbPath());
+        try {
+            upsertCorpusMetadata(writeDatabase.db, {
+                corpus_uuid: projectCorpus.corpus_uuid,
+                metadata_json: JSON.stringify(metadata),
+                summary_text: "No summary provided",
+                llm_provider: "llm not used",
+                llm_model: "llm not used",
+                created_at: now,
+                updated_at: now
+            })
+        } finally {
+            writeDatabase.close();
+        }
+
         return {
             projectUuid: request.projectUuid,
             summary,

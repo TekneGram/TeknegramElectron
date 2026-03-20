@@ -9,18 +9,19 @@ import { useActivityStart } from "@/app/providers/useActivityStart";
 
 const ActivitiesView = () => {
     const { navigationState } = useNavigation();
-    const {
-        state,
-    } = useActivityStart();
+    const { state } = useActivityStart();
 
-    if (navigationState.kind !== "activities") {
+    const isActivitiesView = navigationState.kind === "activities";
+    const projectId = isActivitiesView ? navigationState.projectId : "";
+    const projectName = isActivitiesView ? navigationState.projectName : "";
+
+    const activitiesQuery = useActivitiesQuery(
+        { projectId }
+    );
+
+    if (!isActivitiesView) {
         return null;
     }
-
-    const { projectId, projectName } = navigationState;
-    const activitiesQuery = useActivitiesQuery({
-        projectId,
-    });
 
     const activities = activitiesQuery.data?.activities ?? [];
     const corpusName = activitiesQuery.data?.corpusName ?? "Your corpus";
