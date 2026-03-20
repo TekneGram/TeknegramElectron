@@ -1,8 +1,7 @@
 import ExploreActivitiesIcon from "./icons/ExploreActivitiesIcon";
 import LexicalBundlesActivitiesIcon from "./icons/LexicalBundlesActivitiesIcon";
-import { useStartActivityFlow } from "./hooks/useStartActivityFlow";
 import ActivitiesStartModal from "./ActivitiesStartModal";
-import ActivitiesStartTransition from "./ActivitiesStartTransition";
+import { useActivityStart } from "@/app/providers/useActivityStart";
 
 interface ActivitiesWelcomeProps {
     projectName: string;
@@ -12,18 +11,14 @@ interface ActivitiesWelcomeProps {
 const ActivitiesWelcome: React.FC<ActivitiesWelcomeProps> = ({ projectName, projectId }) => {
 
     const {
-        pendingActivityType,
-        isModalOpen,
-        isSubmitting,
-        isTransitioning,
+        state,
         openStartModal,
         closeStartModal,
-        confirmStartActivity,
-    } = useStartActivityFlow({ projectId });
+        confirmStartActivity
+    } = useActivityStart();
 
-    if (isTransitioning) {
-        return <ActivitiesStartTransition activityType={pendingActivityType} />
-    }
+    const isModalOpen = state.phase === "confirming" || state.phase === "creating";
+    const isSubmitting = state.phase === "creating";
 
     return(
         <section className="main-view-activities-empty main-view-grid-surface">
@@ -49,7 +44,11 @@ const ActivitiesWelcome: React.FC<ActivitiesWelcomeProps> = ({ projectName, proj
                         <button
                             type="button"
                             className="main-view-welcome-button"
-                            onClick={() => openStartModal("explore_activities")}
+                            onClick={() => openStartModal({
+                                projectId,
+                                projectName,
+                                activityType: "explore_activities"
+                            })}
                         >
                             Create Activity
                         </button>
@@ -77,7 +76,11 @@ const ActivitiesWelcome: React.FC<ActivitiesWelcomeProps> = ({ projectName, proj
                         <button
                             type="button"
                             className="main-view-welcome-button"
-                            onClick={() => openStartModal("lb_activities")}
+                            onClick={() => openStartModal({
+                                projectId,
+                                projectName,
+                                activityType: "lb_activities"
+                            })}
                         >
                             Create Lexical Bundles
                         </button>
@@ -86,7 +89,7 @@ const ActivitiesWelcome: React.FC<ActivitiesWelcomeProps> = ({ projectName, proj
             </div>
             <ActivitiesStartModal 
                 isOpen={isModalOpen}
-                pendingActivityType={pendingActivityType}
+                pendingActivityType={state.pendingActivityType}
                 projectName={projectName}
                 isSubmitting={isSubmitting}
                 onCancel={closeStartModal}

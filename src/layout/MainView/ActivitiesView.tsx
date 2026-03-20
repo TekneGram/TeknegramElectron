@@ -3,10 +3,15 @@ import { useActivitiesQuery } from "@/features/Activities/hooks/useActivitiesQue
 import "./styles/ActivitiesView.css";
 import ActivitiesWelcome from "@/features/Activities/ActivitiesWelcome";
 import Activities from "@/features/Activities/Activities";
+import ActivitiesStartTransition from "@/features/Activities/ActivitiesStartTransition";
 import ActivitiesLoadingTransition from "./ActivitiesLoadingTransition";
+import { useActivityStart } from "@/app/providers/useActivityStart";
 
 const ActivitiesView = () => {
     const { navigationState } = useNavigation();
+    const {
+        state,
+    } = useActivityStart();
 
     if (navigationState.kind !== "activities") {
         return null;
@@ -19,6 +24,12 @@ const ActivitiesView = () => {
 
     const activities = activitiesQuery.data?.activities ?? [];
     const corpusName = activitiesQuery.data?.corpusName ?? "Your corpus";
+
+    if (state.phase === "transitioning") {
+        return (
+            <ActivitiesStartTransition activityType={state.transitionActivityType} />
+        );
+    }
 
     if (activitiesQuery.isLoading) {
         return <ActivitiesLoadingTransition />
