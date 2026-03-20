@@ -185,8 +185,17 @@ async function buildCorpusMetadata(
         }
     );
 
+
+    let summary: string;
+    let llmProvider: string | null = null;
+    let llmModel: string | null = null;
+    let source: "generated" | "fallback";
+
+
     if (!summaryResult.ok) {
-        const summary = deriveFallbackSummary(metadata);
+        // Fallback to a derived summary from the JSON file.
+        summary = deriveFallbackSummary(metadata);
+        source = "fallback";
 
         logger.warn("Falling back to deterministic corpus metadata summary", {
             correlationId: ctx.correlationId,
@@ -197,36 +206,12 @@ async function buildCorpusMetadata(
             llmDetails: summaryResult.error.details,
         });
 
-        emitProgress(request.projectUuid, {
-            requestId: request.requestId,
-            projectUuid: request.projectUuid,
-            correlationId: ctx.correlationId,
-            stage: "complete",
-            message: "Corpus metadata is ready.",
-            percent: 100,
-        });
-
-        const now = new Date().toISOString();
-        const writeDatabase = createAppDatabase(getRuntimeDbPath());
-        try {
-            upsertCorpusMetadata(writeDatabase.db, {
-                corpus_uuid: projectCorpus.corpus_uuid,
-                metadata_json: JSON.stringify(metadata),
-                summary_text: "No summary provided",
-                llm_provider: "llm not used",
-                llm_model: "llm not used",
-                created_at: now,
-                updated_at: now
-            })
-        } finally {
-            writeDatabase.close();
-        }
-
-        return {
-            projectUuid: request.projectUuid,
-            summary,
-            source: "fallback",
-        };
+    } else {
+        // Used the LLM so use that summary instead
+        summary = summaryResult.data.summary;
+        llmProvider = summaryResult.data.provider;
+        llmModel = summaryResult.data.model;
+        source = "generated";
     }
 
     const now = new Date().toISOString();
@@ -236,9 +221,9 @@ async function buildCorpusMetadata(
         upsertCorpusMetadata(writeDatabase.db, {
             corpus_uuid: projectCorpus.corpus_uuid,
             metadata_json: JSON.stringify(metadata),
-            summary_text: summaryResult.data.summary,
-            llm_provider: summaryResult.data.provider,
-            llm_model: summaryResult.data.model,
+            summary_text: summary,
+            llm_provider: llmProvider,
+            llm_model: llmModel,
             created_at: now,
             updated_at: now,
         });
@@ -257,8 +242,8 @@ async function buildCorpusMetadata(
 
     return {
         projectUuid: request.projectUuid,
-        summary: summaryResult.data.summary,
-        source: "generated",
+        summary,
+        source
     };
 }
 
