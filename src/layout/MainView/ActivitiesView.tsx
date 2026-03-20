@@ -1,10 +1,10 @@
 import { useNavigation } from "@/app/providers/useNavigation";
 import ActivityCard from "@/features/ActivityCard/ActivityCard";
-import { useActivitiesQuery } from "@/features/Activities/hooks/useActivitiesQuery";
-import { useCreateActivityMutation } from "@/features/Activities/hooks/useCreateActivityMutation";
+import { useActivitiesQuery } from "@/layout/MainView/Activities/hooks/useActivitiesQuery";
+import { useCreateActivityMutation } from "@/layout/MainView/Activities/hooks/useCreateActivityMutation";
 import ActivitiesLoadingTransition from "./ActivitiesLoadingTransition";
-import "./ActivitiesView.css";
-import ActivitiesWelcome from "@/features/Activities/ActivitiesWelcome";
+import "./styles/ActivitiesView.css";
+import ActivitiesWelcome from "@/layout/MainView/Activities/ActivitiesWelcome";
 
 const DEFAULT_ACTIVITY_TYPE = "lb_activities";
 
