@@ -10,9 +10,11 @@ import { mapAnalysisResponseToBubbleRecord } from "@/app/mappers/analysis.mapper
 
 interface BubblyProps {
     activityId: string;
+    activityName: string;
+    title: string;
 }
 
-const Bubbly: React.FC<BubblyProps> = ({ activityId }) => {
+const Bubbly: React.FC<BubblyProps> = ({ activityId, activityName, title }) => {
 
     const { data, isLoading, isError, error } = useAnalysisListQuery(activityId);
 
@@ -27,13 +29,13 @@ const Bubbly: React.FC<BubblyProps> = ({ activityId }) => {
             <div className="bubbly-frame">
                 <header className="bubbly-header">
                     <div>
-                        <p className="bubbly-eyebrow">Top matter</p>
-                        <h1 className="bubbly-title">Top matter</h1>
+                        <p className="bubbly-eyebrow">{title}</p>
+                        <h1 className="bubbly-title">{activityName}</h1>
                         <p className="bubbly-subtitle">More top matter</p>
                     </div>
                     <div className="bubbly-status">
-                        <span className="bubbly-status-label">Bubble layer</span>
-                        <span className="bubbly-status-value">bubble number here as bubbles.length!</span>
+                        <span className="bubbly-status-label">Bubbles count</span>
+                        <span className="bubbly-status-value">{bubbles.length}</span>
                     </div>
                 </header>
                 <section className="bubbly-workspace">

@@ -11,6 +11,7 @@ type ActivityCardProps = {
     activityType: ActivityType;
     activityTypeDisplayName: string;
     description: string;
+    corpusName: string;
 };
 
 const ActivityCard: React.FC<ActivityCardProps> = ({
@@ -20,6 +21,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
     activityType,
     activityTypeDisplayName,
     description,
+    corpusName
 }) => {
 
     const { dispatch } = useNavigation();
@@ -29,7 +31,9 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
             type: "open-analysis",
             projectId: projectId,
             activityId: activityId,
-            activityType: activityType
+            activityType: activityType,
+            activityName: activityName,
+            corpusName: corpusName
         })
     }
 

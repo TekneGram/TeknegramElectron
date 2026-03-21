@@ -4,13 +4,13 @@ export type NavigationState =
  | { kind: "home" }
  | { kind: "settings" }
  | { kind: "activities"; projectId: string; projectName: string }
- | { kind: "analysis"; projectId: string; activityId: string; activityType: ActivityType };
+ | { kind: "analysis"; projectId: string; activityId: string; activityType: ActivityType, activityName: string, corpusName: string };
 
  export type NavigationAction =
  | { type: "go-home" }
  | { type: "go-settings" }
  | { type: "enter-activities"; projectId: string; projectName: string }
- | { type: "open-analysis"; projectId: string; activityId: string; activityType: ActivityType };
+ | { type: "open-analysis"; projectId: string; activityId: string; activityType: ActivityType, activityName: string, corpusName: string };
 
 export const initialNavigationState: NavigationState = { kind: "home" };
 
@@ -31,6 +31,8 @@ export function navigationReducer(
                 projectId: action.projectId,
                 activityId: action.activityId,
                 activityType: action.activityType,
+                activityName: action.activityName,
+                corpusName: action.corpusName
             };
         default:
             return state;

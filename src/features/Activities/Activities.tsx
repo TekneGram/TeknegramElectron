@@ -29,6 +29,7 @@ const Activities: React.FC<ActivitiesProps> = ({ activities, corpusName, project
                         activityName={activity.activityName}
                         activityTypeDisplayName={activity.activityTypeDisplayName}
                         description={activity.description}
+                        corpusName={corpusName}
                     />
                 ))}
             </div>

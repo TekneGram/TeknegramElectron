@@ -2,26 +2,48 @@ import AnalyticsPanel from "@/features/AnalysisViews/AnalyticsPanel";
 import AnalysisDisplay from "@/features/AnalysisViews/AnalysisDisplay";
 import Bubbly from "@/features/Bubbly/Bubbly";
 import { useNavigation } from "@/app/providers/useNavigation";
+import "./styles/AnalysisView.css";
+import { useState } from "react";
 
+export type AnalysisFormType =
+    | "Inspect"
+    | "Sampler"
+    | "Run";
 
 const AnalysisView = () => {
     const { navigationState } = useNavigation();
+    const [analysisFormType, setAnalysisFormType] = useState<AnalysisFormType | null>(null);
+    const [showAnalysisDisplay, setShowAnalysisDisplay] = useState<boolean>(false);
 
     const isAnalysis = navigationState.kind === "analysis";
     if (!isAnalysis) {
         return null;
     }
-    const aStateOfSorts = true; // A state will determine whether the Bubbly or the AnalysisDisplay is shown
+
+    const handleDisplayForm = (formType: AnalysisFormType) => {
+        setShowAnalysisDisplay(true);
+        setAnalysisFormType(formType);
+    }
+
+    const handleDisplayBubbly = () => {
+        setShowAnalysisDisplay(false);
+        setAnalysisFormType(null);
+    }
 
     return (
-        <section className="main-view-grid-surface" style={{ minHeight: "100vh" }} aria-label="Analysis workspace">
-            <AnalyticsPanel />
+        <section className="analysis-workspace main-view-grid-surface" aria-label="Analysis workspace">
+            <AnalyticsPanel onDisplayForm={handleDisplayForm} />
             <section className="display-area">
                 {
-                    aStateOfSorts ? <AnalysisDisplay /> : <Bubbly activityId={navigationState.activityType}/>
+                    showAnalysisDisplay && analysisFormType 
+                        ? <AnalysisDisplay analysisFormType={analysisFormType} onStopShowing={handleDisplayBubbly}/> 
+                        : <Bubbly 
+                            activityId={navigationState.activityId} 
+                            activityName={navigationState.activityName} 
+                            title={navigationState.corpusName}
+                            />
                 }
             </section>
-            
         </section>
     );
 };
