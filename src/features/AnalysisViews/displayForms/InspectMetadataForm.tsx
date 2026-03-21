@@ -1,8 +1,9 @@
 
 interface InspectMetadataProps {
     onStopShowing: () => void;
+    doInspection: () => void;
 }
-const InspectMetadataForm: React.FC<InspectMetadataProps> = ({ onStopShowing }) => {
+const InspectMetadataForm: React.FC<InspectMetadataProps> = ({ onStopShowing, doInspection }) => {
 
     const goBack = () => {
         onStopShowing()
@@ -13,7 +14,12 @@ const InspectMetadataForm: React.FC<InspectMetadataProps> = ({ onStopShowing }) 
             <h1>Inspect metadata</h1>
             <button
                 onClick={goBack}
-            >Stop it</button>
+            >Do it</button>
+            <button
+                onClick={doInspection}
+            >
+                Inspect
+            </button>
         </>
     );
 };

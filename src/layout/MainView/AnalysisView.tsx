@@ -30,13 +30,21 @@ const AnalysisView = () => {
         setAnalysisFormType(null);
     }
 
+    const handleInspectCorpus = () => {
+        // We need a hook!
+    }
+
     return (
         <section className="analysis-workspace main-view-grid-surface" aria-label="Analysis workspace">
             <AnalyticsPanel onDisplayForm={handleDisplayForm} />
             <section className="display-area">
                 {
                     showAnalysisDisplay && analysisFormType 
-                        ? <AnalysisDisplay analysisFormType={analysisFormType} onStopShowing={handleDisplayBubbly}/> 
+                        ? <AnalysisDisplay 
+                                analysisFormType={analysisFormType} 
+                                onStopShowing={handleDisplayBubbly}
+                                doInspection={handleInspectCorpus}
+                            /> 
                         : <Bubbly 
                             activityId={navigationState.activityId} 
                             activityName={navigationState.activityName} 

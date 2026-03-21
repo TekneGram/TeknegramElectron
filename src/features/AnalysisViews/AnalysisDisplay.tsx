@@ -7,16 +7,24 @@ import RunExperimentForm from "./displayForms/runExperimentForm";
 interface AnalysisDisplayProps {
     analysisFormType: AnalysisFormType
     onStopShowing: () => void;
+    doInspection: () => void;
 }
 
-const AnalysisDisplay: React.FC<AnalysisDisplayProps> = ({ analysisFormType, onStopShowing }) => {
+const AnalysisDisplay: React.FC<AnalysisDisplayProps> = ({ 
+    analysisFormType, 
+    onStopShowing,
+    doInspection,
+}) => {
 
 
 
     function renderAnalysisForm() {
         switch (analysisFormType) {
             case "Inspect":
-                return <InspectMetadataForm onStopShowing={onStopShowing} />
+                return <InspectMetadataForm 
+                            onStopShowing={onStopShowing} 
+                            doInspection={doInspection} 
+                        />
             case "Sampler":
                 return <SampleCorpusForm onStopShowing={onStopShowing} />
             case "Run":
