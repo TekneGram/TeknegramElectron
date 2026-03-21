@@ -15,5 +15,17 @@ export const bubbleRegistry: {
     corpusMetadata: {
         component: BubbleLayerMetadata,
         fetcher: fetchBubbleLayerMetadata
+    },
+    corpusSampler: {
+        component: BubbleLayerMetadata,
+        fetcher: fetchBubbleLayerMetadata
+    },
+    lbExtraction: {
+        component: BubbleLayerMetadata,
+        fetcher: fetchBubbleLayerMetadata
+    },
+    lbAnalysis: {
+        component: BubbleLayerMetadata,
+        fetcher: fetchBubbleLayerMetadata
     }
 }

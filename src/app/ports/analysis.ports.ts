@@ -7,7 +7,6 @@ export type AnalysisType =
     | "lb_analysis";
 
 
-
 export type CorpusMetadataNode = {
     name: string;
     docs: number;

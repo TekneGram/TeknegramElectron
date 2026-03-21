@@ -1,9 +1,16 @@
+//import { AnalysisType } from "@/app/ports/analysis.ports";
+
 export type BubbleLayerType = 
-    | 'corpusMetadata';
+    | 'corpusMetadata'
+    | 'corpusSampler'
+    | 'lbExtraction'
+    | 'lbAnalysis'
 
 export interface BubbleRecord {
     bubbleId: string;
+    analysisName: string;
     layerType: BubbleLayerType;
-    title: string;
-    order: number;
+    displayName: string;
+    description: string | null;
+    order: number | null;
 }

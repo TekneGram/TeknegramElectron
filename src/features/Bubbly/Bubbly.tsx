@@ -1,11 +1,26 @@
 import BubbleWrap from "./BubbleWrap"
 import BubbleContainer from "./BubbleContainer";
+import "./styles/bubbly.css";
 
-const Bubbly = () => {
+import { useAnalysisListQuery } from "./hooks/useAnalysisListQuery";
+import { useBubbleSelection } from "./hooks/useBubbleSelection";
+import { useBubbleLayerQuery } from "./hooks/useBubbleLayerQuery";
+import { BubbleRecord } from "./types/bubble";
+import { mapAnalysisResponseToBubbleRecord } from "@/app/mappers/analysis.mappers";
 
-    const fakeFunction = (id: string) => {
-        id;
-    }
+interface BubblyProps {
+    activityId: string;
+}
+
+const Bubbly: React.FC<BubblyProps> = ({ activityId }) => {
+
+    const { data, isLoading, isError, error } = useAnalysisListQuery(activityId);
+
+    const bubbles: BubbleRecord[] = (data ?? []).map(mapAnalysisResponseToBubbleRecord);
+
+    const { activeBubble, activeBubbleId, setActiveBubbleId } = useBubbleSelection(bubbles);
+    const layerQuery = useBubbleLayerQuery(activeBubble);
+    
 
     return (
         <main className="bubbly">
@@ -23,14 +38,17 @@ const Bubbly = () => {
                 </header>
                 <section className="bubbly-workspace">
                     <BubbleWrap 
-                        bubbles={[]}
-                        activeBubbleId="fake"
-                        onBubbleClick={fakeFunction}
+                        bubbles={bubbles}
+                        activeBubbleId={activeBubbleId}
+                        onBubbleClick={setActiveBubbleId}
                     />
-                    {/* <BubbleContainer 
-                        activeBubble={[]}
-                        data={[]}
-                    /> */}
+                    <BubbleContainer 
+                        activeBubble={activeBubble}
+                        data={layerQuery.data}
+                        isLoading={isLoading}
+                        isError={isError}
+                        error={error}
+                    />
                 </section>
             </div>
         </main>
