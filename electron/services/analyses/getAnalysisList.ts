@@ -8,19 +8,25 @@ import { logger } from "../logger";
 
 import type { GetAnalysisListRequest, AnalysisListResponse } from "@electron/ipc/contracts/analysis.contracts";
 
+type ValidatedGetAnalysisListRequest = {
+    activityId: string;
+}
+
 export async function getAnalysisList(
     request: GetAnalysisListRequest,
     ctx: RequestContext,
 ): Promise<AnalysisListResponse> {
+
+    const validatedRequest = validateGetAnalysisListRequest(request);
     
     logger.info("Retrieving the list of analyses", {
         correlationId: ctx.correlationId,
-        activityId: request.activityId,
+        activityId: validatedRequest.activityId,
     });
 
     const appDatabase = createAppDatabase(getRuntimeDbPath());
     try {
-        const analysisList = getAnalysisListRows(appDatabase.db, request.activityId);
+        const analysisList = getAnalysisListRows(appDatabase.db, validatedRequest.activityId);
 
         if (!analysisList) {
             raiseAppError("RESOURCE_NOT_FOUND", "Could not find any analyses");
@@ -48,4 +54,22 @@ export async function getAnalysisList(
     } finally {
         appDatabase.close();
     }
+}
+
+function requireNonEmptyString(value: string, fieldName:string): string {
+    const trimmed = value.trim();
+
+    if (!trimmed) {
+        raiseAppError("VALIDATION_MISSING_FIELD", `${fieldName} cannot be empty`);
+    }
+
+    return trimmed;
+}
+
+function validateGetAnalysisListRequest(request: GetAnalysisListRequest): ValidatedGetAnalysisListRequest {
+    const activityId = requireNonEmptyString(request.activityId, "Activity ID");
+
+    return {
+        activityId
+    };
 }
