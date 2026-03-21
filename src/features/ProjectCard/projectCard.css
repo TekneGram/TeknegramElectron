@@ -22,23 +22,6 @@
     min-width: 0;
 }
 
-.project-card-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: fit-content;
-    min-height: 20px;
-    padding: 0 0.85rem;
-    border: 1px solid color-mix(in srgb, var(--color-action-primary-border) 80%, transparent);
-    border-radius: var(--radius-pill);
-    background: color-mix(in srgb, var(--color-action-primary-bg) 84%, var(--color-surface));
-    color: var(--color-action-primary-text);
-    font-size: var(--font-size-label-sm);
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: var(--letter-spacing-label);
-    text-transform: uppercase;
-}
-
 .project-card-title-heading {
     margin: 0;
 }
@@ -81,31 +64,12 @@
     min-width: 0;
     height: var(--control-height-field);
     padding: 0 0.95rem;
-    border: 1px solid var(--color-input-border);
-    border-radius: var(--radius-xl);
-    background: var(--color-input-bg);
-    color: var(--color-text);
-    font: inherit;
     font-size: 1rem;
     font-weight: var(--font-weight-semibold);
-    transition:
-        border-color var(--motion-duration-fast) var(--motion-ease-standard),
-        box-shadow var(--motion-duration-fast) var(--motion-ease-standard),
-        background-color var(--motion-duration-fast) var(--motion-ease-standard);
-}
-
-.project-card-title-input:hover {
-    border-color: var(--color-field-hover-border);
 }
 
 .project-card-title-input:focus-visible {
-    outline: none;
-    border-color: var(--color-field-focus-border);
     box-shadow: 0 0 0 3px var(--color-focus-ring-shadow-soft);
-}
-
-.project-card-title-input:disabled {
-    opacity: 0.75;
 }
 
 .project-card-title-actions {
@@ -156,26 +120,6 @@
     background: color-mix(in srgb, var(--color-control-hover-surface) 72%, var(--color-error-surface));
 }
 
-.project-card-title-icon-button-confirm {
-    border-color: var(--color-action-primary-border);
-    background: linear-gradient(
-        135deg,
-        var(--color-action-primary-start),
-        var(--color-action-primary-end)
-    );
-    color: var(--color-action-primary-text);
-    box-shadow: var(--shadow-interactive);
-}
-
-.project-card-title-icon-button-confirm:hover:not(:disabled) {
-    background: linear-gradient(
-        135deg,
-        var(--color-action-primary-hover-start),
-        var(--color-action-primary-hover-end)
-    );
-    box-shadow: var(--shadow-interactive-hover);
-}
-
 .project-card-inline-icon {
     width: 0.95rem;
     height: 0.95rem;
@@ -196,15 +140,6 @@
     margin-top: 0.65rem;
     color: var(--color-text-muted);
     font-size: 0.82rem;
-}
-
-.project-card-metadata-spinner {
-    width: 0.85rem;
-    height: 0.85rem;
-    border: 2px solid color-mix(in srgb, var(--color-border) 72%, transparent);
-    border-top-color: var(--color-accent);
-    border-radius: 999px;
-    animation: project-card-metadata-spin 0.8s linear infinite;
 }
 
 .project-card-metadata-percent {
@@ -279,8 +214,7 @@
 }
 
 .project-card-delete-button,
-.project-card-cancel-button,
-.project-card-confirm-button {
+.project-card-cancel-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -319,40 +253,8 @@
     background: color-mix(in srgb, var(--color-control-active-surface) 78%, var(--color-error-surface));
 }
 
-.project-card-confirm-button {
-    border: 1px solid var(--color-action-primary-border);
-    background: linear-gradient(
-        135deg,
-        var(--color-action-primary-start),
-        var(--color-action-primary-end)
-    );
-    color: var(--color-action-primary-text);
-    box-shadow: var(--shadow-interactive);
-}
-
-.project-card-confirm-button:hover:not(:disabled) {
-    transform: translateY(-1px);
-    background: linear-gradient(
-        135deg,
-        var(--color-action-primary-hover-start),
-        var(--color-action-primary-hover-end)
-    );
-    box-shadow: var(--shadow-interactive-hover);
-}
-
-.project-card-confirm-button:active:not(:disabled) {
-    transform: translateY(0);
-    background: linear-gradient(
-        135deg,
-        var(--color-action-primary-active-start),
-        var(--color-action-primary-active-end)
-    );
-    box-shadow: var(--shadow-interactive-active);
-}
-
 .project-card-delete-button:disabled,
-.project-card-cancel-button:disabled,
-.project-card-confirm-button:disabled {
+.project-card-cancel-button:disabled {
     cursor: default;
     opacity: 0.65;
     transform: none;
@@ -360,76 +262,9 @@
 }
 
 .project-card-delete-button:focus-visible,
-.project-card-cancel-button:focus-visible,
-.project-card-confirm-button:focus-visible {
+.project-card-cancel-button:focus-visible {
     outline: 2px solid var(--color-focus-ring-soft);
     outline-offset: 3px;
-}
-
-.project-enter-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 140px;
-    height: var(--control-height-lg);
-    padding: 0 1rem;
-    border: 1px solid var(--color-action-primary-border);
-    border-radius: var(--radius-pill);
-    background: linear-gradient(
-        135deg,
-        var(--color-action-primary-start),
-        var(--color-action-primary-end)
-    );
-    color: var(--color-action-primary-text);
-    font: inherit;
-    font-weight: var(--font-weight-semibold);
-    cursor: pointer;
-    box-shadow:
-        var(--shadow-interactive),
-        var(--shadow-inset-highlight-soft);
-    transition:
-        transform var(--motion-duration-fast) var(--motion-ease-standard),
-        box-shadow var(--motion-duration-fast) var(--motion-ease-standard),
-        background-color var(--motion-duration-fast) var(--motion-ease-standard);
-}
-
-.project-enter-button:hover {
-    transform: translateY(-1px);
-    box-shadow:
-        var(--shadow-interactive-hover),
-        var(--shadow-inset-highlight-soft-hover);
-    background: linear-gradient(
-        135deg,
-        var(--color-action-primary-hover-start),
-        var(--color-action-primary-hover-end)
-    );
-}
-
-.project-enter-button:active {
-    transform: translateY(0);
-    box-shadow:
-        var(--shadow-interactive-active),
-        var(--shadow-inset-highlight-soft-active);
-    background: linear-gradient(
-        135deg,
-        var(--color-action-primary-active-start),
-        var(--color-action-primary-active-end)
-    );
-}
-
-.project-enter-button:focus-visible {
-    outline: 2px solid var(--color-focus-ring-soft);
-    outline-offset: 3px;
-}
-
-@keyframes project-card-metadata-spin {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
 }
 
 .project-card-modal {
@@ -447,14 +282,6 @@
 .project-card-modal-panel {
     width: min(100%, 270px);
     padding: 1rem 1rem 1.1rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-3xl);
-    background: linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--color-surface) 96%, transparent),
-        color-mix(in srgb, var(--color-surface-muted) 98%, transparent)
-    );
-    box-shadow: var(--shadow-elevation-lg);
     text-align: left;
 }
 
@@ -468,11 +295,6 @@
 
 .project-card-modal-eyebrow {
     margin-bottom: 0.45rem;
-    color: var(--color-text-muted);
-    font-size: var(--font-size-label-sm);
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: var(--letter-spacing-label);
-    text-transform: uppercase;
 }
 
 .project-card-modal-panel h3 {
@@ -494,8 +316,7 @@
     margin-top: 1rem;
 }
 
-.project-card-cancel-button,
-.project-card-confirm-button {
+.project-card-cancel-button {
     min-width: 0;
     flex: 1 1 0;
 }

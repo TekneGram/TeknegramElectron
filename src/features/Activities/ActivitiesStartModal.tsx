@@ -1,4 +1,7 @@
  import type { ActivityType } from "@/app/ports/activities.ports";
+ import "@/styles/button-styles.css";
+ import "@/styles/shells.css";
+ import "@/styles/text-style.css";
  import "./styles/activitiesStartModal.css";
 
   type PendingActivityKind = ActivityType | null;
@@ -64,15 +67,15 @@
                   className="activities-start-modal-backdrop"
                   onClick={isSubmitting ? undefined : onCancel}
               />
-              <div className="activities-start-modal-panel">
-                  <p className="activities-start-modal-eyebrow">Create Activity</p>
+              <div className="activities-start-modal-panel shell-panel shell-radius-4xl shell-surface-modal shell-shadow-modal">
+                  <p className="activities-start-modal-eyebrow eyebrow-text eyebrow-text-sm">Create Activity</p>
                   <h2 id="activities-start-modal-title">{copy.title}</h2>
                   <p className="activities-start-modal-copy">{copy.body}</p>
 
                   <div className="activities-start-modal-actions">
                       <button
                           type="button"
-                          className="activities-start-modal-cancel"
+                          className="button-secondary button-size-md"
                           onClick={onCancel}
                           disabled={isSubmitting}
                       >
@@ -80,7 +83,7 @@
                       </button>
                       <button
                           type="button"
-                          className="activities-start-modal-confirm"
+                          className="button-primary button-size-md"
                           onClick={onConfirm}
                           disabled={isSubmitting}
                       >

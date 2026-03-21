@@ -1,4 +1,5 @@
 import '@/styles/layout.css';
+import '@/styles/tool-tip.css';
 import CreateProjectButton from './Sidebar/buttons/CreateProjectButton';
 import ControlPanel from './Sidebar/ControlPanel';
 

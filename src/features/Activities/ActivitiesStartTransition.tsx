@@ -1,4 +1,5 @@
 import type { ActivityType } from "@/app/ports/activities.ports";
+import "@/styles/badge-style.css";
 
 interface ActivitiesStartTransitionProps {
     activityType: ActivityType | null;
@@ -28,7 +29,7 @@ const ActivitiesStartTransition: React.FC<ActivitiesStartTransitionProps> = ({
     return (
         <section className="main-view-transition main-view-grid-surface">
             <div className="main-view-transition-card">
-                <div className="main-view-transition-badge">{copy.badge}</div>
+                <div className="badge-pill badge-pill-primary badge-pill-md">{copy.badge}</div>
                 <div className="main-view-transition-copy">
                     <h1>{copy.title}</h1>
                     <p>Teknegram is preparing the next analysis workspace...</p>

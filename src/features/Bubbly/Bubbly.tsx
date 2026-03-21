@@ -27,10 +27,10 @@ const Bubbly = () => {
                         activeBubbleId="fake"
                         onBubbleClick={fakeFunction}
                     />
-                    <BubbleContainer 
+                    {/* <BubbleContainer 
                         activeBubble={[]}
                         data={[]}
-                    />
+                    /> */}
                 </section>
             </div>
         </main>

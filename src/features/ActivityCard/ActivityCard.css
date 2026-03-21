@@ -74,23 +74,6 @@
     gap: 0.7rem;
 }
 
-.activity-card-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: fit-content;
-    min-height: 20px;
-    padding: 0 0.85rem;
-    border: 1px solid color-mix(in srgb, var(--color-action-primary-border) 80%, transparent);
-    border-radius: var(--radius-pill);
-    background: color-mix(in srgb, var(--color-action-primary-bg) 84%, var(--color-surface));
-    color: var(--color-action-primary-text);
-    font-size: var(--font-size-label-sm);
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: var(--letter-spacing-label);
-    text-transform: uppercase;
-}
-
 .activity-card-title {
     margin: 0;
     font-family: var(--font-display);

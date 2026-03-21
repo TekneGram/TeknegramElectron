@@ -1,0 +1,28 @@
+.badge-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    border-radius: var(--radius-pill);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--letter-spacing-label);
+    text-transform: uppercase;
+}
+
+.badge-pill-primary {
+    border: 1px solid color-mix(in srgb, var(--color-action-primary-border) 80%, transparent);
+    background: color-mix(in srgb, var(--color-action-primary-bg) 84%, var(--color-surface));
+    color: var(--color-action-primary-text);
+}
+
+.badge-pill-sm {
+    min-height: 20px;
+    padding: 0 0.85rem;
+    font-size: var(--font-size-label-sm);
+}
+
+.badge-pill-md {
+    min-height: var(--control-height-sm);
+    padding: 0 0.95rem;
+    font-size: var(--font-size-label-md);
+}

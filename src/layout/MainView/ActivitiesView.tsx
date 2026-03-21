@@ -1,4 +1,6 @@
 import { useNavigation } from "@/app/providers/useNavigation";
+import "@/styles/button-styles.css";
+import "@/styles/text-style.css";
 import { useActivitiesQuery } from "@/features/Activities/hooks/useActivitiesQuery";
 import "./styles/ActivitiesView.css";
 import ActivitiesWelcome from "@/features/Activities/ActivitiesWelcome";
@@ -43,7 +45,7 @@ const ActivitiesView = () => {
         return (
             <section className="activities-screen main-view-grid-surface">
                 <header className="activities-screen-header">
-                    <p className="activities-screen-eyebrow">Corpus Activities</p>
+                    <p className="eyebrow-text eyebrow-text-md">Corpus Activities</p>
                     <h1>{projectName}</h1>
                     <p className="activities-screen-intro">
                         Teknegram could not load the activities for this project right now.
@@ -51,7 +53,7 @@ const ActivitiesView = () => {
                     <div className="welcome-actions">
                         <button
                             type="button"
-                            className="main-view-welcome-button"
+                            className="button-primary button-size-xl"
                             onClick={() => {
                                 void activitiesQuery.refetch();
                             }}
@@ -89,6 +91,7 @@ const ActivitiesView = () => {
             <Activities 
                 activities={activities}
                 corpusName={corpusName}
+                projectId={projectId}
             />
             <ActivitiesStartModal 
                 isOpen={isModalOpen}

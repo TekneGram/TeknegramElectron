@@ -4,6 +4,11 @@ import { useProjectCorpusMetadata } from "./hooks/useProjectCorpusMetadata";
 import { useProjectNameEditFlow } from "./hooks/useProjectNameEditFlow";
 import ProjectCardTitleEditor from "./ProjectCardTitleEditor";
 import "./projectCard.css";
+import "@/styles/button-styles.css";
+import "@/styles/badge-style.css";
+import "@/styles/loading.css";
+import "@/styles/shells.css";
+import "@/styles/text-style.css";
 
 type ProjectCardProps = {
     project: ProjectListItem;
@@ -52,7 +57,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onNavigateToActiviti
         <div className={shellClassName}>
             <div className="project-card">
                 <div className="project-card-header">
-                    <div className="project-card-badge">Ready</div>
+                    <div className="badge-pill badge-pill-primary badge-pill-sm">Ready</div>
                     <ProjectCardTitleEditor
                         projectName={project.projectName}
                         draftName={draftName}
@@ -79,7 +84,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onNavigateToActiviti
                     {
                         isCorpusMetadataLoading ? (
                             <div className="project-card-metadata-progress" aria-live="polite">
-                                <span className="project-card-metadata-spinner" aria-hidden="true" />
+                                <span className="project-card-metadata-spinner loading-spinner loading-spinner-sm" aria-hidden="true" />
                                 {
                                     percent !== undefined ? (
                                         <span className="project-card-metadata-percent">{percent}%</span>
@@ -102,7 +107,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onNavigateToActiviti
                         </button>
                         <button 
                             type="button" 
-                            className="project-enter-button"
+                            className="button-primary button-size-lg"
                             onClick={() => {onNavigateToActivities(project.uuid, project.projectName)}}
                         >
                             Enter Project
@@ -113,8 +118,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onNavigateToActiviti
             {
                 isConfirming ? (
                     <div className="project-card-modal" role="dialog" aria-modal="true" aria-label={`Delete ${project.projectName}`}>
-                        <div className="project-card-modal-panel">
-                            <p className="project-card-modal-eyebrow">Delete Project</p>
+                        <div className="project-card-modal-panel shell-panel shell-radius-3xl shell-surface-soft-strong shell-shadow-lg">
+                            <p className="project-card-modal-eyebrow eyebrow-text eyebrow-text-sm">Delete Project</p>
                             <h3>Delete {project.projectName}?</h3>
                             <p className="project-card-modal-copy">
                                 This removes the project entry and its stored corpus binaries.
@@ -143,7 +148,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onNavigateToActiviti
                                         </button>
                                         <button
                                             type="button"
-                                            className="project-card-confirm-button"
+                                            className="button-primary button-size-md button-fill"
                                             onClick={() => { void confirmDelete(); }}
                                         >
                                             Confirm

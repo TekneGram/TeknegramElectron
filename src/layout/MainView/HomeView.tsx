@@ -1,4 +1,5 @@
 import TeknegramIcon from './icons/TeknegramIcon';
+import '@/styles/button-styles.css';
 import { useListProjectsQuery } from '@/features/ProjectsTinyView/hooks/useProjectsQuery';
 import { useEffect, useRef, useState } from 'react';
 import CreateSuccessTransition from './CreateSuccessTransition';
@@ -114,7 +115,7 @@ const HomeView: React.FC<HomeViewProps> = ({ onOpenModal, projectCreationCount }
                 </div>
                 <div className="welcome-actions">
                     <button
-                        className="main-view-welcome-button"
+                        className="button-primary button-size-xl"
                         onClick={onOpenModal}
                     >
                         Start New Project

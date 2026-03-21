@@ -139,39 +139,6 @@
   border-radius: var(--radius-md);
 }
 
-.sidebar-tooltip {
-  position: absolute;
-  left: calc(100% + 0.7rem);
-  top: 50%;
-  z-index: 800;
-  transform: translateY(-50%) translateX(-4px);
-  padding: 0.35rem 0.6rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--color-surface) 96%, transparent);
-  color: var(--color-text);
-  font-size: 0.82rem;
-  font-weight: var(--font-weight-medium);
-  white-space: nowrap;
-  box-shadow: var(--shadow-floating);
-  opacity: 0;
-  pointer-events: none;
-  visibility: hidden;
-  transition:
-    opacity var(--motion-duration-fast) var(--motion-ease-standard),
-    transform var(--motion-duration-fast) var(--motion-ease-standard),
-    visibility 0s linear var(--motion-duration-fast);
-  transition-delay: 0.5s;
-}
-
-.sidebar-create-project-button:hover .sidebar-tooltip,
-.sidebar-create-project-button:focus-visible .sidebar-tooltip {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(-50%) translateX(0);
-  transition-delay: 0.5s;
-}
-
 .main-view {
   min-height: 100vh;
   padding: calc(var(--header-height) + 0.3rem) 1rem calc(var(--chat-height) + 0.5rem)
@@ -254,22 +221,6 @@
   gap: var(--space-5);
   text-align: center;
   animation: main-view-transition-card-enter 420ms ease-out;
-}
-
-.main-view-transition-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: var(--control-height-sm);
-  padding: 0 0.95rem;
-  border: 1px solid color-mix(in srgb, var(--color-action-primary-border) 82%, transparent);
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--color-action-primary-bg) 86%, var(--color-surface));
-  color: var(--color-action-primary-text);
-  font-size: var(--font-size-label-md);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: var(--letter-spacing-label);
-  text-transform: uppercase;
 }
 
 .main-view-brand-icon-shell {
@@ -377,15 +328,6 @@
   gap: 0.3rem;
 }
 
-.main-view-settings-eyebrow {
-  margin: 0;
-  font-size: 0.78rem;
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-}
-
 .main-view-settings-header h1 {
   margin: 0;
   font-family: "Space Grotesk", sans-serif;
@@ -411,18 +353,10 @@
 }
 
 .projects-screen-header-copy h1,
-.projects-screen-intro,
-.projects-screen-eyebrow {
+.projects-screen-intro {
   margin: 0;
 }
 
-.projects-screen-eyebrow {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-label-md);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: var(--letter-spacing-label);
-  text-transform: uppercase;
-}
 
 .projects-screen-header-copy h1 {
   font-family: var(--font-display);
@@ -726,58 +660,6 @@
   padding-top: 0.25rem;
 }
 
-.main-view-welcome-button {
-  min-width: 220px;
-  height: var(--control-height-xl);
-  padding: 0 1.4rem;
-  border: 1px solid var(--color-action-primary-border);
-  border-radius: var(--radius-pill);
-  background: var(--color-action-primary-bg);
-  color: var(--color-action-primary-text);
-  font: inherit;
-  font-weight: var(--font-weight-semibold);
-  font-size: clamp(1.2rem, 1.8vw, 1.5rem);
-  letter-spacing: 0.01em;
-  cursor: pointer;
-  box-shadow:
-    var(--shadow-welcome-button),
-    var(--shadow-inset-highlight-md);
-}
-
-.main-view-welcome-button:hover {
-  background: var(--color-action-primary-hover-bg);
-  transform: translateY(-1px);
-  box-shadow:
-    var(--shadow-welcome-button-hover),
-    var(--shadow-inset-highlight-md);
-  filter: saturate(1.02);
-}
-
-.main-view-welcome-button:active {
-  background: var(--color-action-primary-active-bg);
-  transform: translateY(0);
-  box-shadow:
-    var(--shadow-welcome-button-active),
-    var(--shadow-inset-highlight-soft-hover);
-  filter: saturate(0.98);
-}
-
-.main-view-welcome-button:focus-visible {
-  outline: 2px solid var(--color-focus-ring-soft);
-  outline-offset: 3px;
-}
-
-:root[data-theme="dark"] .main-view-welcome-button {
-  box-shadow: var(--shadow-inset-highlight-md);
-}
-
-:root[data-theme="dark"] .main-view-welcome-button:hover {
-  box-shadow: inset 0 1px 0 color-mix(in srgb, white 10%, transparent);
-}
-
-:root[data-theme="dark"] .main-view-welcome-button:active {
-  box-shadow: inset 0 1px 0 color-mix(in srgb, white 6%, transparent);
-}
 
 :root[data-theme="dark"] .main-view-transition-card {
   box-shadow:

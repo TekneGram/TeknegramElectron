@@ -1,24 +1,6 @@
 .llm-settings-card {
     width: 100%;
-    position: relative;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-5xl);
-    background: linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--color-surface) 96%, transparent),
-        color-mix(in srgb, var(--color-surface-muted) 92%, transparent)
-    );
-    box-shadow: var(--shadow-elevation-lg);
     overflow: hidden;
-}
-
-.llm-settings-card::before {
-    content: "";
-    position: absolute;
-    inset: 1px;
-    border-radius: 23px;
-    border: 1px solid var(--color-panel-highlight);
-    pointer-events: none;
 }
 
 .llm-settings-card-header {
@@ -159,144 +141,14 @@
 
 .llm-settings-key-input,
 .llm-settings-model-select {
-    width: 100%;
     min-height: var(--control-height-field);
     padding: 0.58rem 0.9rem;
-    border-radius: var(--radius-xl);
-    border: 1px solid var(--color-input-border);
-    background: var(--color-input-bg);
-    color: var(--color-text);
-    font: inherit;
-    box-sizing: border-box;
-    transition:
-        border-color 160ms ease,
-        background-color 160ms ease,
-        box-shadow 160ms ease,
-        transform 160ms ease;
-}
-
-.llm-settings-key-input::placeholder {
-    color: var(--color-field-placeholder);
-}
-
-.llm-settings-key-input:hover,
-.llm-settings-model-select:hover {
-    border-color: var(--color-field-hover-border);
-}
-
-.llm-settings-model-select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    padding-right: 2.7rem;
-    background-image:
-        linear-gradient(45deg, transparent 50%, var(--color-text-muted) 50%),
-        linear-gradient(135deg, var(--color-text-muted) 50%, transparent 50%);
-    background-position:
-        calc(100% - 18px) calc(50% - 3px),
-        calc(100% - 12px) calc(50% - 3px);
-    background-size: 6px 6px, 6px 6px;
-    background-repeat: no-repeat;
-}
-
-.llm-settings-key-input:focus-visible,
-.llm-settings-model-select:focus-visible {
-    outline: none;
-    border-color: var(--color-field-focus-border);
-    box-shadow: 0 0 0 3px var(--color-focus-ring-shadow-strong);
 }
 
 .llm-settings-key-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.55rem;
-}
-
-.llm-settings-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-pill);
-    min-height: var(--control-height-sm);
-    padding: 0.42rem 0.82rem;
-    border: 1px solid var(--color-border);
-    font: inherit;
-    font-weight: var(--font-weight-semibold);
-    font-size: 0.9rem;
-    line-height: 1;
-    cursor: pointer;
-    transition:
-        transform 120ms ease,
-        opacity 120ms ease,
-        background-color 120ms ease,
-        border-color 120ms ease,
-        color 120ms ease,
-        box-shadow 120ms ease;
-}
-
-.llm-settings-button:hover:not(:disabled) {
-    transform: translateY(-1px);
-}
-
-.llm-settings-button:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
-
-.llm-settings-button-primary {
-    border-color: var(--color-action-primary-border);
-    background: linear-gradient(
-        135deg,
-        var(--color-action-primary-start),
-        var(--color-action-primary-end)
-    );
-    color: var(--color-action-primary-text);
-    box-shadow:
-        var(--shadow-interactive),
-        var(--shadow-inset-highlight-soft);
-}
-
-.llm-settings-button-primary:hover:not(:disabled) {
-    background: linear-gradient(
-        135deg,
-        var(--color-action-primary-hover-start),
-        var(--color-action-primary-hover-end)
-    );
-    box-shadow:
-        var(--shadow-interactive-hover),
-        var(--shadow-inset-highlight-soft-hover);
-}
-
-.llm-settings-button-primary:active:not(:disabled) {
-    transform: translateY(0);
-    background: linear-gradient(
-        135deg,
-        var(--color-action-primary-active-start),
-        var(--color-action-primary-active-end)
-    );
-    box-shadow:
-        var(--shadow-interactive-active),
-        var(--shadow-inset-highlight-soft-active);
-}
-
-.llm-settings-button-secondary,
-.llm-settings-button-ghost {
-    background: var(--color-control-surface);
-    color: var(--color-text);
-}
-
-.llm-settings-button-secondary:hover:not(:disabled),
-.llm-settings-button-ghost:hover:not(:disabled) {
-    background: var(--color-control-hover-surface);
-    border-color: var(--color-control-hover-border);
-}
-
-.llm-settings-button-secondary:active:not(:disabled),
-.llm-settings-button-ghost:active:not(:disabled) {
-    transform: translateY(0);
-    background: var(--color-control-active-surface);
 }
 
 .llm-settings-button-ghost {

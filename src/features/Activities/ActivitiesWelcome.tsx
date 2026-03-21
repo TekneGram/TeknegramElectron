@@ -1,5 +1,6 @@
 import ExploreActivitiesIcon from "./icons/ExploreActivitiesIcon";
 import LexicalBundlesActivitiesIcon from "./icons/LexicalBundlesActivitiesIcon";
+import "@/styles/button-styles.css";
 import { useActivityStart } from "@/app/providers/useActivityStart";
 
 interface ActivitiesWelcomeProps {
@@ -34,7 +35,7 @@ const ActivitiesWelcome: React.FC<ActivitiesWelcomeProps> = ({ projectName, proj
                     <div className="welcome-actions">
                         <button
                             type="button"
-                            className="main-view-welcome-button"
+                            className="button-primary button-size-xl"
                             onClick={() => openStartModal({
                                 projectId,
                                 projectName,
@@ -66,7 +67,7 @@ const ActivitiesWelcome: React.FC<ActivitiesWelcomeProps> = ({ projectName, proj
                     <div className="welcome-actions">
                         <button
                             type="button"
-                            className="main-view-welcome-button"
+                            className="button-primary button-size-xl"
                             onClick={() => openStartModal({
                                 projectId,
                                 projectName,
