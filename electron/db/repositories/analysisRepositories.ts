@@ -1,6 +1,6 @@
 import type { SqliteDatabase } from '../sqlite';
 import { queryAll, queryOne, executeRun } from "../sqlite";
-import { AnalysisType } from '@electron/ipc/contracts/lexbunAnalysis.contracts';
+import { AnalysisType } from '@electron/ipc/contracts/analysis.contracts';
 
 export type CorpusMetadataRow = {
     corpus_uuid: string;
@@ -8,8 +8,7 @@ export type CorpusMetadataRow = {
     summary_text:string;
     llm_provider: string | null;
     llm_model: string | null;
-    created_at: string;
-    updated_at: string;
+    binary_files_path: string | null;
 }
 
 export type NewAnalysisRow = {
@@ -31,12 +30,37 @@ export type AnalysisResponseRow = {
     description: string | null;
 }
 
+export type CreateMetadataInspection = {
+    analysis_response_row: AnalysisResponseRow
+    analysis_data: CorpusMetadataRow
+}
+
+export function countAnalysisRows(db: SqliteDatabase): number {
+    const row = queryOne<{ count: number }>(
+        db,
+        `
+            SELECT COUNT(*) AS count
+            FROM analysis
+        `
+    );
+
+    return row?.count ?? 0;
+}
+
 export function getCorpusMetadataRow(db: SqliteDatabase, corpusUuid: string): CorpusMetadataRow | undefined {
     return queryOne<CorpusMetadataRow> (
         db,
         `
-            SELECT corpus_uuid, metadata_json, summary_text, llm_provider, llm_model, created_at, updated_at
-            FROM corpus_metadata
+            SELECT 
+            cm.corpus_uuid AS corpus_uuid,
+            cm.metadata_json AS metadata_json,
+            cm.summary_text AS summary_text,
+            cm.llm_provider AS llm_provider, 
+            cm.llm_model AS llm_model,
+            cfp.binary_files_path AS binary_files_path
+            FROM corpus_metadata cm
+            INNER JOIN corpus_files_path cfp
+                ON cm.corpus_uuid = cfp.corpus_uuid
             WHERE corpus_uuid = ?
             LIMIT 1
         `,
@@ -61,6 +85,7 @@ export function insertAnalysisRow(db: SqliteDatabase, row: NewAnalysisRow): void
         [
             row.uuid,
             row.analysis_type,
+            row.activity_uuid,
             row.analysis_name,
             row.config,
             row.created_at,
@@ -104,7 +129,7 @@ export function getAnalysisResponseByActivityUuid(
                 a.uuid AS uuid,
                 a.analysis_name AS analysis_name,
                 a.analysis_type AS analysis_type,
-                a.config AS config
+                a.config AS config,
                 at.display_name AS display_name,
                 at.description AS description
             FROM analysis a
