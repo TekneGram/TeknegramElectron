@@ -2,6 +2,16 @@ import type { SqliteDatabase } from '../sqlite';
 import { queryAll, queryOne, executeRun } from "../sqlite";
 import { AnalysisType } from '@electron/ipc/contracts/analysis.contracts';
 
+// for getting an analysis
+export type AnalysisListResponseRow = {
+    uuid: string;
+    analysis_type: AnalysisType;
+    analysis_name: string;
+    display_name: string;
+    description: string | null;
+}
+
+// for creating an analysis
 export type CorpusMetadataRow = {
     corpus_uuid: string;
     metadata_json: string;
@@ -33,6 +43,25 @@ export type AnalysisResponseRow = {
 export type CreateMetadataInspection = {
     analysis_response_row: AnalysisResponseRow
     analysis_data: CorpusMetadataRow
+}
+
+export function getAnalysisListRows(db: SqliteDatabase, activity_uuid: string): AnalysisListResponseRow[] {
+    return queryAll<AnalysisListResponseRow> (
+        db,
+        `
+            SELECT
+                a.uuid AS uuid,
+                a.analysis_type AS analysis_type,
+                a.analysis_name AS analysis_name,
+                at.display_name AS display_name,
+                at.description AS description
+            FROM analysis a
+            INNER JOIN analysis_types at
+                ON at.analysis_type = a.analysis_type
+            WHERE a.activity_uuid = ?
+        `,
+        [activity_uuid]
+    );
 }
 
 export function countAnalysisRows(db: SqliteDatabase): number {
