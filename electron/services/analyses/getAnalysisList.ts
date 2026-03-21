@@ -27,24 +27,13 @@ export async function getAnalysisList(
     const appDatabase = createAppDatabase(getRuntimeDbPath());
     try {
         const analysisList = getAnalysisListRows(appDatabase.db, validatedRequest.activityId);
-
-        if (!analysisList) {
-            raiseAppError("RESOURCE_NOT_FOUND", "Could not find any analyses");
-        }
-
-        const analysisListResponse = analysisList.map((analysisItem) => {
-            return (
-                {
-                    uuid: analysisItem.uuid,
-                    analysisName: analysisItem.analysis_name,
-                    analysisType: analysisItem.analysis_type,
-                    displayName: analysisItem.display_name,
-                    description: analysisItem.description
-                }
-            );
-        });
-
-        return analysisListResponse;
+        return analysisList.map((analysisItem) => ({
+            uuid: analysisItem.uuid,
+            analysisName: analysisItem.analysis_name,
+            analysisType: analysisItem.analysis_type,
+            displayName: analysisItem.display_name,
+            description: analysisItem.description,
+        }));
     } catch (err) {
         raiseAppError(
             "DB_QUERY_FAILED",
