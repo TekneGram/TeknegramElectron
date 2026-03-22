@@ -9,6 +9,7 @@ import ActivitiesStartTransition from "@/features/Activities/ActivitiesStartTran
 import ActivitiesLoadingTransition from "./ActivitiesLoadingTransition";
 import { useActivityStart } from "@/app/providers/useActivityStart";
 import ActivitiesStartModal from "@/features/Activities/ActivitiesStartModal";
+import type { ActivityParentContext } from "@/app/ports/activities.ports";
 
 const ActivitiesView = () => {
     const { navigationState } = useNavigation();
@@ -29,7 +30,12 @@ const ActivitiesView = () => {
     }
 
     const activities = activitiesQuery.data?.activities ?? [];
-    const corpusName = activitiesQuery.data?.corpusName ?? "Your corpus";
+    const activityParentContext: ActivityParentContext = {
+        corpusId: activitiesQuery.data?.corpusName ?? "Your corpus",
+        projectId: activitiesQuery.data?.projectId ?? "",
+        corpusName: activitiesQuery.data?.corpusName ?? "",
+        binaryFilesPath: activitiesQuery.data?.binaryFilesPath ?? "",
+    }
 
     if (state.phase === "transitioning") {
         return (
@@ -90,8 +96,7 @@ const ActivitiesView = () => {
         <>
             <Activities 
                 activities={activities}
-                corpusName={corpusName}
-                projectId={projectId}
+                activityParentContext={activityParentContext}
             />
             <ActivitiesStartModal 
                 isOpen={isModalOpen}

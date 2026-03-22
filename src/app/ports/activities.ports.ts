@@ -27,6 +27,8 @@ export type ActivityResponse = {
     activities: ActivityDetails[];
 };
 
+export type ActivityParentContext= Omit<ActivityResponse, "activities">;
+
 export interface ActivitiesPort {
     getActivities(request: GetActivitiesRequest): Promise<AppResult<ActivityResponse>>;
     createActivity(request: CreateActivityRequest): Promise<AppResult<ActivityResponse>>;

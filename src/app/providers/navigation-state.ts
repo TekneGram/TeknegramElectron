@@ -1,16 +1,16 @@
-import type { ActivityType } from "@/app/ports/activities.ports";
+import type { ActivityDetails, ActivityParentContext } from "@/app/ports/activities.ports";
 
 export type NavigationState =
  | { kind: "home" }
  | { kind: "settings" }
  | { kind: "activities"; projectId: string; projectName: string }
- | { kind: "analysis"; projectId: string; activityId: string; activityType: ActivityType, activityName: string, corpusName: string };
+ | { kind: "analysis"; activityDetails: ActivityDetails; activityParentContext: ActivityParentContext };
 
  export type NavigationAction =
  | { type: "go-home" }
  | { type: "go-settings" }
  | { type: "enter-activities"; projectId: string; projectName: string }
- | { type: "open-analysis"; projectId: string; activityId: string; activityType: ActivityType, activityName: string, corpusName: string };
+ | { type: "open-analysis"; activityDetails: ActivityDetails; activityParentContext: ActivityParentContext  };
 
 export const initialNavigationState: NavigationState = { kind: "home" };
 
@@ -28,11 +28,8 @@ export function navigationReducer(
         case "open-analysis":
             return {
                 kind: "analysis",
-                projectId: action.projectId,
-                activityId: action.activityId,
-                activityType: action.activityType,
-                activityName: action.activityName,
-                corpusName: action.corpusName
+                activityDetails: action.activityDetails,
+                activityParentContext: action.activityParentContext,
             };
         default:
             return state;

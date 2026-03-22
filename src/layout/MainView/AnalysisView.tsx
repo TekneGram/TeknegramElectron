@@ -32,6 +32,8 @@ const AnalysisView = () => {
 
     const handleInspectCorpus = () => {
         // We need a hook!
+        // Consider *not* passing this down to AnalsisDisplay
+        // instead pass down the navigationState.activityId and getting making the inspection request
     }
 
     return (
@@ -46,9 +48,9 @@ const AnalysisView = () => {
                                 doInspection={handleInspectCorpus}
                             /> 
                         : <Bubbly 
-                            activityId={navigationState.activityId} 
-                            activityName={navigationState.activityName} 
-                            title={navigationState.corpusName}
+                                activityId={navigationState.activityId} 
+                                activityName={navigationState.activityName} 
+                                title={navigationState.corpusName}
                             />
                 }
             </section>
