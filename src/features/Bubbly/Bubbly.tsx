@@ -9,6 +9,7 @@ import { BubbleRecord } from "./types/bubble";
 import { mapAnalysisResponseToBubbleRecord } from "@/app/mappers/analysis.mappers";
 
 interface BubblyProps {
+    parentContextId: string | null;
     activityId: string;
     activityName: string;
     title: string;
