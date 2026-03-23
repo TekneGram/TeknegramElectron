@@ -5,10 +5,11 @@ import AnalysisDisplay from "@/features/AnalysisViews/AnalysisDisplay";
 import Bubbly from "@/features/Bubbly/Bubbly";
 import { useNavigation } from "@/app/providers/useNavigation";
 
-import type { AnalysisCorpusMetadataResponse } from "@/app/ports/analysis.ports";
-import type { ActivityDetails, ActivityParentContext } from "@/app/ports/activities.ports";
+import type { AnalysisType } from "@/app/ports/analysis.ports";
 
 import "./styles/AnalysisView.css";
+import { BubbleBlower } from "@/features/Bubbly/types/bubble";
+import { mapAnalysisTypeToLayerType } from "@/features/Bubbly/mappers/bubbleWrap.mappers";
 
 
 export type AnalysisFormType =
@@ -21,7 +22,7 @@ const AnalysisView = () => {
 
     const [analysisFormType, setAnalysisFormType] = useState<AnalysisFormType | null>(null);
     const [showAnalysisDisplay, setShowAnalysisDisplay] = useState<boolean>(false);
-    const [analysisData, setAnalysisData] = useState<AnalysisCorpusMetadataResponse | null>(null);
+    const [pendingBlowBubbleRequest, setPendingBlowBubbleRequest] = useState<BubbleBlower | null>(null);
 
     const isAnalysis = navigationState.kind === "analysis";
     if (!isAnalysis) {
@@ -38,11 +39,17 @@ const AnalysisView = () => {
         setAnalysisFormType(null);
     }
 
-    const handleAnalysisCreated = (result: AnalysisCorpusMetadataResponse) => {
-        setAnalysisData(result);
+    const passAnalysisRequestToBubbly = (analysisType: AnalysisType, config: string | null) => {
+        setPendingBlowBubbleRequest({
+            parentContextId: navigationState.activityParentContext.corpusId,
+            activityId: navigationState.activityDetails.activityId,
+            bubbleLayerType: mapAnalysisTypeToLayerType(analysisType),
+            config,
+        });
         setShowAnalysisDisplay(false);
         setAnalysisFormType(null);
     }
+
 
     return (
         <section className="analysis-workspace main-view-grid-surface" aria-label="Analysis workspace">
@@ -52,17 +59,16 @@ const AnalysisView = () => {
                     showAnalysisDisplay && analysisFormType 
                         ? <AnalysisDisplay 
                                 analysisFormType={analysisFormType}
-                                activityParentContext={navigationState.activityParentContext}
-                                activityDetails={navigationState.activityDetails}
                                 onStopShowing={handleStopShowingDisplay}
-                                onAnalysisCreated={handleAnalysisCreated}
+                                onAnalysisRequest={passAnalysisRequestToBubbly}
                             /> 
                         : <Bubbly 
                                 parentContextId={navigationState.activityParentContext.corpusId}
                                 activityId={navigationState.activityDetails.activityId} 
                                 activityName={navigationState.activityDetails.activityName} 
                                 title={navigationState.activityParentContext.corpusName}
-                                initialData={analysisData}
+                                pendingBlowBubbleRequest={pendingBlowBubbleRequest}
+                                onBlowBubbleRequestHandled={() => setPendingBlowBubbleRequest(null)}
                             />
                 }
             </section>

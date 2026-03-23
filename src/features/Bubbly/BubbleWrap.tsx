@@ -1,6 +1,7 @@
 import type { BubbleRecord } from "./types/bubble";
 import Bubble from "./Bubble";
 import { useBubbleWrapScroll } from "./hooks/useBubbleWrapScroll";
+import "./styles/bubbleWrap.css";
 
 interface BubbleWrapProps {
     bubbles: BubbleRecord[];

@@ -29,15 +29,16 @@ export type GetAnalysisListRequest = {
     activityId: string;
 }
 
-export type AnalysisResponse = {
+export type AnalysisArtifactResponse = {
     uuid: string;
     analysisName: string;
     analysisType: AnalysisType,
+    config: string | null;
     displayName: string;
-    description: string | null;
+    description: string;
 }
 
-export type AnalysisListResponse = AnalysisResponse[];
+export type AnalysisListResponse = AnalysisArtifactResponse[];
 
 export type CreateAnalysisRequest = {
     corpusId: string;
@@ -46,26 +47,21 @@ export type CreateAnalysisRequest = {
     config: string | null;
 }
 
-export type AnalysisCorpusMetadataResponse = {
-    analysis: {
-        uuid: string;
-        analysisName: string;
-        analysisType: AnalysisType;
-        config: string | null;
-        displayName: string;
-        description: string | null;
-    };
-    analysisData: {
-        corpusUuid: string;
-        metadataJson: string;
-        summaryText: string;
-        llmProvider: string| null;
-        llmModel: string | null;
-        binaryFilesPath: string | null;
-    }
+export type AnalysisDataResponse = {
+    corpusUuid: string;
+    metadataJson: string;
+    summaryText: string;
+    llmProvider: string | null;
+    llmModel: string | null;
+    binaryFilesPath: string | null
+}
+
+export type FullAnalysisResponse = {
+    analysis: AnalysisArtifactResponse;
+    analysisData: AnalysisDataResponse;
 }
 
 export interface AnalysisPorts {
     getAnalysisList(request: GetAnalysisListRequest): Promise<AppResult<AnalysisListResponse>>;
-    createMetadataInspectionAnalysis(request: CreateAnalysisRequest): Promise<AppResult<AnalysisCorpusMetadataResponse>>;
+    createMetadataInspectionAnalysis(request: CreateAnalysisRequest): Promise<AppResult<FullAnalysisResponse>>;
 }

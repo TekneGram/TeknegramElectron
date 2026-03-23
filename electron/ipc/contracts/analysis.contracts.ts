@@ -9,16 +9,17 @@ export type GetAnalysisListRequest = {
 }
 
 // One analysis done on an activity
-export type AnalysisResponse = {
+export type AnalysisArtifact = {
     uuid: string;
     analysisName: string;
     analysisType: AnalysisType,
+    config: string | null;
     displayName: string;
-    description: string | null;
+    description: string;
 }
 
 // The full list of analyses done on the activity
-export type AnalysisListResponse = AnalysisResponse[];
+export type AnalysisArtifactList = AnalysisArtifact[];
 
 // Creating an analysis
 export type CreateAnalysisRequest = {
@@ -29,14 +30,14 @@ export type CreateAnalysisRequest = {
 }
 
 // For returning the metadata_inspection response
-export type AnalysisCorpusMetadataResponse = {
+export type CorpusMetadataInspectionResponse = {
     analysis: {
         uuid: string;
         analysisName: string;
         analysisType: AnalysisType;
         config: string | null;
         displayName: string;
-        description: string | null;
+        description: string;
     };
     analysisData: {
         corpusUuid: string;

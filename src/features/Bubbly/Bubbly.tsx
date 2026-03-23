@@ -2,27 +2,67 @@ import BubbleWrap from "./BubbleWrap"
 import BubbleContainer from "./BubbleContainer";
 import "./styles/bubbly.css";
 
-import { useAnalysisListQuery } from "./hooks/useAnalysisListQuery";
+import { useBubbleWrapListQuery } from "./hooks/useBubbleWrapListQuery";
 import { useBubbleSelection } from "./hooks/useBubbleSelection";
 import { useBubbleLayerQuery } from "./hooks/useBubbleLayerQuery";
-import { BubbleRecord } from "./types/bubble";
-import { mapAnalysisResponseToBubbleRecord } from "@/app/mappers/analysis.mappers";
+import { BubbleBlower, BubbleRecord, FullBubble } from "./types/bubble";
+import { mapAnalysisResponseToBubbleRecord } from "./mappers/bubbleWrap.mappers";
+import { useBubbleBlower } from "./hooks/useBubbleBlower";
+import { useEffect, useState } from "react";
 
 interface BubblyProps {
     parentContextId: string | null;
     activityId: string;
     activityName: string;
     title: string;
+    pendingBlowBubbleRequest: BubbleBlower | null;
+    onBlowBubbleRequestHandled: () => void;
 }
 
-const Bubbly: React.FC<BubblyProps> = ({ activityId, activityName, title }) => {
+const Bubbly: React.FC<BubblyProps> = ({ activityId, activityName, title, pendingBlowBubbleRequest, onBlowBubbleRequestHandled }) => {
 
-    const { data, isLoading, isError, error } = useAnalysisListQuery(activityId);
+    const { data, isLoading, isError, error } = useBubbleWrapListQuery(activityId);
 
-    const bubbles: BubbleRecord[] = (data ?? []).map(mapAnalysisResponseToBubbleRecord);
+    const fetchedBubbles: BubbleRecord[] = (data ?? []).map(mapAnalysisResponseToBubbleRecord);
+
+    const [blownBubble, setBlownBubble] = useState<FullBubble | null>(null);
+    const bubbleBlower = useBubbleBlower({ 
+        activityId,
+        onSuccess: (fullBubble) => {
+            setBlownBubble(fullBubble);
+            setActiveBubbleId(fullBubble.bubbleRecord.bubbleId)
+        }
+    });
+
+    const bubbles = blownBubble &&
+                    !fetchedBubbles.some((bubble) => bubble.bubbleId === blownBubble.bubbleRecord.bubbleId)
+                    ? [...fetchedBubbles, blownBubble.bubbleRecord]
+                    : fetchedBubbles;
 
     const { activeBubble, activeBubbleId, setActiveBubbleId } = useBubbleSelection(bubbles);
     const layerQuery = useBubbleLayerQuery(activeBubble);
+
+    useEffect(() => {
+        if (!pendingBlowBubbleRequest) {
+            return;
+        }
+
+        bubbleBlower.mutate(pendingBlowBubbleRequest);
+        onBlowBubbleRequestHandled();
+    }, [pendingBlowBubbleRequest, bubbleBlower, onBlowBubbleRequestHandled]);
+
+    function mapBlownLayerData(fullBubble: FullBubble) {
+        switch(fullBubble.bubbleRecord.bubbleLayerType) {
+            case "corpusMetadata":
+                return JSON.parse(fullBubble.bubbleLayerData.data);
+            default:
+                return undefined;
+        }
+    }
+
+    const activeLayerData = activeBubble && blownBubble && activeBubble?.bubbleId === blownBubble?.bubbleRecord.bubbleId
+        ? mapBlownLayerData(blownBubble)
+        : layerQuery.data;
     
 
     return (
@@ -47,10 +87,10 @@ const Bubbly: React.FC<BubblyProps> = ({ activityId, activityName, title }) => {
                     />
                     <BubbleContainer 
                         activeBubble={activeBubble}
-                        data={layerQuery.data}
-                        isLoading={isLoading}
-                        isError={isError}
-                        error={error}
+                        data={activeLayerData}
+                        isLoading={activeBubble?.bubbleId === blownBubble?.bubbleRecord.bubbleId ? false : layerQuery.isLoading}
+                        isError={activeBubble?.bubbleId === blownBubble?.bubbleRecord.bubbleId ? false : layerQuery.isLoading}
+                        error={activeBubble?.bubbleId === blownBubble?.bubbleRecord.bubbleId ? null : layerQuery.error}
                     />
                 </section>
             </div>

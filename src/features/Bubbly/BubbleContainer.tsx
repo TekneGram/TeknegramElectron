@@ -51,12 +51,12 @@ const BubbleContainer: React.FC<BubbleContainerProps> = ({ activeBubble, data, i
         );
     }
 
-    const LayerComponent = bubbleRegistry[activeBubble.layerType].component;
+    const LayerComponent = bubbleRegistry[activeBubble.bubbleLayerType].component;
 
     return (
         <section className="bubble-container">
             <div className="bubble-container-inner">
-                <LayerComponent data={data}/>
+                <LayerComponent data={data as never}/>
             </div>
         </section>
     )

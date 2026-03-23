@@ -31,9 +31,9 @@ const ActivitiesView = () => {
 
     const activities = activitiesQuery.data?.activities ?? [];
     const activityParentContext: ActivityParentContext = {
-        corpusId: activitiesQuery.data?.corpusName ?? "Your corpus",
+        corpusId: activitiesQuery.data?.corpusId ?? "",
         projectId: activitiesQuery.data?.projectId ?? "",
-        corpusName: activitiesQuery.data?.corpusName ?? "",
+        corpusName: activitiesQuery.data?.corpusName ?? "Your corpus",
         binaryFilesPath: activitiesQuery.data?.binaryFilesPath ?? "",
     }
 

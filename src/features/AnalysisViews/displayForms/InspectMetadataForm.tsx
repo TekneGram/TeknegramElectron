@@ -3,9 +3,8 @@ import { AnalysisType } from "@/app/ports/analysis.ports";
 interface InspectMetadataProps {
     onStopShowing: () => void;
     onSubmitInspection: (analysisType: AnalysisType, config: string | null) => void | Promise<void>
-    isSubmitting: boolean;
 }
-const InspectMetadataForm: React.FC<InspectMetadataProps> = ({ onStopShowing, onSubmitInspection, isSubmitting }) => {
+const InspectMetadataForm: React.FC<InspectMetadataProps> = ({ onStopShowing, onSubmitInspection }) => {
 
     const goBack = () => {
         onStopShowing()
@@ -16,15 +15,13 @@ const InspectMetadataForm: React.FC<InspectMetadataProps> = ({ onStopShowing, on
             <h1>Inspect metadata</h1>
             <button
                 onClick={goBack}
-                disabled={isSubmitting}
             >
                 Back
             </button>
             <button
                 onClick={() => onSubmitInspection("metadata_inspection", null)}
-                disabled={isSubmitting}
             >
-                {isSubmitting ? "Creating..." : "Inspect"}
+                Create
             </button>
         </>
     );

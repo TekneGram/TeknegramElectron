@@ -2,13 +2,14 @@ import type { SqliteDatabase } from '../sqlite';
 import { queryAll, queryOne, executeRun } from "../sqlite";
 import { AnalysisType } from '@electron/ipc/contracts/analysis.contracts';
 
-// for getting an analysis
-export type AnalysisListResponseRow = {
+// one analysis
+export type AnalysisArtifactRow = {
     uuid: string;
-    analysis_type: AnalysisType;
     analysis_name: string;
+    analysis_type: AnalysisType;
+    config: string | null;
     display_name: string;
-    description: string | null;
+    description: string;
 }
 
 // for creating an analysis
@@ -31,28 +32,20 @@ export type NewAnalysisRow = {
     updated_at: string;
 }
 
-export type AnalysisResponseRow = {
-    uuid: string;
-    analysis_name: string;
-    analysis_type: AnalysisType;
-    config: string | null;
-    display_name: string;
-    description: string | null;
+export type CorpusMetadataInspection = {
+    analysis_artifact: AnalysisArtifactRow;
+    analysis_data: CorpusMetadataRow;
 }
 
-export type CreateMetadataInspection = {
-    analysis_response_row: AnalysisResponseRow
-    analysis_data: CorpusMetadataRow
-}
-
-export function getAnalysisListRows(db: SqliteDatabase, activity_uuid: string): AnalysisListResponseRow[] {
-    return queryAll<AnalysisListResponseRow> (
+export function getAnalysisArtifactsByActivity(db: SqliteDatabase, activity_uuid: string): AnalysisArtifactRow[] {
+    return queryAll<AnalysisArtifactRow> (
         db,
         `
             SELECT
                 a.uuid AS uuid,
-                a.analysis_type AS analysis_type,
                 a.analysis_name AS analysis_name,
+                a.analysis_type AS analysis_type,
+                a.config AS config,
                 at.display_name AS display_name,
                 at.description AS description
             FROM analysis a
@@ -90,7 +83,7 @@ export function getCorpusMetadataRow(db: SqliteDatabase, corpusUuid: string): Co
             FROM corpus_metadata cm
             INNER JOIN corpus_files_path cfp
                 ON cm.corpus_uuid = cfp.corpus_uuid
-            WHERE corpus_uuid = ?
+            WHERE cm.corpus_uuid = ?
             LIMIT 1
         `,
         [corpusUuid]
@@ -123,11 +116,11 @@ export function insertAnalysisRow(db: SqliteDatabase, row: NewAnalysisRow): void
     );
 }
 
-export function getAnalysisResponseByUuid(
+export function getAnalysisArtifactByUuid(
     db: SqliteDatabase,
     analysisUuid: string
-): AnalysisResponseRow | undefined {
-    return queryOne<AnalysisResponseRow>(
+): AnalysisArtifactRow | undefined {
+    return queryOne<AnalysisArtifactRow>(
         db,
         `
             SELECT
@@ -144,28 +137,5 @@ export function getAnalysisResponseByUuid(
             LIMIT 1
         `,
         [analysisUuid]
-    );
-}
-
-export function getAnalysisResponseByActivityUuid(
-    db: SqliteDatabase,
-    activityUuid: string
-): AnalysisResponseRow[] | undefined {
-    return queryAll<AnalysisResponseRow>(
-        db,
-        `
-            SELECT
-                a.uuid AS uuid,
-                a.analysis_name AS analysis_name,
-                a.analysis_type AS analysis_type,
-                a.config AS config,
-                at.display_name AS display_name,
-                at.description AS description
-            FROM analysis a
-            INNER JOIN analysis_types at
-                ON at.analysis_type = a.analysis_type
-            WHERE a.activity_uuid = ?
-        `,
-        [activityUuid]
     );
 }

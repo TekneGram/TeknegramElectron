@@ -2,11 +2,11 @@ import type { RequestContext } from "@electron/core/requestContext";
 import { raiseAppError } from "@electron/core/appException";
 import { createAppDatabase } from "@electron/db/appDatabase";
 
-import { getAnalysisListRows } from "@electron/db/repositories/analysisRepositories";
+import { getAnalysisArtifactsByActivity } from "@electron/db/repositories/analysisRepositories";
 import { getRuntimeDbPath } from "@electron/runtime/runtimePaths";
 import { logger } from "../logger";
 
-import type { GetAnalysisListRequest, AnalysisListResponse } from "@electron/ipc/contracts/analysis.contracts";
+import type { GetAnalysisListRequest, AnalysisArtifactList } from "@electron/ipc/contracts/analysis.contracts";
 
 type ValidatedGetAnalysisListRequest = {
     activityId: string;
@@ -15,7 +15,7 @@ type ValidatedGetAnalysisListRequest = {
 export async function getAnalysisList(
     request: GetAnalysisListRequest,
     ctx: RequestContext,
-): Promise<AnalysisListResponse> {
+): Promise<AnalysisArtifactList> {
 
     const validatedRequest = validateGetAnalysisListRequest(request);
     
@@ -26,11 +26,12 @@ export async function getAnalysisList(
 
     const appDatabase = createAppDatabase(getRuntimeDbPath());
     try {
-        const analysisList = getAnalysisListRows(appDatabase.db, validatedRequest.activityId);
+        const analysisList = getAnalysisArtifactsByActivity(appDatabase.db, validatedRequest.activityId);
         return analysisList.map((analysisItem) => ({
             uuid: analysisItem.uuid,
             analysisName: analysisItem.analysis_name,
             analysisType: analysisItem.analysis_type,
+            config: analysisItem.config,
             displayName: analysisItem.display_name,
             description: analysisItem.description,
         }));

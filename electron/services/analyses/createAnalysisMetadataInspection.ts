@@ -1,13 +1,13 @@
 import type { RequestContext } from "@electron/core/requestContext";
-import { raiseAppError } from "@electron/core/appException";
+import { AppException, raiseAppError } from "@electron/core/appException";
 import { createAppDatabase } from "@electron/db/appDatabase";
 import { runInTransaction } from "@electron/db/sqlite";
 
-import { countAnalysisRows, getCorpusMetadataRow, insertAnalysisRow, getAnalysisResponseByUuid } from "@electron/db/repositories/analysisRepositories";
+import { countAnalysisRows, getCorpusMetadataRow, insertAnalysisRow, getAnalysisArtifactByUuid } from "@electron/db/repositories/analysisRepositories";
 import { getRuntimeDbPath } from "@electron/runtime/runtimePaths";
 import { logger } from "@electron/services/logger";
 
-import type { CreateAnalysisRequest, AnalysisCorpusMetadataResponse } from "@electron/ipc/contracts/analysis.contracts";
+import type { CreateAnalysisRequest, CorpusMetadataInspectionResponse } from "@electron/ipc/contracts/analysis.contracts";
 import type { NewAnalysisRow } from "@electron/db/repositories/analysisRepositories";
 import { randomUUID } from 'node:crypto';
 
@@ -22,7 +22,7 @@ type ValidatedCreateAnalysisRequest = {
 export async function createAnalysisMetadataInspection(
     request: CreateAnalysisRequest,
     ctx: RequestContext,
-): Promise<AnalysisCorpusMetadataResponse> {
+): Promise<CorpusMetadataInspectionResponse> {
     const validatedRequest = validateCreateAnalysisRequest(request);
 
     logger.info("Starting the create analysis process", {
@@ -48,7 +48,7 @@ export async function createAnalysisMetadataInspection(
             };
 
             insertAnalysisRow(appDatabase.db, analysisRow);
-            const analysisResponseRow = getAnalysisResponseByUuid(appDatabase.db, analysisRow.uuid);
+            const analysisResponseRow = getAnalysisArtifactByUuid(appDatabase.db, analysisRow.uuid);
             const corpusMetadataRow = getCorpusMetadataRow(appDatabase.db, validatedRequest.corpusId);
 
             if (!analysisResponseRow) {
@@ -79,9 +79,13 @@ export async function createAnalysisMetadataInspection(
             };
         });
     } catch (err) {
+        if (err instanceof AppException) {
+            throw err;
+        }
+
         raiseAppError(
             "DB_QUERY_FAILED",
-            "Failed to create a new analysis entry in database",
+            err instanceof Error ? err.message : "Failed to create a new analysis entry in database",
             err instanceof Error ? err.stack : undefined
         );
     } finally {

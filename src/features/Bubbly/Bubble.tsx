@@ -10,16 +10,22 @@ interface BubbleProps {
     onClick: (bubbleId: string) => void;
 }
 
-const Bubble: React.FC<BubbleProps> = ({ bubble, isActive }) => {
+const Bubble: React.FC<BubbleProps> = ({ bubble, isActive, position, onClick }) => {
 
     return(
         <button
             className={`bubble ${isActive ? 'bubble-active' : ''}`}
+            onClick={() => onClick(bubble.bubbleId)}
+            style={{
+                left: `${position.leftPx}px`,
+                top: `${position.topPx}px`,
+            }}
+            type="button"
         >
             <span className="bubble-content">
-                <span className="">{bubble.analysisName}</span>
-                <span className="">{bubble.description}</span>
-                <span className="">{bubble.displayName}</span>
+                <span>{bubble.analysisName}</span>
+                <span>{bubble.displayName}</span>
+                <span>{bubble.description}</span>
             </span>
 
         </button>
