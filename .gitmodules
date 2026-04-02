@@ -6,3 +6,7 @@
 	path = native/corpus_lexbuns
 	url = https://github.com/TekneGram/corpus_lexbuns.git
 	branch = main
+[submodule "native/corpus_metadata"]
+	path = native/corpus_metadata
+	url = https://github.com/TekneGram/corpus_metadata.git
+	branch = main
