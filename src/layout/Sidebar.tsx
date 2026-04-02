@@ -1,5 +1,7 @@
 import '@/styles/layout.css';
-import CreateProjectButton from './Sidebar/CreateProjectButton';
+import '@/styles/tool-tip.css';
+import CreateProjectButton from './Sidebar/buttons/CreateProjectButton';
+import ControlPanel from './Sidebar/ControlPanel';
 
 interface SidebarProps {
     onOpenModal: () => void;
@@ -12,6 +14,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onOpenModal }) => {
                 <CreateProjectButton
                     onClickCreate={onOpenModal}
                 />
+            </div>
+            <div>
+                <ControlPanel />
             </div>
         </aside>
     );

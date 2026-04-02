@@ -33,6 +33,8 @@ describe("projectsAdapter", () => {
       corpusName: "Corpus",
       folderPath: "/tmp/corpus",
       semanticsRulesPath: "/tmp/rules.json",
+      postingFormat: "compressed" as const,
+      emitNgramPositions: false,
     };
     const result = { ok: true, value: { projectUuid: "project-1" } };
     invokeRequestMock.mockResolvedValue(result);

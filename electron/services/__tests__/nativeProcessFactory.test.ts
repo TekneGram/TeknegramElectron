@@ -80,7 +80,7 @@ describe("NativeProcessRunner", () => {
     child.stdout.emitData("hello");
     child.stderr.emitData("warn");
     child.exitCode = 0;
-    child.emit("close", 0);
+    child.emit("close", 0, null);
 
     await expect(promise).resolves.toEqual({
       stdout: "hello",
@@ -109,7 +109,7 @@ describe("NativeProcessRunner", () => {
     child.stdout.emitData("non-json-line\n");
     child.stdout.emitData('{"type":"result","data":{"outputDir":"/tmp/out"}}\n');
     child.exitCode = 0;
-    child.emit("close", 0);
+    child.emit("close", 0, null);
 
     await expect(promise).resolves.toMatchObject({
       stdout:
@@ -162,7 +162,7 @@ describe("NativeProcessRunner", () => {
       '{"type":"error","message":"Native validation failed","details":"bad input"}\n'
     );
     child.exitCode = 1;
-    child.emit("close", 1);
+    child.emit("close", 1, null);
 
     await expect(promise).rejects.toMatchObject({
       code: "CPP_PROCESS_NON_ZERO_EXIT",
@@ -182,7 +182,7 @@ describe("NativeProcessRunner", () => {
 
     child.stderr.emitData("segmentation fault");
     child.exitCode = 2;
-    child.emit("close", 2);
+    child.emit("close", 2, null);
 
     await expect(promise).rejects.toMatchObject({
       code: "CPP_PROCESS_NON_ZERO_EXIT",
@@ -203,7 +203,7 @@ describe("NativeProcessRunner", () => {
 
     child.stdout.emitData('{"type":"progress","message":"still working"}\n');
     child.exitCode = 0;
-    child.emit("close", 0);
+    child.emit("close", 0, null);
 
     await expect(promise).rejects.toMatchObject({
       code: "CPP_PROCESS_NON_ZERO_EXIT",
@@ -221,7 +221,7 @@ describe("NativeProcessRunner", () => {
     const promise = runner.runProcess();
 
     runner.cancelProcess();
-    child.emit("close", 0);
+    child.emit("close", 0, "SIGTERM");
 
     expect(child.kill).toHaveBeenCalledWith("SIGTERM");
     await expect(promise).rejects.toMatchObject({
@@ -242,5 +242,23 @@ describe("NativeProcessRunner", () => {
     runner.cancelProcess();
 
     expect(child.kill).not.toHaveBeenCalled();
+  });
+
+  it("includes signal information when the native process is terminated by a signal", async () => {
+    const child = new FakeChildProcess();
+    spawnMock.mockReturnValue(child);
+
+    const runner = NativeProcessRunner.create({
+      executable: "corpus_build_pipeline",
+    });
+    const promise = runner.runProcess();
+
+    child.emit("close", null, "SIGKILL");
+
+    await expect(promise).rejects.toMatchObject({
+      code: "CPP_PROCESS_NON_ZERO_EXIT",
+      message: "Native process failed",
+      details: "Process terminated by signal: SIGKILL",
+    });
   });
 });

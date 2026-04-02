@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import './semanticsRulesPicker.css';
+import '@/styles/tool-tip.css';
+import '@/styles/button-styles.css';
+import '@/styles/dropzone.css';
+import '@/styles/forms.css';
 
 
 interface SemanticsRulesPickerProps {
@@ -50,17 +54,17 @@ const SemanticsRulesPicker: React.FC<SemanticsRulesPickerProps> = ({ onSetSemant
             <div className="semantics-rules-picker-header">
                 <div>
                     <div className="semantics-rules-picker-label-row">
-                        <label className="create-project-field-label">
+                        <label className="create-project-field-label form-label">
                             Semantics Rules File (Optional)
                         </label>
-                        <div className="semantics-rules-tooltip">
+                        <div className="semantics-rules-tooltip tooltip-anchor">
                             <span
-                                className="semantics-rules-tooltip-trigger"
+                                className="semantics-rules-tooltip-trigger tooltip-trigger"
                                 tabIndex={0}
                             >
                                 What is this?
                             </span>
-                            <div className="semantics-rules-tooltip-content">
+                            <div className="semantics-rules-tooltip-content tooltip-panel tooltip-panel-top-left tooltip-panel-rich">
                                 <p>
                                     Optionally add a TSV (tab separated values) file that gives semantics to your corpus folder structure.
                                 </p>
@@ -127,14 +131,14 @@ const SemanticsRulesPicker: React.FC<SemanticsRulesPickerProps> = ({ onSetSemant
             </div>
             <button
                 type="button"
-                className="semantics-rules-picker-button"
+                className="semantics-rules-picker-button button-secondary button-secondary-subtle button-size-sm"
                 disabled={isPickingSemanticsRules}
                 onClick={onPickSemanticsRules}
             >
                 {isPickingSemanticsRules ? "Opening...": "Choose TSV file"}
             </button>
             <div
-                className={`semantics-rules-dropzone ${isDragActive ? "is-drag-active" : "" }`}
+                className={`semantics-rules-dropzone dropzone dropzone-soft ${isDragActive ? "is-drag-active" : "" }`}
                 onDragOver={handleDragOver}
                 onDragEnter={handleDragEnter}
                 onDragLeave={handleDragLeave}
@@ -142,13 +146,13 @@ const SemanticsRulesPicker: React.FC<SemanticsRulesPickerProps> = ({ onSetSemant
             >
                 {semanticsRulesPath ? (
                     <div className="semantics-rules-selected">
-                        <span className="semantics-rules-selected-label">Selected TSV File</span>
-                        <span className="semantics-rules-selected-path">{semanticsRulesPath}</span>
+                        <span className="semantics-rules-selected-label dropzone-selected-label dropzone-selected-label-sm">Selected TSV File</span>
+                        <span className="semantics-rules-selected-path dropzone-selected-path dropzone-selected-path-soft">{semanticsRulesPath}</span>
                     </div>
                 ) : (
-                    <div className="semantics-rules-dropzone-empty">
-                        <p>Drop semantics rules file here</p>
-                        <p>or use the file picker button above</p>
+                    <div className="semantics-rules-dropzone-empty dropzone-empty">
+                        <p className="dropzone-empty-primary">Drop semantics rules file here</p>
+                        <p className="dropzone-empty-secondary">or use the file picker button above</p>
                     </div>
                 )}
             </div>

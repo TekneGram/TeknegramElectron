@@ -1,0 +1,29 @@
+.loading-spinner {
+    border-style: solid;
+    border-top-color: var(--color-accent);
+    border-radius: 999px;
+    animation: loading-spin var(--motion-duration-spinner) linear infinite;
+}
+
+.loading-spinner-sm {
+    width: 0.85rem;
+    height: 0.85rem;
+    border-width: 2px;
+    border-color: color-mix(in srgb, var(--color-border) 72%, transparent);
+}
+
+.loading-spinner-lg {
+    width: 42px;
+    height: 42px;
+    border-width: 3px;
+    border-color: var(--color-spinner-track);
+}
+
+@keyframes loading-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

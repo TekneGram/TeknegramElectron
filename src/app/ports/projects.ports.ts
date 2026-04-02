@@ -12,6 +12,8 @@ export interface CreateProjectRequest {
     corpusName: string;
     folderPath: string;
     semanticsRulesPath?: string;
+    postingFormat?: "raw" | "compressed";
+    emitNgramPositions?: boolean;
 }
 
 export interface CreateProjectResponse {

@@ -79,7 +79,7 @@ const ProviderRow = ({
                         <label>
                             <span className="llm-settings-visually-hidden">{`API key for ${provider.displayName}`}</span>
                             <input
-                                className="llm-settings-key-input"
+                                className="llm-settings-key-input form-control"
                                 type="password"
                                 value={apiKeyDraft}
                                 onChange={(event) => onApiKeyDraftChange(provider.provider, event.target.value)}
@@ -94,7 +94,7 @@ const ProviderRow = ({
                         {isEditingKey ? (
                             <>
                                 <button
-                                    className="llm-settings-button llm-settings-button-primary"
+                                    className="button-primary button-size-sm"
                                     type="button"
                                     disabled={saveDisabled}
                                     onClick={() => void onSaveKey(provider.provider)}
@@ -103,7 +103,7 @@ const ProviderRow = ({
                                 </button>
                                 {provider.hasStoredKey ? (
                                     <button
-                                        className="llm-settings-button llm-settings-button-ghost"
+                                        className="llm-settings-button-ghost button-secondary button-size-sm"
                                         type="button"
                                         disabled={isSaving}
                                         onClick={handleCancelEditingKey}
@@ -114,7 +114,7 @@ const ProviderRow = ({
                             </>
                         ) : null}
                         <button
-                            className="llm-settings-button llm-settings-button-ghost"
+                            className="llm-settings-button-ghost button-secondary button-size-sm"
                             type="button"
                             disabled={!provider.hasStoredKey || isDeleting}
                             onClick={() => void onDeleteKey(provider.provider)}
@@ -130,7 +130,7 @@ const ProviderRow = ({
                     <label>
                         <span className="llm-settings-visually-hidden">{`Model for ${provider.displayName}`}</span>
                         <select
-                            className="llm-settings-model-select"
+                            className="llm-settings-model-select form-control form-select"
                             value={provider.defaultModel}
                             disabled={models.length === 0 || isUpdatingModel}
                             onChange={(event) => void onModelChange(provider.provider, event.target.value)}

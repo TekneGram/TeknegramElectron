@@ -4,11 +4,15 @@ import Sidebar from "../../Sidebar";
 
 const createProjectButtonMock = vi.fn();
 
-vi.mock("../CreateProjectButton", () => ({
+vi.mock("../buttons/CreateProjectButton", () => ({
   default: (props: { onClickCreate: () => void }) => {
     createProjectButtonMock(props);
     return <button data-testid="create-project-button" onClick={props.onClickCreate}>New Project</button>;
   },
+}));
+
+vi.mock("../ControlPanel", () => ({
+  default: () => <div data-testid="control-panel" />,
 }));
 
 describe("Sidebar", () => {

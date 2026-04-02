@@ -4,6 +4,8 @@ export type CreateProjectRequest = {
     corpusName: string;
     folderPath: string;
     semanticsRulesPath?: string;
+    postingFormat?: "raw" | "compressed";
+    emitNgramPositions?: boolean;
 };
 
 export type CreateProjectResponse = {

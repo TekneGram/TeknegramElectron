@@ -139,39 +139,6 @@
   border-radius: var(--radius-md);
 }
 
-.sidebar-tooltip {
-  position: absolute;
-  left: calc(100% + 0.7rem);
-  top: 50%;
-  z-index: 800;
-  transform: translateY(-50%) translateX(-4px);
-  padding: 0.35rem 0.6rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--color-surface) 96%, transparent);
-  color: var(--color-text);
-  font-size: 0.82rem;
-  font-weight: var(--font-weight-medium);
-  white-space: nowrap;
-  box-shadow: var(--shadow-floating);
-  opacity: 0;
-  pointer-events: none;
-  visibility: hidden;
-  transition:
-    opacity var(--motion-duration-fast) var(--motion-ease-standard),
-    transform var(--motion-duration-fast) var(--motion-ease-standard),
-    visibility 0s linear var(--motion-duration-fast);
-  transition-delay: 0.5s;
-}
-
-.sidebar-create-project-button:hover .sidebar-tooltip,
-.sidebar-create-project-button:focus-visible .sidebar-tooltip {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(-50%) translateX(0);
-  transition-delay: 0.5s;
-}
-
 .main-view {
   min-height: 100vh;
   padding: calc(var(--header-height) + 0.3rem) 1rem calc(var(--chat-height) + 0.5rem)
@@ -194,7 +161,7 @@
   overflow: hidden;
 }
 
-.main-view-welcome::before {
+.main-view-grid-surface::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -205,6 +172,19 @@
   background-size: auto, 32px 32px, 32px 32px;
   opacity: 0.4;
   pointer-events: none;
+}
+
+.main-view-activities-empty {
+  min-height: 100vh;
+  padding: calc(var(--header-height) + 0.9rem) 1.35rem calc(var(--chat-height) + 1.1rem)
+    calc(var(--sidebar-width) + 1.85rem);
+  box-sizing: border-box;
+  background: var(--color-bg);
+  color: var(--color-text);
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .main-view-transition {
@@ -218,36 +198,6 @@
   place-items: center;
   position: relative;
   overflow: hidden;
-}
-
-.main-view-transition::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(
-      circle at 50% 35%,
-      color-mix(in srgb, var(--color-accent) 14%, transparent),
-      transparent 42%
-    ),
-    linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--color-accent) 8%, transparent),
-      transparent 48%
-    ),
-    linear-gradient(
-      to right,
-      color-mix(in srgb, var(--color-border) 28%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      to bottom,
-      color-mix(in srgb, var(--color-border) 28%, transparent) 1px,
-      transparent 1px
-    );
-  background-size: auto, auto, 32px 32px, 32px 32px;
-  opacity: 0.48;
-  pointer-events: none;
 }
 
 .main-view-transition-card {
@@ -271,22 +221,6 @@
   gap: var(--space-5);
   text-align: center;
   animation: main-view-transition-card-enter 420ms ease-out;
-}
-
-.main-view-transition-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: var(--control-height-sm);
-  padding: 0 0.95rem;
-  border: 1px solid color-mix(in srgb, var(--color-action-primary-border) 82%, transparent);
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--color-action-primary-bg) 86%, var(--color-surface));
-  color: var(--color-action-primary-text);
-  font-size: var(--font-size-label-md);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: var(--letter-spacing-label);
-  text-transform: uppercase;
 }
 
 .main-view-brand-icon-shell {
@@ -374,25 +308,6 @@
   overflow: hidden;
 }
 
-.projects-screen::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(
-      circle at 18% 16%,
-      color-mix(in srgb, var(--color-accent) 10%, transparent),
-      transparent 28%
-    ),
-    linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--color-border) 18%, transparent),
-      transparent 40%
-    );
-  pointer-events: none;
-  opacity: 0.8;
-}
-
 .main-view-settings {
   min-height: 100vh;
   padding: calc(var(--header-height) + 1.35rem) 1.35rem calc(var(--chat-height) + 1.25rem)
@@ -411,15 +326,6 @@
 .main-view-settings-header {
   display: grid;
   gap: 0.3rem;
-}
-
-.main-view-settings-eyebrow {
-  margin: 0;
-  font-size: 0.78rem;
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
 }
 
 .main-view-settings-header h1 {
@@ -447,18 +353,10 @@
 }
 
 .projects-screen-header-copy h1,
-.projects-screen-intro,
-.projects-screen-eyebrow {
+.projects-screen-intro {
   margin: 0;
 }
 
-.projects-screen-eyebrow {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-label-md);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: var(--letter-spacing-label);
-  text-transform: uppercase;
-}
 
 .projects-screen-header-copy h1 {
   font-family: var(--font-display);
@@ -662,6 +560,58 @@
   text-align: center;
 }
 
+.main-view-activities-empty-grid {
+  position: relative;
+  z-index: 1;
+  width: min(1120px, 100%);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.5rem);
+  align-items: stretch;
+}
+
+.main-view-activities-card {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  padding: clamp(1.8rem, 3vw, 2.5rem);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-5xl);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 92%, transparent), var(--color-surface-muted));
+  box-shadow:
+    var(--shadow-welcome),
+    var(--shadow-inset-highlight-strong);
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 1.5rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+.main-view-activities-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--color-accent) 9%, transparent), transparent 42%),
+    radial-gradient(circle at top right, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 28%);
+  pointer-events: none;
+}
+
+.main-view-activities-copy {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.main-view-activities-copy .title,
+.main-view-activities-copy .welcome-message {
+  margin: 0;
+}
+
 .logo {
   width: clamp(120px, 18vw, 880px);
   height: auto
@@ -710,58 +660,6 @@
   padding-top: 0.25rem;
 }
 
-.main-view-welcome-button {
-  min-width: 220px;
-  height: var(--control-height-xl);
-  padding: 0 1.4rem;
-  border: 1px solid var(--color-action-primary-border);
-  border-radius: var(--radius-pill);
-  background: var(--color-action-primary-bg);
-  color: var(--color-action-primary-text);
-  font: inherit;
-  font-weight: var(--font-weight-semibold);
-  font-size: clamp(1.2rem, 1.8vw, 1.5rem);
-  letter-spacing: 0.01em;
-  cursor: pointer;
-  box-shadow:
-    var(--shadow-welcome-button),
-    var(--shadow-inset-highlight-md);
-}
-
-.main-view-welcome-button:hover {
-  background: var(--color-action-primary-hover-bg);
-  transform: translateY(-1px);
-  box-shadow:
-    var(--shadow-welcome-button-hover),
-    var(--shadow-inset-highlight-md);
-  filter: saturate(1.02);
-}
-
-.main-view-welcome-button:active {
-  background: var(--color-action-primary-active-bg);
-  transform: translateY(0);
-  box-shadow:
-    var(--shadow-welcome-button-active),
-    var(--shadow-inset-highlight-soft-hover);
-  filter: saturate(0.98);
-}
-
-.main-view-welcome-button:focus-visible {
-  outline: 2px solid var(--color-focus-ring-soft);
-  outline-offset: 3px;
-}
-
-:root[data-theme="dark"] .main-view-welcome-button {
-  box-shadow: var(--shadow-inset-highlight-md);
-}
-
-:root[data-theme="dark"] .main-view-welcome-button:hover {
-  box-shadow: inset 0 1px 0 color-mix(in srgb, white 10%, transparent);
-}
-
-:root[data-theme="dark"] .main-view-welcome-button:active {
-  box-shadow: inset 0 1px 0 color-mix(in srgb, white 6%, transparent);
-}
 
 :root[data-theme="dark"] .main-view-transition-card {
   box-shadow:
@@ -782,6 +680,12 @@
 :root[data-theme="dark"] .project-card-shell:hover .project-card,
 :root[data-theme="dark"] .project-card-shell:focus-within .project-card {
   box-shadow: inset 0 1px 0 color-mix(in srgb, white 14%, transparent);
+}
+
+@media (max-width: 980px) {
+  .main-view-activities-empty-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .chat-interface {
