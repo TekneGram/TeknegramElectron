@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import './folderPicker.css'
+import '@/styles/forms.css';
+import '@/styles/button-styles.css';
+import '@/styles/dropzone.css';
 
 interface CorpusFolderPickerProps {
     onSetFolderPath: (value: string) => void;
@@ -48,7 +51,7 @@ const CorpusFolderPicker: React.FC<CorpusFolderPickerProps> = ({ onSetFolderPath
         <div className="corpus-folder-picker">
             <div className="corpus-folder-picker-header">
                 <div>
-                    <label className="create-project-field-label">Corpus Corpus Folder</label>
+                    <label className="create-project-field-label form-label">Corpus Corpus Folder</label>
                     <p className="corpus-folder-picker-caption">
                         Select a folder or drop one into the area below
                     </p>
@@ -56,14 +59,14 @@ const CorpusFolderPicker: React.FC<CorpusFolderPickerProps> = ({ onSetFolderPath
             </div>
             <button
                 type="button"
-                className="corpus-folder-picker-button"
+                className="corpus-folder-picker-button button-secondary button-size-control-md"
                 disabled={isPicking}
                 onClick={onPickFolder}
             >
                 {isPicking ? "Opening...": "Choose Corpus Folder"}
             </button>
             <div
-                className={`corpus-folder-dropzone ${isDragActive ? "is-drag-active" : "" }`}
+                className={`corpus-folder-dropzone dropzone dropzone-strong ${isDragActive ? "is-drag-active" : "" }`}
                 onDragOver={handleDragOver}
                 onDragEnter={handleDragEnter}
                 onDragLeave={handleDragLeave}
@@ -71,13 +74,13 @@ const CorpusFolderPicker: React.FC<CorpusFolderPickerProps> = ({ onSetFolderPath
             >
                 {folderPath ? (
                     <div className="corpus-folder-selected">
-                        <span className="corpus-folder-selected-label">Selected folder</span>
-                        <span className="corpus-folder-selected-path">{folderPath}</span>
+                        <span className="corpus-folder-selected-label dropzone-selected-label dropzone-selected-label-md">Selected folder</span>
+                        <span className="corpus-folder-selected-path dropzone-selected-path dropzone-selected-path-strong">{folderPath}</span>
                     </div>
                 ) : (
-                    <div className="corpus-folder-dropzone-empty">
-                        <p>Drop corpus folder here</p>
-                        <p>or use the folder picker button above</p>
+                    <div className="corpus-folder-dropzone-empty dropzone-empty">
+                        <p className="dropzone-empty-primary">Drop corpus folder here</p>
+                        <p className="dropzone-empty-secondary">or use the folder picker button above</p>
                     </div>
                 )}
             </div>

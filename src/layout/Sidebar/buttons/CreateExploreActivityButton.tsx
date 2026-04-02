@@ -7,9 +7,9 @@ interface CreateExploreActivityButtonProps {
 const CreateExploreActivityButton: React.FC<CreateExploreActivityButtonProps> = ({ onClickCreate }) => {
     
     return(
-        <button className="sidebar-create-project-button" aria-label="Explore your corpus" onClick={onClickCreate}>
+        <button className="sidebar-create-project-button tooltip-anchor" aria-label="Explore your corpus" onClick={onClickCreate}>
             <CreateExploreActivityIcon />
-            <span className="sidebar-tooltip">Explore your corpus</span>
+            <span className="sidebar-tooltip tooltip-panel tooltip-panel-right-center tooltip-panel-pill tooltip-panel-delayed">Explore your corpus</span>
         </button>
     );
 };

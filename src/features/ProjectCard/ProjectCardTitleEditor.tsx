@@ -1,5 +1,6 @@
 import ProjectCardCancelIcon from "./ProjectCardCancelIcon";
 import ProjectCardConfirmIcon from "./ProjectCardConfirmIcon";
+import "@/styles/forms.css";
 
 type ProjectCardTitleEditorProps = {
     projectName: string;
@@ -45,7 +46,7 @@ const ProjectCardTitleEditor: React.FC<ProjectCardTitleEditorProps> = ({
             <input
                 autoFocus
                 type="text"
-                className="project-card-title-input"
+                className="project-card-title-input form-control"
                 value={draftName}
                 onChange={(event) => onDraftNameChange(event.target.value)}
                 onKeyDown={(event) => {
@@ -72,7 +73,7 @@ const ProjectCardTitleEditor: React.FC<ProjectCardTitleEditorProps> = ({
                 </button>
                 <button
                     type="button"
-                    className="project-card-title-icon-button project-card-title-icon-button-confirm"
+                    className="project-card-title-icon-button button-primary button-icon"
                     onClick={() => {
                         void onConfirmEditing();
                     }}

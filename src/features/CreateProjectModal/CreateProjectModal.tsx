@@ -1,4 +1,8 @@
 import './createProjectModal.css';
+import '@/styles/button-styles.css';
+import '@/styles/forms.css';
+import '@/styles/shells.css';
+import '@/styles/tool-tip.css';
 import useCreateProjectForm from './hooks/useCreateProjectForm';
 //import useCreateProjectMutation from './hooks/useCreateProjectMutation';
 import useCreateProjectFlow from './hooks/useCreateProjectFlow';
@@ -121,7 +125,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
     return(
         <div className="create-project-modal-backdrop" onClick={handleRequestClose}>
             <div 
-                className="create-project-modal-panel"
+                className="create-project-modal-panel shell-panel shell-surface-solid shell-radius-5xl shell-shadow-lg shell-highlight"
                 onClick={(event) => event.stopPropagation()}
             >
                 {
@@ -142,7 +146,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
                     </div>
                     <button
                         type="button"
-                        className="create-project-modal-close"
+                        className="create-project-modal-close button-secondary button-size-compact"
                         onClick={() => {handleRequestClose()}}
                         aria-label="Close create project modal"
                         disabled = {isPending}
@@ -152,12 +156,12 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
                 </div>
                 <div className="create-project-modal-body">
                     <div className="project-name-field">
-                        <label className="create-project-field-label" htmlFor="project-name">
+                        <label className="create-project-field-label form-label" htmlFor="project-name">
                             Project Name
                         </label>
                         <input
                             id="project-name"
-                            className="create-project-text-input"
+                            className="create-project-text-input form-control"
                             type = "text"
                             placeholder="Example: Academic Writing Project"
                             value = {projectName}
@@ -166,12 +170,12 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
                         />    
                     </div>
                     <div className="corpus-name-field">
-                        <label className="create-project-field-label" htmlFor="corpus-name">
+                        <label className="create-project-field-label form-label" htmlFor="corpus-name">
                             Corpus Name
                         </label>
                         <input
                             id="corpus-name"
-                            className="create-project-text-input"
+                            className="create-project-text-input form-control"
                             type = "text"
                             placeholder="Example: BAWE"
                             value = {corpusName}
@@ -205,14 +209,14 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
                                 onChange={(event) => setCompress(event.target.checked)}
                                 disabled={isPending}
                             />
-                            <div className="create-project-option-tooltip">
+                            <div className="create-project-option-tooltip tooltip-anchor">
                                 <label
-                                    className="create-project-option-label create-project-option-tooltip-trigger"
+                                    className="create-project-option-label create-project-option-tooltip-trigger tooltip-trigger"
                                     htmlFor="create-project-compress"
                                 >
                                     Compress
                                 </label>
-                                <div className="create-project-option-tooltip-content" role="tooltip">
+                                <div className="create-project-option-tooltip-content tooltip-panel tooltip-panel-top-left tooltip-panel-compact" role="tooltip">
                                     Saves disk space but may slow lookups.
                                 </div>
                             </div>
@@ -226,14 +230,14 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
                                 onChange={(event) => setEmitNgramPositions(event.target.checked)}
                                 disabled={isPending}
                             />
-                            <div className="create-project-option-tooltip">
+                            <div className="create-project-option-tooltip tooltip-anchor">
                                 <label
-                                    className="create-project-option-label create-project-option-tooltip-trigger"
+                                    className="create-project-option-label create-project-option-tooltip-trigger tooltip-trigger"
                                     htmlFor="create-project-ngram-positions"
                                 >
                                     Emit n-gram positions
                                 </label>
-                                <div className="create-project-option-tooltip-content" role="tooltip">
+                                <div className="create-project-option-tooltip-content tooltip-panel tooltip-panel-top-left tooltip-panel-compact" role="tooltip">
                                     Takes longer to build and uses more space, but makes n-gram lookup extremely fast.
                                 </div>
                             </div>
@@ -243,7 +247,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
                 <div className="create-project-modal-footer">
                     <button
                         type="button"
-                        className="create-project-modal-reset"
+                        className="button-secondary button-size-md"
                         onClick={() => {resetForm()}}
                         aria-label="Close create project modal"
                         disabled={isPending}
@@ -252,7 +256,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({ onClose, onSucc
                     </button>
                     <button
                         type="button"
-                        className="create-project-modal-button"
+                        className="button-primary button-size-md"
                         onClick={handleSubmit}
                         disabled={!canSubmit || isPending}
                         aria-label="create project"

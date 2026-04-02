@@ -1,4 +1,6 @@
 import { useNavigation } from "@/app/providers/useNavigation";
+import "@/styles/button-styles.css";
+import "@/styles/text-style.css";
 import { useActivitiesQuery } from "@/features/Activities/hooks/useActivitiesQuery";
 import "./styles/ActivitiesView.css";
 import ActivitiesWelcome from "@/features/Activities/ActivitiesWelcome";
@@ -7,6 +9,7 @@ import ActivitiesStartTransition from "@/features/Activities/ActivitiesStartTran
 import ActivitiesLoadingTransition from "./ActivitiesLoadingTransition";
 import { useActivityStart } from "@/app/providers/useActivityStart";
 import ActivitiesStartModal from "@/features/Activities/ActivitiesStartModal";
+import type { ActivityParentContext } from "@/app/ports/activities.ports";
 
 const ActivitiesView = () => {
     const { navigationState } = useNavigation();
@@ -27,7 +30,12 @@ const ActivitiesView = () => {
     }
 
     const activities = activitiesQuery.data?.activities ?? [];
-    const corpusName = activitiesQuery.data?.corpusName ?? "Your corpus";
+    const activityParentContext: ActivityParentContext = {
+        corpusId: activitiesQuery.data?.corpusId ?? "",
+        projectId: activitiesQuery.data?.projectId ?? "",
+        corpusName: activitiesQuery.data?.corpusName ?? "Your corpus",
+        binaryFilesPath: activitiesQuery.data?.binaryFilesPath ?? "",
+    }
 
     if (state.phase === "transitioning") {
         return (
@@ -43,7 +51,7 @@ const ActivitiesView = () => {
         return (
             <section className="activities-screen main-view-grid-surface">
                 <header className="activities-screen-header">
-                    <p className="activities-screen-eyebrow">Corpus Activities</p>
+                    <p className="eyebrow-text eyebrow-text-md">Corpus Activities</p>
                     <h1>{projectName}</h1>
                     <p className="activities-screen-intro">
                         Teknegram could not load the activities for this project right now.
@@ -51,7 +59,7 @@ const ActivitiesView = () => {
                     <div className="welcome-actions">
                         <button
                             type="button"
-                            className="main-view-welcome-button"
+                            className="button-primary button-size-xl"
                             onClick={() => {
                                 void activitiesQuery.refetch();
                             }}
@@ -88,7 +96,7 @@ const ActivitiesView = () => {
         <>
             <Activities 
                 activities={activities}
-                corpusName={corpusName}
+                activityParentContext={activityParentContext}
             />
             <ActivitiesStartModal 
                 isOpen={isModalOpen}

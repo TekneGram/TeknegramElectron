@@ -16,27 +16,7 @@
     justify-items: center;
     gap: 0.8rem;
     padding: 1.35rem 1.25rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-4xl);
-    background:
-        linear-gradient(
-            180deg,
-            var(--color-card-surface-start),
-            var(--color-card-surface-end)
-        );
-    box-shadow:
-        var(--shadow-elevation-md),
-        var(--shadow-inset-highlight-soft-hover);
     text-align: center;
-}
-
-.create-project-processing-spinner {
-    width: 42px;
-    height: 42px;
-    border-radius: var(--radius-pill);
-    border: 3px solid var(--color-spinner-track);
-    border-top-color: var(--color-accent);
-    animation: create-project-processing-spin var(--motion-duration-spinner) linear infinite;
 }
 
 .create-project-processing-title {
@@ -76,15 +56,6 @@
     letter-spacing: var(--letter-spacing-label);
     text-transform: uppercase;
     color: var(--color-text-muted);
-}
-
-@keyframes create-project-processing-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
 }
 
 :root[data-theme="dark"] .create-project-processing-card {

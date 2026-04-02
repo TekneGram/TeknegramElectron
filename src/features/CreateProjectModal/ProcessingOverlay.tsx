@@ -1,5 +1,8 @@
 
 import "./processingOverlay.css";
+import "@/styles/button-styles.css";
+import "@/styles/loading.css";
+import "@/styles/shells.css";
 
 interface ProcessingOverlayProps {
     updateMessage?: string;
@@ -11,8 +14,8 @@ const ProcessingOverlay: React.FC<ProcessingOverlayProps> = ({ updateMessage, pe
 
         return (
             <div className="create-project-processing-overlay">
-                <div className="create-project-processing-card">
-                    <div className="create-project-processing-spinner" aria-hidden="true" />
+                <div className="create-project-processing-card shell-panel shell-radius-4xl shell-surface-card shell-shadow-md">
+                    <div className="create-project-processing-spinner loading-spinner loading-spinner-lg" aria-hidden="true" />
                     <h3 className="create-project-processing-title">Building Corpus</h3>
                     <p className="create-project-processing-copy">
                         Processing your corpus files. Go grab yourself something nice.
@@ -28,7 +31,7 @@ const ProcessingOverlay: React.FC<ProcessingOverlayProps> = ({ updateMessage, pe
                     <button
                         onClick={cancel}
                         type="button"
-                        className="create-project-cancel"
+                        className="button-secondary button-size-md"
                     >
                         Cancel
                     </button>

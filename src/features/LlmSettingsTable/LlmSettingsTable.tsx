@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import type { LlmProviderName } from "@/app/ports/settings.ports";
 import "./llmSettingsTable.css";
+import "@/styles/button-styles.css";
+import "@/styles/forms.css";
+import "@/styles/shells.css";
 import { useDeleteApiProviderKeyMutation } from "./hooks/useDeleteApiProviderKeyMutation";
 import { useLlmProviderModelsQuery } from "./hooks/useLlmProviderModelsQuery";
 import { useLlmProviderSettingsQuery } from "./hooks/useLlmProviderSettingsQuery";
@@ -89,7 +92,7 @@ const LlmSettingsTable = () => {
 
     if (providersLoading || modelsLoading) {
         return (
-            <div className="llm-settings-card">
+            <div className="llm-settings-card shell-panel shell-radius-5xl shell-surface-soft shell-shadow-lg shell-highlight">
                 <div className="llm-settings-card-header">
                     <h2>LLM Provider Settings</h2>
                 </div>
@@ -106,7 +109,7 @@ const LlmSettingsTable = () => {
                 : "Unable to load LLM settings.";
 
         return (
-            <div className="llm-settings-card">
+            <div className="llm-settings-card shell-panel shell-radius-5xl shell-surface-soft shell-shadow-lg shell-highlight">
                 <div className="llm-settings-card-header">
                     <h2>LLM Provider Settings</h2>
                 </div>
@@ -116,7 +119,7 @@ const LlmSettingsTable = () => {
     }
 
     return (
-        <div className="llm-settings-card">
+        <div className="llm-settings-card shell-panel shell-radius-5xl shell-surface-soft shell-shadow-lg shell-highlight">
             <div className="llm-settings-card-header">
                 <h2>LLM Provider Settings</h2>
             </div>
