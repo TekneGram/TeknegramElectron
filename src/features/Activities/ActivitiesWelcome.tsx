@@ -39,7 +39,7 @@ const ActivitiesWelcome: React.FC<ActivitiesWelcomeProps> = ({ projectName, proj
                             onClick={() => openStartModal({
                                 projectId,
                                 projectName,
-                                activityType: "explore_activities"
+                                activityType: "vocab_activities"
                             })}
                         >
                             Create Activity

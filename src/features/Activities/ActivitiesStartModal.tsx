@@ -19,11 +19,11 @@
       pendingActivityType: PendingActivityKind,
       projectName: string,
   ) {
-      if (pendingActivityType === "explore_activities") {
+      if (pendingActivityType === "vocab_activities") {
           return {
-              title: "Start exploration activity?",
-              body: `Create a new exploration activity for ${projectName}.`,
-              confirmLabel: "Start Activities",
+              title: "Start vocabulary activity?",
+              body: `Create a new vocabulary activity for ${projectName}.`,
+              confirmLabel: "Start Vocabulary",
           };
       }
 
@@ -32,6 +32,22 @@
               title: "Start lexical bundles activity?",
               body: `Create a new lexical bundles activity for ${projectName}.`,
               confirmLabel: "Start Lexical Bundles",
+          };
+      }
+
+      if (pendingActivityType === "collocation_activities") {
+          return {
+              title: "Start collocation activity?",
+              body: `Create a new collocation activity for ${projectName}.`,
+              confirmLabel: "Start Collocation",
+          };
+      }
+
+      if (pendingActivityType === "dependency_activities") {
+          return {
+              title: "Start dependency activity?",
+              body: `Create a new dependency activity for ${projectName}.`,
+              confirmLabel: "Start Dependency",
           };
       }
 

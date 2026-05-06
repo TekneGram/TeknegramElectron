@@ -19,7 +19,7 @@ const ActivitiesControls = () => {
         openStartModal({
             projectId,
             projectName,
-            activityType: "explore_activities"
+            activityType: "vocab_activities"
         });
     }
 

@@ -26,7 +26,7 @@ describe("ActivitiesWelcome", () => {
     });
   });
 
-  it("opens the exploration start flow with the expected payload", () => {
+  it("opens the vocabulary start flow with the expected payload", () => {
     render(<ActivitiesWelcome projectId="project-1" projectName="Corpus Project" />);
 
     fireEvent.click(screen.getByRole("button", { name: "Create Activity" }));
@@ -34,7 +34,7 @@ describe("ActivitiesWelcome", () => {
     expect(openStartModalMock).toHaveBeenCalledWith({
       projectId: "project-1",
       projectName: "Corpus Project",
-      activityType: "explore_activities",
+      activityType: "vocab_activities",
     });
   });
 

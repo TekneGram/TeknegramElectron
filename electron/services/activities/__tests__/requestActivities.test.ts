@@ -98,10 +98,10 @@ describe("activities services", () => {
     listActivityDetailsRowsByProjectUuidMock.mockReturnValue([
       {
         activity_id: "activity-1",
-        activity_name: "Exploration Activity 1",
-        activity_type: "explore_activities",
-        activity_type_display_name: "Exploration Activity",
-        description: "Explores corpora through interactive activities and analysis.",
+        activity_name: "Vocabulary Activity 1",
+        activity_type: "vocab_activities",
+        activity_type_display_name: "Vocabulary Activity",
+        description: "Explores vocabulary patterns and lexical usage in the corpus.",
       },
       {
         activity_id: "activity-2",
@@ -131,10 +131,10 @@ describe("activities services", () => {
       activities: [
         {
           activityId: "activity-1",
-          activityName: "Exploration Activity 1",
-          activityType: "explore_activities",
-          activityTypeDisplayName: "Exploration Activity",
-          description: "Explores corpora through interactive activities and analysis.",
+          activityName: "Vocabulary Activity 1",
+          activityType: "vocab_activities",
+          activityTypeDisplayName: "Vocabulary Activity",
+          description: "Explores vocabulary patterns and lexical usage in the corpus.",
         },
         {
           activityId: "activity-2",
@@ -164,10 +164,10 @@ describe("activities services", () => {
     listActivityDetailsRowsByProjectUuidMock.mockReturnValue([
       {
         activity_id: "activity-1",
-        activity_name: "Exploration Activity 1",
-        activity_type: "explore_activities",
-        activity_type_display_name: "Exploration Activity",
-        description: "Explores corpora through interactive activities and analysis.",
+        activity_name: "Vocabulary Activity 1",
+        activity_type: "vocab_activities",
+        activity_type_display_name: "Vocabulary Activity",
+        description: "Explores vocabulary patterns and lexical usage in the corpus.",
       },
       {
         activity_id: "activity-2",

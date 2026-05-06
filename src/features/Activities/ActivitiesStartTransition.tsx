@@ -6,18 +6,42 @@ interface ActivitiesStartTransitionProps {
 }
 
 function getCopy(activityType: ActivityType | null) {
-    if (activityType === "explore_activities") {
+    if (activityType === "vocab_activities") {
         return {
             badge: "Activity Created",
-            title: "Exploration activity created.",
-            status: "Preparing exploration workspace...",
+            title: "Vocabulary activity created.",
+            status: "Preparing vocabulary workspace...",
+        };
+    }
+
+    if (activityType === "lb_activities") {
+        return {
+            badge: "Activity Created",
+            title: "Lexical bundles activity created.",
+            status: "Preparing lexical bundles workspace...",
+        };
+    }
+
+    if (activityType === "collocation_activities") {
+        return {
+            badge: "Activity Created",
+            title: "Collocation activity created.",
+            status: "Preparing collocation workspace...",
+        };
+    }
+
+    if (activityType === "dependency_activities") {
+        return {
+            badge: "Activity Created",
+            title: "Dependency activity created.",
+            status: "Preparing dependency workspace...",
         };
     }
 
     return {
         badge: "Activity Created",
-        title: "Lexical bundles activity created",
-        status: "Prepareing lexical bundles workspace...",
+        title: "Activity created.",
+        status: "Preparing activity workspace...",
     }
 }
 

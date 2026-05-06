@@ -22,9 +22,9 @@ vi.mock("@/features/Activities/hooks/useActivitiesQuery", () => ({
 }));
 
 vi.mock("@/features/Activities/Activities", () => ({
-  default: (props: { activities: Array<{ activityName: string }>; corpusName: string }) => {
+  default: (props: { activities: Array<{ activityName: string }>; activityParentContext: { corpusName: string } }) => {
     activitiesMock(props);
-    return <div data-testid="activities-list">{props.corpusName}:{props.activities.map((activity) => activity.activityName).join(",")}</div>;
+    return <div data-testid="activities-list">{props.activityParentContext.corpusName}:{props.activities.map((activity) => activity.activityName).join(",")}</div>;
   },
 }));
 
@@ -107,10 +107,10 @@ describe("ActivitiesView", () => {
         activities: [
           {
             activityId: "activity-1",
-            activityName: "Exploration Activity 1",
-            activityType: "explore_activities",
-            activityTypeDisplayName: "Exploration Activity",
-            description: "Explores corpora through interactive activities and analysis.",
+            activityName: "Vocabulary Activity 1",
+            activityType: "vocab_activities",
+            activityTypeDisplayName: "Vocabulary Activity",
+            description: "Explores vocabulary patterns and lexical usage in the corpus.",
           },
           {
             activityId: "activity-2",
@@ -129,11 +129,13 @@ describe("ActivitiesView", () => {
     render(<ActivitiesView />);
 
     expect(screen.getByTestId("activities-list").textContent).toBe(
-      "Main Corpus:Exploration Activity 1,Lexical Bundles Activity 1",
+      "Main Corpus:Vocabulary Activity 1,Lexical Bundles Activity 1",
     );
     expect(activitiesMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        corpusName: "Main Corpus",
+        activityParentContext: expect.objectContaining({
+          corpusName: "Main Corpus",
+        }),
       }),
     );
   });

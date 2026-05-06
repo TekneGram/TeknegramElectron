@@ -1,6 +1,10 @@
 import type { AppResult } from "../types/result";
 
-export type ActivityType = "lb_activities" | "explore_activities";
+export type ActivityType =
+    | "lb_activities"
+    | "vocab_activities"
+    | "collocation_activities"
+    | "dependency_activities";
 
 export type GetActivitiesRequest = {
     projectId: string;
