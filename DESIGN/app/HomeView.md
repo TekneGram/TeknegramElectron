@@ -22,3 +22,5 @@ When projects are present, it renders `ProjectsList` with the loaded data.
 - Each card gets the project data and a navigation callback.
 - Clicking `Enter Project` dispatches `enter-activities` with the project id and name.
 - That moves the app into the activities view for the selected project.
+
+See Activities.md for details.
