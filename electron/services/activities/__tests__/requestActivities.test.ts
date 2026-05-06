@@ -98,10 +98,10 @@ describe("activities services", () => {
     listActivityDetailsRowsByProjectUuidMock.mockReturnValue([
       {
         activity_id: "activity-1",
-        activity_name: "Exploration Activity 1",
-        activity_type: "explore_activities",
-        activity_type_display_name: "Exploration Activity",
-        description: "Explores corpora through interactive activities and analysis.",
+        activity_name: "Vocabulary Activity 1",
+        activity_type: "vocab_activities",
+        activity_type_display_name: "Vocabulary Activity",
+        description: "Explores vocabulary patterns and lexical usage in the corpus.",
       },
       {
         activity_id: "activity-2",
@@ -131,10 +131,10 @@ describe("activities services", () => {
       activities: [
         {
           activityId: "activity-1",
-          activityName: "Exploration Activity 1",
-          activityType: "explore_activities",
-          activityTypeDisplayName: "Exploration Activity",
-          description: "Explores corpora through interactive activities and analysis.",
+          activityName: "Vocabulary Activity 1",
+          activityType: "vocab_activities",
+          activityTypeDisplayName: "Vocabulary Activity",
+          description: "Explores vocabulary patterns and lexical usage in the corpus.",
         },
         {
           activityId: "activity-2",
@@ -164,10 +164,10 @@ describe("activities services", () => {
     listActivityDetailsRowsByProjectUuidMock.mockReturnValue([
       {
         activity_id: "activity-1",
-        activity_name: "Exploration Activity 1",
-        activity_type: "explore_activities",
-        activity_type_display_name: "Exploration Activity",
-        description: "Explores corpora through interactive activities and analysis.",
+        activity_name: "Vocabulary Activity 1",
+        activity_type: "vocab_activities",
+        activity_type_display_name: "Vocabulary Activity",
+        description: "Explores vocabulary patterns and lexical usage in the corpus.",
       },
       {
         activity_id: "activity-2",
@@ -216,5 +216,41 @@ describe("activities services", () => {
       description: "Samples corpora, extracts lexical bundles and analyzes them.",
     });
     expect(closeMock).toHaveBeenCalled();
+  });
+
+  it("uses the collocation summary description when creating a collocation activity", async () => {
+    findActivityProjectContextRowByProjectUuidMock.mockReturnValue({
+      project_id: "project-1",
+      corpus_id: "corpus-1",
+      corpus_name: "BAWE",
+      binary_files_path: "/tmp/bawe",
+    });
+    findActivityTypeRowByActivityTypeMock.mockReturnValue({
+      activity_type: "collocation_activities",
+      display_name: "Collocation Activity",
+      description: "An activity focused on collocation discovery and analysis.",
+    });
+    countActivityRowsByProjectUuidAndTypeMock.mockReturnValue(0);
+    listActivityDetailsRowsByProjectUuidMock.mockReturnValue([
+      {
+        activity_id: "activity-uuid-1",
+        activity_name: "Collocation Activity 1",
+        activity_type: "collocation_activities",
+        activity_type_display_name: "Collocation Activity",
+        description: "Analyzes collocation behavior and recurring word partnerships.",
+      },
+    ]);
+
+    await createActivity(
+      {
+        projectId: "project-1",
+        activityType: "collocation_activities",
+      },
+      { correlationId: "cid-3", sendEvent: vi.fn() }
+    );
+
+    expect(insertActivitySummaryRowMock).toHaveBeenCalledWith(db, expect.objectContaining({
+      description: "Analyzes collocation behavior and recurring word partnerships.",
+    }));
   });
 });

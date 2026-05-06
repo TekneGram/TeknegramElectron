@@ -84,6 +84,9 @@ describe("ActivityStartProvider", () => {
   it("creates an activity, shows the transition state, and navigates after the delay", async () => {
     mutateAsyncMock.mockResolvedValue({
       projectId: "project-1",
+      corpusId: "corpus-1",
+      corpusName: "Corpus Project",
+      binaryFilesPath: "/tmp/corpus/bin",
       activities: [
         {
           activityId: "activity-9",
@@ -120,9 +123,19 @@ describe("ActivityStartProvider", () => {
 
     expect(dispatchMock).toHaveBeenCalledWith({
       type: "open-analysis",
-      projectId: "project-1",
-      activityId: "activity-9",
-      activityType: "lb_activities",
+      activityDetails: {
+        activityId: "activity-9",
+        activityName: "Lexical Bundles Activity 1",
+        activityType: "lb_activities",
+        activityTypeDisplayName: "Lexical Bundles Activity",
+        description: "Samples corpora, extracts lexical bundles and analyzes them.",
+      },
+      activityParentContext: {
+        corpusId: "corpus-1",
+        projectId: "project-1",
+        corpusName: "Corpus Project",
+        binaryFilesPath: "/tmp/corpus/bin",
+      },
     });
     expect(screen.getByTestId("phase").textContent).toBe("idle");
   });
@@ -150,6 +163,9 @@ describe("ActivityStartProvider", () => {
   it("ignores close requests while creating", async () => {
     let resolveMutation: ((value: {
       projectId: string;
+      corpusId: string;
+      corpusName: string;
+      binaryFilesPath: string;
       activities: Array<{
         activityId: string;
         activityName: string;
@@ -187,6 +203,9 @@ describe("ActivityStartProvider", () => {
     await act(async () => {
       resolveMutation?.({
         projectId: "project-1",
+        corpusId: "corpus-1",
+        corpusName: "Corpus Project",
+        binaryFilesPath: "/tmp/corpus/bin",
         activities: [
           {
             activityId: "activity-9",
@@ -203,6 +222,9 @@ describe("ActivityStartProvider", () => {
   it("clears the delayed navigation timer on unmount", async () => {
     mutateAsyncMock.mockResolvedValue({
       projectId: "project-1",
+      corpusId: "corpus-1",
+      corpusName: "Corpus Project",
+      binaryFilesPath: "/tmp/corpus/bin",
       activities: [
         {
           activityId: "activity-9",

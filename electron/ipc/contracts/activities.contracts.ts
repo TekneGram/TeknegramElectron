@@ -1,4 +1,9 @@
-export const ACTIVITY_TYPES = ["lb_activities", "explore_activities"] as const;
+export const ACTIVITY_TYPES = [
+    "lb_activities",
+    "vocab_activities",
+    "collocation_activities",
+    "dependency_activities",
+] as const;
 export type ActivityType = (typeof ACTIVITY_TYPES)[number];
 
 export type GetActivitiesRequest = {

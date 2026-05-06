@@ -6,7 +6,7 @@ const createProjectModalMock = vi.fn();
 const homeViewMock = vi.fn();
 const settingsViewMock = vi.fn();
 const activitiesViewMock = vi.fn();
-const analysisViewMock = vi.fn();
+const analyticsScreenMock = vi.fn();
 const useNavigationMock = vi.fn();
 
 vi.mock("@/features/CreateProjectModal/CreateProjectModal", () => ({
@@ -47,10 +47,10 @@ vi.mock("../ActivitiesView", () => ({
   },
 }));
 
-vi.mock("../AnalysisView", () => ({
+vi.mock("../AnalyticsScreen", () => ({
   default: () => {
-    analysisViewMock();
-    return <div data-testid="analysis-view" />;
+    analyticsScreenMock();
+    return <div data-testid="analytics-screen" />;
   },
 }));
 
@@ -101,15 +101,15 @@ describe("MainView", () => {
     expect(screen.queryByTestId("home-view")).toBeNull();
   });
 
-  it("renders the analysis view for the analysis route", () => {
+  it("renders the analytics screen for the analysis route", () => {
     useNavigationMock.mockReturnValue({
       navigationState: { kind: "analysis", projectId: "project-1", activityId: "activity-1", activityType: "lb_activities" },
     });
 
     render(<MainView modalIsOpen={false} onOpenModal={onOpenModal} onCloseModal={onCloseModal} />);
 
-    expect(screen.getByTestId("analysis-view")).toBeTruthy();
-    expect(analysisViewMock).toHaveBeenCalled();
+    expect(screen.getByTestId("analytics-screen")).toBeTruthy();
+    expect(analyticsScreenMock).toHaveBeenCalled();
   });
 
   it("renders the modal when requested", () => {

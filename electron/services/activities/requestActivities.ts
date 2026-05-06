@@ -23,7 +23,9 @@ import { logger } from "../logger";
 
 const ACTIVITY_SUMMARY_DESCRIPTIONS: Record<ActivityType, string> = {
     lb_activities: "Samples corpora, extracts lexical bundles and analyzes them.",
-    explore_activities: "Explores corpora through interactive activities and analysis.",
+    vocab_activities: "Explores vocabulary patterns and lexical usage in the corpus.",
+    collocation_activities: "Analyzes collocation behavior and recurring word partnerships.",
+    dependency_activities: "Inspects syntactic dependency patterns across corpus texts.",
 };
 
 export async function getActivities(

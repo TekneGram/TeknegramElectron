@@ -1,8 +1,8 @@
 import { safeHandle } from "../safeHandle";
 import { validateOrThrow } from "../validate";
 import type { 
-    AnalysisCorpusMetadataResponse,
-    AnalysisListResponse,
+    AnalysisArtifactList,
+    CorpusMetadataInspectionResponse,
     CreateAnalysisRequest,
     GetAnalysisListRequest
 } from '@electron/ipc/contracts/analysis.contracts';
@@ -11,7 +11,7 @@ import { getAnalysisList } from "@electron/services/analyses/getAnalysisList";
 import { createAnalysisSchema, getAnalysisListSchema } from "../validationSchemas/analysis.schemas";
 
 export function RegisterAnalysisHandlers(): void {
-    safeHandle<GetAnalysisListRequest, AnalysisListResponse>(
+    safeHandle<GetAnalysisListRequest, AnalysisArtifactList>(
         "analysis:get:list",
         async (_event, rawArgs, ctx) => {
             const args = validateOrThrow(getAnalysisListSchema, rawArgs);
@@ -19,7 +19,7 @@ export function RegisterAnalysisHandlers(): void {
         }
     )
 
-    safeHandle<CreateAnalysisRequest, AnalysisCorpusMetadataResponse>(
+    safeHandle<CreateAnalysisRequest, CorpusMetadataInspectionResponse>(
         "analysis:create",
         async (_event, rawArgs, ctx) => {
             const args = validateOrThrow(createAnalysisSchema, rawArgs);

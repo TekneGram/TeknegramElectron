@@ -25,21 +25,21 @@ describe("ActivitiesStartModal", () => {
     expect(onConfirm).toHaveBeenCalledTimes(1);
   });
 
-  it("renders exploration copy and allows cancellation from the backdrop", () => {
+  it("renders vocabulary copy and allows cancellation from the backdrop", () => {
     const onCancel = vi.fn();
 
     const { container } = render(
       <ActivitiesStartModal
         isOpen={true}
-        pendingActivityType="explore_activities"
+        pendingActivityType="vocab_activities"
         projectName="Corpus Project"
         onCancel={onCancel}
         onConfirm={vi.fn()}
       />,
     );
 
-    expect(screen.getByText("Start exploration activity?")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Start Activities" })).toBeTruthy();
+    expect(screen.getByText("Start vocabulary activity?")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Start Vocabulary" })).toBeTruthy();
 
     const backdrop = container.querySelector(".activities-start-modal-backdrop");
 
@@ -69,5 +69,35 @@ describe("ActivitiesStartModal", () => {
 
     expect(screen.getByRole("button", { name: "Cancel" }).hasAttribute("disabled")).toBe(true);
     expect(screen.getByRole("button", { name: "Creating..." }).hasAttribute("disabled")).toBe(true);
+  });
+
+  it("renders collocation copy and confirm action", () => {
+    render(
+      <ActivitiesStartModal
+        isOpen={true}
+        pendingActivityType="collocation_activities"
+        projectName="Corpus Project"
+        onCancel={vi.fn()}
+        onConfirm={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("Start collocation activity?")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Start Collocation" })).toBeTruthy();
+  });
+
+  it("renders dependency copy and confirm action", () => {
+    render(
+      <ActivitiesStartModal
+        isOpen={true}
+        pendingActivityType="dependency_activities"
+        projectName="Corpus Project"
+        onCancel={vi.fn()}
+        onConfirm={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("Start dependency activity?")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Start Dependency" })).toBeTruthy();
   });
 });

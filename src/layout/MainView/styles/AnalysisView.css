@@ -12,7 +12,7 @@
     background: var(--color-bg);
     color: var(--color-text);
     display: grid;
-    grid-template-columns: minmax(3.125rem, 3.5rem) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     align-items: start;
     gap: var(--space-5);
     position: relative;
@@ -20,6 +20,7 @@
 }
 
 .display-area {
+    width: 100%;
     min-width: 0;
     min-height: var(--analysis-content-height);
     display: grid;
