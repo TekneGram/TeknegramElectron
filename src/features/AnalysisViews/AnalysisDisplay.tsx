@@ -1,5 +1,5 @@
 
-import type { AnalysisFormType } from "@/layout/MainView/AnalysisView";
+import type { AnalysisFormType } from "./types/analysisFormType";
 import type { AnalysisType } from "@/app/ports/analysis.ports";
 
 import InspectMetadataForm from "./displayForms/InspectMetadataForm";

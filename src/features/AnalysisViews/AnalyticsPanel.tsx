@@ -1,5 +1,5 @@
 import "./styles/analyticsPanel.css";
-import type { AnalysisFormType } from "@/layout/MainView/AnalysisView";
+import type { AnalysisFormType } from "./types/analysisFormType";
 
 interface AnalyticsPanelProps {
     onDisplayForm: (formType: AnalysisFormType) => void

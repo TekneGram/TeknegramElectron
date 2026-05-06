@@ -6,16 +6,11 @@ import Bubbly from "@/features/Bubbly/Bubbly";
 import { useNavigation } from "@/app/providers/useNavigation";
 
 import type { AnalysisType } from "@/app/ports/analysis.ports";
+import type { AnalysisFormType } from "@/features/AnalysisViews/types/analysisFormType";
 
 import "./styles/AnalysisView.css";
 import { BubbleBlower } from "@/features/Bubbly/types/bubble";
 import { mapAnalysisTypeToLayerType } from "@/features/Bubbly/mappers/bubbleWrap.mappers";
-
-
-export type AnalysisFormType =
-    | "Inspect"
-    | "Sampler"
-    | "Run";
 
 const AnalysisView = () => {
     const { navigationState } = useNavigation();
