@@ -1,5 +1,6 @@
 import { useNavigation } from "@/app/providers/useNavigation";
 import "./styles/AnalysisView.css";
+import AnalyticsContainer from "@/features/AnalyticsDisplay/AnalyticsContainer";
 
 const AnalyticsScreen = () => {
     const { navigationState } = useNavigation();
@@ -20,7 +21,10 @@ const AnalyticsScreen = () => {
                     <p>
                         Corpus: <strong>{navigationState.activityParentContext.corpusName}</strong>
                     </p>
-                    <p>This screen is intentionally minimal while the analytics workspace is rebuilt.</p>
+                    <AnalyticsContainer
+                        activityDetails={navigationState.activityDetails}
+                        activityParentContext={navigationState.activityParentContext}
+                    />
                 </section>
             </section>
         </section>
