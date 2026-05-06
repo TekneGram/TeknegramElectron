@@ -217,4 +217,40 @@ describe("activities services", () => {
     });
     expect(closeMock).toHaveBeenCalled();
   });
+
+  it("uses the collocation summary description when creating a collocation activity", async () => {
+    findActivityProjectContextRowByProjectUuidMock.mockReturnValue({
+      project_id: "project-1",
+      corpus_id: "corpus-1",
+      corpus_name: "BAWE",
+      binary_files_path: "/tmp/bawe",
+    });
+    findActivityTypeRowByActivityTypeMock.mockReturnValue({
+      activity_type: "collocation_activities",
+      display_name: "Collocation Activity",
+      description: "An activity focused on collocation discovery and analysis.",
+    });
+    countActivityRowsByProjectUuidAndTypeMock.mockReturnValue(0);
+    listActivityDetailsRowsByProjectUuidMock.mockReturnValue([
+      {
+        activity_id: "activity-uuid-1",
+        activity_name: "Collocation Activity 1",
+        activity_type: "collocation_activities",
+        activity_type_display_name: "Collocation Activity",
+        description: "Analyzes collocation behavior and recurring word partnerships.",
+      },
+    ]);
+
+    await createActivity(
+      {
+        projectId: "project-1",
+        activityType: "collocation_activities",
+      },
+      { correlationId: "cid-3", sendEvent: vi.fn() }
+    );
+
+    expect(insertActivitySummaryRowMock).toHaveBeenCalledWith(db, expect.objectContaining({
+      description: "Analyzes collocation behavior and recurring word partnerships.",
+    }));
+  });
 });
