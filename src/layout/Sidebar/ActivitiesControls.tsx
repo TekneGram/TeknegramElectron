@@ -1,5 +1,7 @@
 import CreateLBButton from "./buttons/CreateLBButton";
-import CreateExploreActivityButton from "./buttons/CreateExploreActivityButton";
+import CreateVocabButton from "./buttons/CreateVocabButton";
+import CreateCollocationButton from "./buttons/CreateCollocationButton";
+import CreateDependencyButton from "./buttons/CreateDependencyButton";
 import { useActivityStart } from "@/app/providers/useActivityStart";
 import { useNavigation } from "@/app/providers/useNavigation";
 
@@ -15,11 +17,27 @@ const ActivitiesControls = () => {
     const { projectId, projectName } = navigationState;
 
     
-    function startNewExplorationActivity() {
+    function startNewVocabActivity() {
         openStartModal({
             projectId,
             projectName,
-            activityType: "vocab_activities"
+            activityType: "vocab_activities",
+        });
+    }
+
+    function startNewCollocationActivity() {
+        openStartModal({
+            projectId,
+            projectName,
+            activityType: "collocation_activities",
+        });
+    }
+
+    function startNewDependencyActivity() {
+        openStartModal({
+            projectId,
+            projectName,
+            activityType: "dependency_activities",
         });
     }
 
@@ -27,13 +45,15 @@ const ActivitiesControls = () => {
         openStartModal({
             projectId,
             projectName,
-            activityType: "lb_activities"
-        })
+            activityType: "lb_activities",
+        });
     }
 
     return (
         <>
-            <CreateExploreActivityButton onClickCreate={startNewExplorationActivity} />
+            <CreateVocabButton onClickCreate={startNewVocabActivity} />
+            <CreateCollocationButton onClickCreate={startNewCollocationActivity} />
+            <CreateDependencyButton onClickCreate={startNewDependencyActivity} />
             <CreateLBButton onClickCreate={startNewLexicalBundleActivity} />
         </>
     );

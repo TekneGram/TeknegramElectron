@@ -29,12 +29,36 @@ describe("ActivitiesWelcome", () => {
   it("opens the vocabulary start flow with the expected payload", () => {
     render(<ActivitiesWelcome projectId="project-1" projectName="Corpus Project" />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Create Activity" }));
+    fireEvent.click(screen.getByRole("button", { name: "Create Vocabulary" }));
 
     expect(openStartModalMock).toHaveBeenCalledWith({
       projectId: "project-1",
       projectName: "Corpus Project",
       activityType: "vocab_activities",
+    });
+  });
+
+  it("opens the collocation start flow with the expected payload", () => {
+    render(<ActivitiesWelcome projectId="project-1" projectName="Corpus Project" />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Create Collocation" }));
+
+    expect(openStartModalMock).toHaveBeenCalledWith({
+      projectId: "project-1",
+      projectName: "Corpus Project",
+      activityType: "collocation_activities",
+    });
+  });
+
+  it("opens the dependency start flow with the expected payload", () => {
+    render(<ActivitiesWelcome projectId="project-1" projectName="Corpus Project" />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Create Dependency" }));
+
+    expect(openStartModalMock).toHaveBeenCalledWith({
+      projectId: "project-1",
+      projectName: "Corpus Project",
+      activityType: "dependency_activities",
     });
   });
 
@@ -63,7 +87,9 @@ describe("ActivitiesWelcome", () => {
 
     render(<ActivitiesWelcome projectId="project-1" projectName="Corpus Project" />);
 
-    expect(screen.getByRole("button", { name: "Create Activity" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Create Vocabulary" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Create Collocation" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Create Dependency" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "Create Lexical Bundles" })).toBeTruthy();
   });
 });
