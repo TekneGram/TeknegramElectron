@@ -3,7 +3,7 @@ import type {
     AnalysisPorts,
     CreateAnalysisRequest,
     GetAnalysisListRequest,
-    AnalysisCorpusMetadataResponse
+    FullAnalysisResponse
 
 } from "@/app/ports/analysis.ports";
 import { invokeRequest } from "./invokeRequest";
@@ -14,6 +14,6 @@ export const analysisAdapter: AnalysisPorts = {
     },
 
     async createMetadataInspectionAnalysis(request: CreateAnalysisRequest) {
-        return invokeRequest<CreateAnalysisRequest, AnalysisCorpusMetadataResponse>("analysis:create", request);
+        return invokeRequest<CreateAnalysisRequest, FullAnalysisResponse>("analysis:create", request);
     }
 }

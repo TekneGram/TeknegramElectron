@@ -70,4 +70,34 @@ describe("ActivitiesStartModal", () => {
     expect(screen.getByRole("button", { name: "Cancel" }).hasAttribute("disabled")).toBe(true);
     expect(screen.getByRole("button", { name: "Creating..." }).hasAttribute("disabled")).toBe(true);
   });
+
+  it("renders collocation copy and confirm action", () => {
+    render(
+      <ActivitiesStartModal
+        isOpen={true}
+        pendingActivityType="collocation_activities"
+        projectName="Corpus Project"
+        onCancel={vi.fn()}
+        onConfirm={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("Start collocation activity?")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Start Collocation" })).toBeTruthy();
+  });
+
+  it("renders dependency copy and confirm action", () => {
+    render(
+      <ActivitiesStartModal
+        isOpen={true}
+        pendingActivityType="dependency_activities"
+        projectName="Corpus Project"
+        onCancel={vi.fn()}
+        onConfirm={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("Start dependency activity?")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Start Dependency" })).toBeTruthy();
+  });
 });

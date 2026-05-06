@@ -98,9 +98,13 @@ export function ActivityStartProvider({ children }: ActivityStartProviderProps) 
             timeoutRef.current = window.setTimeout(() => {
                 dispatch({
                     type: "open-analysis",
-                    projectId: response.projectId,
-                    activityId: createdActivity.activityId,
-                    activityType: createdActivity.activityType
+                    activityDetails: createdActivity,
+                    activityParentContext: {
+                        corpusId: response.corpusId,
+                        projectId: response.projectId,
+                        corpusName: response.corpusName,
+                        binaryFilesPath: response.binaryFilesPath,
+                    },
                 });
 
                 setState(initialState);
