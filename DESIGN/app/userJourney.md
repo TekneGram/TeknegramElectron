@@ -32,3 +32,8 @@ From an activity card, the user can enter analysis.
 - That dispatches `open-analysis`.
 - The app switches to the analysis view for the selected activity.
 
+## To be implemented
+- Currently, when the user enters an project, they can create an activity, either in the main view or in the sidebar menu.
+- There are two types of activities as mentioned above: explore_activities and lb_activities though these could be extended
+- For now, we will focus on lb_activities
+- When the user clicks on Enter on an lb-activity card, they enter the LBAnalysis view.
