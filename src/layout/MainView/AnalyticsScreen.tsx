@@ -1,6 +1,6 @@
 import { useNavigation } from "@/app/providers/useNavigation";
 import "./styles/AnalysisView.css";
-import AnalyticsContainer from "@/features/AnalyticsDisplay/AnalyticsContainer";
+import AnalyticsDisplay from "@/features/AnalyticsDisplay/AnalyticsDisplay";
 
 const AnalyticsScreen = () => {
     const { navigationState } = useNavigation();
@@ -21,7 +21,7 @@ const AnalyticsScreen = () => {
                     <p>
                         Corpus: <strong>{navigationState.activityParentContext.corpusName}</strong>
                     </p>
-                    <AnalyticsContainer
+                    <AnalyticsDisplay
                         activityDetails={navigationState.activityDetails}
                         activityParentContext={navigationState.activityParentContext}
                     />
